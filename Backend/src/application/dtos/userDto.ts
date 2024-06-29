@@ -4,7 +4,7 @@ export class userDTO {
         public email: string,
         public mobile: string,
         public password:string,
-        public qualification : 'plusTwo' | "Degree" | "Masters",
+        public qualification : 'PlusTwo' | "Degree" | "Masters",
         public isEnrolled : boolean=false,
         public isBlocked : boolean= false
 
