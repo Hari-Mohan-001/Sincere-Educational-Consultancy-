@@ -1,5 +1,6 @@
 import express, { urlencoded } from "express";
 import dotenv from "dotenv"
+import cookieParser from "cookie-parser"
 import { dbConnect } from "./src/infrastructure/config/dbConnection";
 import userAuthRoute from "./src/presentation/routes/userAuthRoutes"
 
@@ -10,6 +11,7 @@ dbConnect()
 const app = express()
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+app.use(cookieParser())
 
 const port = process.env.PORT || 3000
 

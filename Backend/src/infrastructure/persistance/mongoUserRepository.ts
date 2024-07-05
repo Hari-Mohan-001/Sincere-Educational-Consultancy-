@@ -22,4 +22,24 @@ export class mongoUserRepository implements IUserRepository{
            newSavedUser.isBlocked,
            newSavedUser.isEnrolled)
     }
+
+    public async doesEmailExist(email: string): Promise<boolean> {
+        const user = await userModel.findOne({email})
+        return user!==null
+    }
+
+     public async findUserByEmail(email: string): Promise<User | null> {
+        const user = await userModel.findOne({email})
+        if(!user) return null
+        return new User( 
+            user.id,
+            user.name,
+            user.email,
+            user.mobile,
+            user.password,
+            user.qualification,
+            user.isBlocked,
+            user.isEnrolled)
+
+    }
 }

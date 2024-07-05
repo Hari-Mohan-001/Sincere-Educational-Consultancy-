@@ -10,8 +10,7 @@ export class User {
         public qualification : 'PlusTwo' | "Degree" | "Masters",
         public isEnrolled: boolean= false,
         public isBlocked: boolean= false,
-    ) 
-    {}
+    ) {}
 
     public async hashPassword():Promise<void>{
         const saltRounds = 8

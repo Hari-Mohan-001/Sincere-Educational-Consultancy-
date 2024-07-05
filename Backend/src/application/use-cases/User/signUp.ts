@@ -6,6 +6,7 @@ export class SignUp {
   constructor(private userRepository: IUserRepository) {}
 
   public async execute(userDto: userDTO): Promise<User> {
+
     const user = new User(
       "",
       userDto.name,
@@ -16,6 +17,7 @@ export class SignUp {
       userDto.isEnrolled,
       userDto.isBlocked
     );
+    
     await user.hashPassword()
     return await this.userRepository.createUser(user);
 
