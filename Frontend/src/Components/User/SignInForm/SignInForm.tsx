@@ -1,15 +1,21 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-
 import Divider from "@mui/material/Divider";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ResponseData, signInUserData } from "../../../Interface/User/UserInterface";
+import { useDispatch } from "react-redux";
+import { signInUser } from "../../../Redux/User/UserSlice";
+import { AppDispatch } from "../../../Redux/Store";
 
 const SignInForm = () => {
-  const [formData, setFormData] = useState<{ [key: string]: string }>({
-    // email:"",
-    // password:""
+  const [formData, setFormData] = useState<signInUserData>({
+    email:"",
+    password:""
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -29,18 +35,20 @@ const SignInForm = () => {
     const password: string = formData.password;
     if (!password) {
       newErrors.password = "Password is required";
-    } else if (
-      password.length < 6 ||
-      !/\d/.test(password) ||
-      !/[!@#$%^&*(),.?":{}|<>]/.test(password)
-    ) {
-      newErrors.password =
-        "Password must have atlest 6 characters & must have one number and special character";
-    }
+    } 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
+
+    dispatch(signInUser(formData)).then((result)=>{
+      if(signInUser.fulfilled.match(result)){
+        navigate("/home")
+      }else if(signInUser.rejected.match(result)){
+        const payload = result.payload as ResponseData
+        setErrors({signInError:payload?.message|| "Failed to login"})
+      }
+    })
   };
 
   return (
@@ -83,6 +91,7 @@ const SignInForm = () => {
               Login
             </Button>
           </Box>
+          {errors.signInError && <p className="text-red-600">{errors.signInError}</p> }
         </Box>
       </form>
 

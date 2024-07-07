@@ -4,14 +4,28 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Divider from "@mui/material/Divider";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { signUpUser } from "../../../Redux/User/UserSlice";
+import { AppDispatch, RootState } from "../../../Redux/Store";
+import { ResponseData, UserData } from "../../../Interface/User/UserInterface";
+import { ValidateEmail, validateMobile, validateName, validateQualification,validatePassword, validateConfirmPasswordAndCompare } from "../../../Utils/Validation/UserSignUpValidation";
 
 const SignUpForm = () => {
-  const [formData, setFormData] = useState<{ [key: string]: string }>({
-    qualification:""
+  const [formData, setFormData] = useState<UserData>({
+    name: "",
+    email: "",
+    mobile: "",
+    qualification: "",
+    password: "",
+    confirmPassword: "",
   });
+
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -25,48 +39,32 @@ const SignUpForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrors({signUpError:""})
 
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Enter a valid email";
-    }
-    if (!formData.mobile) {
-      newErrors.mobile = "Mobile number is reqired";
-    } else if (!/^\d{10}$/.test(formData.mobile)) {
-      newErrors.mobile = "Mobile number should have ten digits";
-    }
-    if (!formData.qualification) {
-      console.log("err");
-
-      newErrors.qualification = "Qualification is required";
-    }
-
-    const password: string = formData.password;
-    if (!password) {
-      newErrors.password = "Password is required";
-    } else if (
-      password.length < 6 ||
-      !/\d/.test(password) ||
-      !/[!@#$%^&*(),.?":{}|<>]/.test(password)
-    ) {
-      newErrors.password =
-        "Password must have atlest 6 characters & must have one number and special character";
-    }
-    if (!formData.confirmPassword)
-      newErrors.confirmPassword = "Confirm password is required";
-    if (password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "The password does'nt match";
-    }
+     newErrors.name = validateName(formData.name) || "";
+     newErrors.email = ValidateEmail(formData.email) || "";
+     newErrors.mobile = validateMobile(formData.mobile)||"";
+     newErrors.qualification = validateQualification(formData.qualification)||"";
+     newErrors.password = validatePassword(formData.password)||"";
+     newErrors.confirmPassword = validateConfirmPasswordAndCompare(formData.password, formData.confirmPassword)||"";
+     
+     Object.keys(newErrors).forEach(key => {
+      if (newErrors[key] === "") delete newErrors[key];
+    });
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    console.log(formData);
+    dispatch(signUpUser(formData)).then((result) => {
+      if (signUpUser.fulfilled.match(result)) {
+        navigate("/verifyOtp");
+      } else {
+        const payload = result.payload as ResponseData;
+        setErrors({ signUpError: payload?.message || "Failed to signup" });
+      }
+    });
   };
 
   return (
@@ -173,7 +171,9 @@ const SignUpForm = () => {
           </Box>
         </Box>
       </form>
-
+      {errors.signUpError && (
+        <p className="text-red-700">{errors.signUpError}</p>
+      )}
       <Divider>Or</Divider>
       <Typography>
         Already having an account ?{" "}

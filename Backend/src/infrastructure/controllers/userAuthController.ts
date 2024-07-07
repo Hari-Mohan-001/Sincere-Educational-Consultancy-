@@ -13,6 +13,15 @@ import { generateJwtToken } from "../security/jwtGenerate";
 import { signInUseCase } from "../../application/interfaces/signIn";
 import { signOut } from "../../application/use-cases/User/SignOut";
 
+import { findUserByEmail } from "../../application/use-cases/User/findUser";
+import { mongoUserRepository } from "../persistance/mongoUserRepository";
+import { sendMail } from "../services/nodeMailer";
+import { getResetToken, resetPasswordUseCase, storeResetToken } from "../../application/use-cases/User/resetPassword";
+
+const userRepository = new mongoUserRepository()
+
+let otpToken: string = "";
+
 const userAuthController = (
   signUpUseCase: SignUp,
   checkUser: checkUserExist,
@@ -22,26 +31,28 @@ const userAuthController = (
     const { name, email, mobile, password, qualification } = req.body;
     const userDto = new userDTO(name, email, mobile, password, qualification);
     try {
-      const existUser = await checkUser.execute(userDto);
-      console.log("signup");
-
+      await checkUser.execute(userDto);
       const otp = generateOtp();
       const token = uuidv4();
+      otpToken = token;
       storeUserDetails(userDto, otp, token);
-      console.log(otp, token);
 
       const executeSendOtp = await sendOtp(mobile, otp);
 
       res.status(201).json({ message: "otp send successfully" });
     } catch (error) {
-      res.status(401).json(error);
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
     }
   };
 
   const verifyOtp = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { otp, token } = req.body;
-      const userDto = verifyOtpAndGetUser(token, otp);
+      const { otp } = req.body;
+      const userDto = verifyOtpAndGetUser(otpToken, otp);
       if (userDto) {
         const userDoc = await signUpUseCase.execute(userDto);
         const { password: hashedPassword, ...user } = userDoc;
@@ -50,14 +61,10 @@ const userAuthController = (
         res
           .status(201)
           .json({ message: "user created successfully", data: user });
-      } else {
-        res.status(400).json({ message: "Invalid OTP or token" });
       }
     } catch (error) {
       if (error instanceof Error) {
-        res
-          .status(500)
-          .json({ message: "failed to create user", error: error.message });
+        res.status(500).json({ message: error.message });
       } else {
         res.status(500).json({ message: "Unknown error occurred" });
       }
@@ -80,14 +87,61 @@ const userAuthController = (
     }
   };
 
-  const signOutUser =  (req:Request, res:Response) :void=> {
-        signOut(res)
+  const passwordResetRequest = async(req:Request, res:Response):Promise<void>=>{
+    const {email} = req.body
+    try {
+      const findUser = findUserByEmail(userRepository) 
+      const user = await findUser.execute(email)
+      if(!user){
+        res.status(401).json({message:"user does not exist"})
+      }
+      const resetToken = uuidv4()
+      const tokenExpiry = Date.now()+3600000;
+      storeResetToken(user.id,resetToken,tokenExpiry)
+      const resetLink = `Hello ${user.name} Please click <a href="http://localhost:5173/reset-password?token=${resetToken}&id=${user.id}">here</a> to reset your password`;
+      await sendMail(email, "Password Reset", `${resetLink}`)
+        res.status(200).json({message:"Password reset link send to mail"})  
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(401).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Unknown error occurred" });
+      }
+    }
   }
+
+  const resetPassword = async(req:Request,res:Response)=>{
+    const{password} = req.body
+    const{token,id} =req.query
+    try {
+      if(typeof id !== 'string' || typeof token !== 'string'){
+       return res.status(400).json({message:"Inavalid token or userId"})
+      }
+      const user =await getResetToken(id,token)
+      const findUser = await resetPasswordUseCase(userRepository).findUser(id)
+      const updatePassword = await resetPasswordUseCase(userRepository).updatePassword(id,password)
+      if(updatePassword){
+        res.status(200).json({message:"password updated"})
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(401).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Unknown error occurred" });
+      }
+    }
+  }
+
+  const signOutUser = (req: Request, res: Response): void => {
+    signOut(res);
+  };
   return {
     signUp,
     verifyOtp,
     signInUser,
-    signOutUser
+    signOutUser,
+    passwordResetRequest,
+    resetPassword
   };
 };
 

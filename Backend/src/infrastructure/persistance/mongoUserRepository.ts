@@ -42,4 +42,34 @@ export class mongoUserRepository implements IUserRepository{
             user.isEnrolled)
 
     }
+
+     public async findUserById(id: string): Promise<User|null> {
+        const user = await userModel.findById(id)
+        if(!user){
+            return null
+        }
+        return new User( 
+            user.id,
+            user.name,
+            user.email,
+            user.mobile,
+            user.password,
+            user.qualification,
+            user.isBlocked,
+            user.isEnrolled)
+    }
+
+    public async resetPassword(id:string ,hashedPassword: string): Promise<boolean> {
+       const updatePassword =  await userModel.findOneAndUpdate(
+        {_id:id},
+        {
+            $set:{password:hashedPassword}
+        }
+       )
+
+       if(updatePassword){
+        return true
+       }
+       return false
+    }
 }

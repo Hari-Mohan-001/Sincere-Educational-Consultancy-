@@ -10,6 +10,9 @@ export const verifyOtpAndGetUser =(token:string, otp:string):userDTO|null=>{
      const storedData = otpStorage.get(token)
      if(storedData && storedData.otp === otp){
         return storedData.userDto
+     }else{
+      throw new Error("Invalid Otp");
+      
      }
      return null
 }

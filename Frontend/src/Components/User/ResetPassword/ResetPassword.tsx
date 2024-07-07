@@ -1,39 +1,58 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { validateConfirmPasswordAndCompare, validatePassword } from "../../../Utils/Validation/UserSignUpValidation";
+import { useLocation, useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../Constants/Constants";
 
 
 const ResetPassword = () => {
-const [formData, setFormData]= useState<{ [key: string]: string }>({})
-const [error, setError] = useState<string>("")
+const [formData, setFormData]= useState<{ [key: string]: string }>({
+  password:"",
+  confirmPassword:""
+})
+const [errors, setErrors] = useState<{ [key: string]: string }>({});
+const navigate = useNavigate()
+const location = useLocation()
+const queryParams = new URLSearchParams(location.search)
+const token = queryParams.get("token")
+const id = queryParams.get("id")
 
 const handleChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
        setFormData({...formData,[e.target.id]:e.target.value})
-       setError(e.target.id="")
+       setErrors({ ...errors, [e.target.id]: "" });
 }
 
-const handleSubmit =(e:React.FormEvent<HTMLFormElement>)=>{
+const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
      e.preventDefault()
-     const password: string = formData.password;
-    if (!password) {
-       setError("Password is required");
-       return
-    } else if (
-      password.length < 6 ||
-      !/\d/.test(password) ||
-      !/[!@#$%^&*(),.?":{}|<>]/.test(password)
-    ) {
-      
-       setError("Password must have atlest 6 characters & must have one number and special character");
-       return
+     const newErrors: { [key: string]: string } = {};
+     newErrors.password = validatePassword(formData.password)||"";
+     newErrors.confirmPassword = validateConfirmPasswordAndCompare(formData.password, formData.confirmPassword)||"";
+     Object.keys(newErrors).forEach(key => {
+      if (newErrors[key] === "") delete newErrors[key];
+    });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
-    if(password !== formData.confirmPassword){
-        setError("Password does'nt match")
+
+    const response = await fetch(`${BASE_URL}/reset-password?token=${token}&id=${id}`,{
+            method:"POST",
+            headers:{
+              "Content-Type":"application/json"
+            },
+            body:JSON.stringify(formData.password)
+    })
+    if(response.ok){
+         navigate("/signIn")
     }
+    const data = await response.json()
+    
+    
 }
 
   return (
     <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
-      <h1 className="text-center text-2xl">Welcome to Login page</h1>
+      <h1 className="text-center text-2xl">Reset Your Password</h1>
       <form onSubmit={handleSubmit} className="mt-4 gap-5">
         <Box display={"flex"} flexDirection={"column"} gap={2}>
           <Box display={"flex"} flexDirection={"column"} gap={1}>
@@ -41,13 +60,13 @@ const handleSubmit =(e:React.FormEvent<HTMLFormElement>)=>{
             <TextField
             type="password"
               id="password"
-              label="Email"
+              label="password"
               fullWidth
               variant="outlined"
               size="small"
-              value={formData.password}
-               error={Boolean(error)}
-               helperText={error}
+              
+               error={Boolean(errors.password)}
+               helperText={errors.password}
               onChange={handleChange}
             />
           </Box>
@@ -56,13 +75,12 @@ const handleSubmit =(e:React.FormEvent<HTMLFormElement>)=>{
             <TextField
             type="password"
               fullWidth
-              id=" confirmPassword"
+              id="confirmPassword"
               label="Password"
               variant="outlined"
               size="small"
-              value={formData.confirmPassword}
-            //   error={Boolean(errors.password)}
-            //   helperText={errors.password}
+              error={Boolean(errors.confirmPassword)}
+              helperText={errors.confirmPassword}
               onChange={handleChange}
             />
           </Box>
@@ -72,6 +90,7 @@ const handleSubmit =(e:React.FormEvent<HTMLFormElement>)=>{
               Submit
             </Button>
           </Box>
+          {/* {error && <p className="text-red-700">{error}</p>} */}
         </Box>
       </form>
     </div>

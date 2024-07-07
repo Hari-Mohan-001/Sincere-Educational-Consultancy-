@@ -1,21 +1,38 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { verifyOtp } from "../../../Redux/User/UserSlice";
+import { AppDispatch } from "../../../Redux/Store";
+import { ResponseData } from "../../../Interface/User/UserInterface";
 
 const OtpVerify = () => {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState<string>("");
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
     setOtp(e.target.value);
-    setError("")
+    setError("");
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if(otp===""){
-        setError("Enter the otp to proceed")
+    
+    if (!otp) {
+      setError("Enter the otp to proceed");
+      return
     }
+    dispatch(verifyOtp(otp)).then((result) => {
+      if (verifyOtp.fulfilled.match(result)) {
+        navigate("/signIn");
+      } else if (verifyOtp.rejected.match(result)) {
+        const payload = result.payload as ResponseData;
+        setError(payload?.message || "Otp verification failed");
+      }
+    });
   };
   return (
     <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
@@ -31,15 +48,14 @@ const OtpVerify = () => {
               variant="outlined"
               size="small"
               value={otp}
-                error={Boolean(error)}
-                helperText={error}
               onChange={handleChange}
             />
           </Box>
+          {error && <p className="text-red-700">{error}</p>}
 
           <Box display="flex" justifyContent="center">
             <Button type="submit" variant="contained">
-            Submit
+              Submit
             </Button>
           </Box>
         </Box>
