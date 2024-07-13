@@ -3,6 +3,7 @@ import { useState } from "react";
 import { validateConfirmPasswordAndCompare, validatePassword } from "../../../Utils/Validation/UserSignUpValidation";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../Constants/Constants";
+import { toast } from "react-toastify";
 
 
 const ResetPassword = () => {
@@ -34,18 +35,22 @@ const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
       setErrors(newErrors);
       return;
     }
-
+     const password = formData.password
     const response = await fetch(`${BASE_URL}/reset-password?token=${token}&id=${id}`,{
             method:"POST",
             headers:{
               "Content-Type":"application/json"
             },
-            body:JSON.stringify(formData.password)
+            body:JSON.stringify({password})
     })
-    if(response.ok){
-         navigate("/signIn")
-    }
     const data = await response.json()
+    if(response.ok){
+      toast.success("Password updated successfully")
+         navigate("/signIn")
+    }else{
+      toast.error(data.message)
+    }
+
     
     
 }

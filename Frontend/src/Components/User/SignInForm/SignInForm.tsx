@@ -1,11 +1,12 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ResponseData, signInUserData } from "../../../Interface/User/UserInterface";
-import { useDispatch } from "react-redux";
+import { ResponseData, RootState, signInUserData } from "../../../Interface/User/UserInterface";
+import { useDispatch, useSelector } from "react-redux";
 import { signInUser } from "../../../Redux/User/UserSlice";
-import { AppDispatch } from "../../../Redux/Store";
+import { AppDispatch} from "../../../Redux/Store";
+import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SignInForm = () => {
   const [formData, setFormData] = useState<signInUserData>({
@@ -15,7 +16,18 @@ const SignInForm = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const dispatch = useDispatch<AppDispatch>()
+  const {user} = useSelector((state:RootState)=>state.user)
   const navigate = useNavigate()
+  console.log('kih',user);
+  
+
+  useEffect(()=>{
+    if(user){
+      console.log(user);
+      
+      navigate("/home")
+    }
+  },[user, navigate])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -52,7 +64,7 @@ const SignInForm = () => {
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
+    <div className="w-full max-w-md p-8 bg-white shadow-2xl rounded-lg">
       <h1 className="text-center text-2xl">Welcome to Login page</h1>
       <form onSubmit={handleSubmit} className="mt-4 gap-5">
         <Box display={"flex"} flexDirection={"column"} gap={2}>
@@ -87,10 +99,11 @@ const SignInForm = () => {
           </Box>
 
           <Box display="flex" justifyContent="center">
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" className="w-full">
               Login
             </Button>
           </Box>
+          <GoogleAuth/>
           {errors.signInError && <p className="text-red-600">{errors.signInError}</p> }
         </Box>
       </form>

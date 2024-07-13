@@ -16,9 +16,14 @@ import { signOut } from "../../application/use-cases/User/SignOut";
 import { findUserByEmail } from "../../application/use-cases/User/findUser";
 import { mongoUserRepository } from "../persistance/mongoUserRepository";
 import { sendMail } from "../services/nodeMailer";
-import { getResetToken, resetPasswordUseCase, storeResetToken } from "../../application/use-cases/User/resetPassword";
+import {
+  getResetToken,
+  resetPasswordUseCase,
+  storeResetToken,
+} from "../../application/use-cases/User/resetPassword";
+import googleAuthCase from "../../application/use-cases/User/googleAuthCase";
 
-const userRepository = new mongoUserRepository()
+const userRepository = new mongoUserRepository();
 
 let otpToken: string = "";
 
@@ -77,7 +82,7 @@ const userAuthController = (
       const user = await signInUseCase.execute(email, password);
       generateJwtToken(res, user.id);
       const { password: hashedPassword, ...userData } = user;
-      res.status(201).json({ message: "user Signed succesfully", userData });
+      res.status(201).json({ message: "user Signed succesfully", user });
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });
@@ -87,20 +92,16 @@ const userAuthController = (
     }
   };
 
-  const passwordResetRequest = async(req:Request, res:Response):Promise<void>=>{
-    const {email} = req.body
+  const googleAuth = async (req: Request, res: Response) => {
+    const { name, email, mobile, image } = req.body;
+    const password = "";
+    const userDto = new userDTO(name, email, mobile, password);
     try {
-      const findUser = findUserByEmail(userRepository) 
-      const user = await findUser.execute(email)
-      if(!user){
-        res.status(401).json({message:"user does not exist"})
-      }
-      const resetToken = uuidv4()
-      const tokenExpiry = Date.now()+3600000;
-      storeResetToken(user.id,resetToken,tokenExpiry)
-      const resetLink = `Hello ${user.name} Please click <a href="http://localhost:5173/reset-password?token=${resetToken}&id=${user.id}">here</a> to reset your password`;
-      await sendMail(email, "Password Reset", `${resetLink}`)
-        res.status(200).json({message:"Password reset link send to mail"})  
+      const userInit = googleAuthCase(userRepository);
+      const user_doc = await userInit.execute(userDto);
+      const { password: hashedPassword, ...user } = user_doc;
+      generateJwtToken(res,user_doc.id)
+      return res.status(201).json({ message: "Success", user });
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });
@@ -108,20 +109,50 @@ const userAuthController = (
         res.status(500).json({ message: "Unknown error occurred" });
       }
     }
-  }
+  };
 
-  const resetPassword = async(req:Request,res:Response)=>{
-    const{password} = req.body
-    const{token,id} =req.query
+  const passwordResetRequest = async (
+    req: Request,
+    res: Response
+  ): Promise<void> => {
+    const { email } = req.body;
     try {
-      if(typeof id !== 'string' || typeof token !== 'string'){
-       return res.status(400).json({message:"Inavalid token or userId"})
+      const findUser = findUserByEmail(userRepository);
+      const user = await findUser.execute(email);
+      if (!user) {
+        res.status(401).json({ message: "user does not exist" });
       }
-      const user =await getResetToken(id,token)
-      const findUser = await resetPasswordUseCase(userRepository).findUser(id)
-      const updatePassword = await resetPasswordUseCase(userRepository).updatePassword(id,password)
-      if(updatePassword){
-        res.status(200).json({message:"password updated"})
+      const resetToken = uuidv4();
+      const tokenExpiry = Date.now() + 3600000;
+      storeResetToken(user.id, resetToken, tokenExpiry);
+      const resetLink = `Hello ${user.name} Please click <a href="http://localhost:5173/reset-password?token=${resetToken}&id=${user.id}">here</a> to reset your password`;
+      await sendMail(email, "Password Reset", `${resetLink}`);
+      res.status(200).json({ message: "Password reset link send to mail" });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(401).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Unknown error occurred" });
+      }
+    }
+  };
+
+  const resetPassword = async (req: Request, res: Response) => {
+    const { password } = req.body;
+    const { token, id } = req.query;
+    try {
+      if (typeof id !== "string" || typeof token !== "string") {
+        return res.status(400).json({ message: "Inavalid token or userId" });
+      }
+      const user = await getResetToken(id, token);
+      const findUser = await resetPasswordUseCase(userRepository).findUser(id);
+      const updatePassword = await resetPasswordUseCase(
+        userRepository
+      ).updatePassword(id, password);
+      if (updatePassword) {
+        console.log("updated......");
+
+        res.status(200).json({ message: "password updated" });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -130,7 +161,7 @@ const userAuthController = (
         res.status(500).json({ message: "Unknown error occurred" });
       }
     }
-  }
+  };
 
   const signOutUser = (req: Request, res: Response): void => {
     signOut(res);
@@ -139,9 +170,10 @@ const userAuthController = (
     signUp,
     verifyOtp,
     signInUser,
+    googleAuth,
     signOutUser,
     passwordResetRequest,
-    resetPassword
+    resetPassword,
   };
 };
 

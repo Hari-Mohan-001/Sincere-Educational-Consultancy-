@@ -3,6 +3,7 @@ export interface UserData{
     email:string,
     mobile: string,
     qualification:string,
+    image?:string,
     password:string,
     confirmPassword: string
 }
@@ -18,7 +19,7 @@ export interface ResponseUserData{
 }
 
 export interface ResponseData{
-    success:Boolean,
+    success?:Boolean,
     message:string,
     user?:ResponseUserData,
     error?: string
@@ -33,4 +34,15 @@ export interface UserState {
   export interface signInUserData{
     email:string,
     password:string
+  }
+  
+  export interface RootState {
+    user: UserState;
+  }
+
+  export interface googleAuthData{
+        name:string,
+        email:string,
+        image:string,
+        mobile?: string
   }

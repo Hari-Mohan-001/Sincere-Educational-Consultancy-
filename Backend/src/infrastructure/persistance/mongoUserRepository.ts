@@ -40,7 +40,6 @@ export class mongoUserRepository implements IUserRepository{
             user.qualification,
             user.isBlocked,
             user.isEnrolled)
-
     }
 
      public async findUserById(id: string): Promise<User|null> {
@@ -72,4 +71,9 @@ export class mongoUserRepository implements IUserRepository{
        }
        return false
     }
+
+    //  public async getAllStudents(): Promise<[{}]> {
+    //    const students = await userModel.find()
+    //    return students 
+    // }
 }

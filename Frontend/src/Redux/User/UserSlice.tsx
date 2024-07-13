@@ -10,6 +10,7 @@ import {
   ResponseData,
   UserState,
   signInUserData,
+  googleAuthData,
 } from "../../Interface/User/UserInterface";
 import { BASE_URL } from "../../Constants/Constants";
 
@@ -90,6 +91,34 @@ export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConf
         return rejectWithValue(data);
       }
       const data: ResponseData = await response.json();
+      
+      
+      return data;
+    } catch (error) {
+      return rejectWithValue({ message: "Network Error" });
+    }
+  });
+
+export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfig> =
+  createAsyncThunk("/user/googleAuth", async (userData, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`${BASE_URL}/google-auth`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        const data: ResponseData = await response.json();
+        console.log(data);
+        return rejectWithValue(data);
+      }
+      const data: ResponseData = await response.json();
+      
+      
       return data;
     } catch (error) {
       return rejectWithValue({ message: "Network Error" });
@@ -126,12 +155,22 @@ const userSlice = createSlice({
         (state.status = "failed"), (state.error = action.error.message || null);
       })
       .addCase(signInUser.fulfilled,(state,action)=>{
+        console.log(action.payload);
+        
+        console.log('signin....');
         state.status = "succeeded",
-        state.user = action.payload.user||null
+        state.user = action.payload.user || null
+        console.log('act',action.payload.user);
+        
       })
       .addCase(signInUser.rejected, (state,action)=>{
         state.status = "failed",
         state.error = action.error.message||null
+      })
+      .addCase(googleAuth.fulfilled,(state,action)=>{
+        state.status = "succeeded",
+        state.user = action.payload.user || null,
+        state.error = null
       })
   },
 });

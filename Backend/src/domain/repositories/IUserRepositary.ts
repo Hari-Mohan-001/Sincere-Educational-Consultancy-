@@ -6,4 +6,5 @@ export interface IUserRepository {
       findUserByEmail(email:string):Promise<User | null>
       findUserById(id:string):Promise<User | null>
       resetPassword(id:string,password:string):Promise<boolean>
+      // getAllStudents():Promise<[{}]>
 }

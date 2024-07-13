@@ -1,20 +1,30 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { BASE_URL } from "../../../Constants/Constants";
+import { toast } from "react-toastify";
 
 const ForgetPassword = () => {
 
   const [email, setEmail] = useState<string>("")
   const [error, setError] = useState<string>("")
-  const navigate = useNavigate()
+  const[loading , setLoading] = useState<boolean>(false)
   const handleChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
        setEmail(e.target.value)
+       setError("")
   }
 
   const handleSubmit= async (e:React.FormEvent<HTMLFormElement>)=>{
             e.preventDefault()
+            if(!email){
+              setError("Email is required")
+              return
+             }else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+                 setError("Enter a valid email")
+                 return
+             }
+             setLoading(true)
             const response = await fetch(`${BASE_URL}/request-password-reset`,{
               method:"POST",
               headers:{
@@ -23,9 +33,13 @@ const ForgetPassword = () => {
               body:JSON.stringify({email})
             })
            const data = await response.json()
+           setLoading(false)
            if(!response.ok){
             setError(data.message)
             return
+           }else{
+            toast.success("Reset link has been sent to mail")
+            setEmail("")
            }
   }
   return (
@@ -42,8 +56,8 @@ const ForgetPassword = () => {
             variant="outlined"
             size="small"
             value={email}
-            // error={Boolean(errors.email)}
-            // helperText={errors.email}
+            error={Boolean(error)}
+            helperText={error}
             onChange={handleChange}
           />
         </Box>
@@ -51,10 +65,11 @@ const ForgetPassword = () => {
 
         <Box display="flex" justifyContent="center">
           <Button type="submit" variant="contained">
-            Submit
+          {loading ? <CircularProgress size={24} />:"Submit"}
           </Button>
+          
         </Box>
-        {error && <p className="text-red-700">{error}</p>}
+       
       </Box>
     </form>
 

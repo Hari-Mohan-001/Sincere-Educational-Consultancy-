@@ -11,6 +11,7 @@ import { signUpUser } from "../../../Redux/User/UserSlice";
 import { AppDispatch, RootState } from "../../../Redux/Store";
 import { ResponseData, UserData } from "../../../Interface/User/UserInterface";
 import { ValidateEmail, validateMobile, validateName, validateQualification,validatePassword, validateConfirmPasswordAndCompare } from "../../../Utils/Validation/UserSignUpValidation";
+import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SignUpForm = () => {
   const [formData, setFormData] = useState<UserData>({
@@ -168,8 +169,11 @@ const SignUpForm = () => {
             <Button type="submit" variant="contained">
               Register
             </Button>
+            <Divider>Or</Divider>
+            <GoogleAuth/>
           </Box>
         </Box>
+        
       </form>
       {errors.signUpError && (
         <p className="text-red-700">{errors.signUpError}</p>
