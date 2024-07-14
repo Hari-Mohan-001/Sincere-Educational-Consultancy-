@@ -4,6 +4,8 @@
 //   image: string;
 // }
 
+import { ObjectId } from "mongoose";
+
 // export function Country({ id, name, image }: CountryParams) {
 //   return {
 //     id,
@@ -13,7 +15,7 @@
 // }
 export class Country {
     constructor(
-        public id: string,
+        public id: string|ObjectId,
         public name: string,
         public image: string
     ) {}

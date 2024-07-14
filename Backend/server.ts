@@ -6,6 +6,7 @@ import userAuthRoute from "./src/presentation/routes/userAuthRoutes"
 import cors from "cors"
 import adminRouter from "./src/presentation/routes/adminRoutes";
 import counsellorRouter from "./src/presentation/routes/counsellorRoutes";
+import router from "./src/presentation/routes/unProtectedRoutes";
 
 dotenv.config()
 dbConnect()
@@ -28,7 +29,7 @@ const port = process.env.PORT || 3000
 app.listen(port , ()=>{
     console.log(`server running on the port ${port}`);   
 })
-
+app.use("/api", router )
 app.use("/api/user", userAuthRoute)
 app.use("/api/admin",adminRouter)
 app.use("/api/counsellor",counsellorRouter)

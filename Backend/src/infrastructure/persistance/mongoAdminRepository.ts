@@ -24,7 +24,7 @@ export class mongoAdminRepository implements IAdminRepository{
     }
 
     public async doesEmailExist(email: string): Promise<boolean> {
-        const user = await adminModel.findOne({email, role:"councellor"})
+        const user = await adminModel.findOne({email, role:"counsellor"})
         return user!==null
     }
 

@@ -15,4 +15,12 @@ export class mongoCountryRepository implements ICountryRepository{
             newCountry.image
         )
     }
+     public async getAllCountries(): Promise<Country[]> {
+         const countries = await countryModel.find()
+         return countries.map(country=> new Country(
+            country._id.toString(),
+            country.name,
+            country.image
+         ))
+    }
 }

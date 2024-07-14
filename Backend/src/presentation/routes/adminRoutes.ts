@@ -3,10 +3,12 @@ import { Request, Response } from "express";
 import { mongoUserRepository } from "../../infrastructure/persistance/mongoUserRepository";
 import adminController from "../../infrastructure/controllers/adminController";
 import countryControler from "../../infrastructure/controllers/countryController";
+import { userController } from "../../infrastructure/controllers/userController";
 
 const adminRouter = express.Router();
 const AdminController = adminController();
 const CountryController = countryControler();
+const UserController = userController() 
 
 adminRouter.post("/signin", (req: Request, res: Response) =>
   AdminController.adminLogin(req, res)
@@ -19,5 +21,9 @@ adminRouter.get("/signout", (req: Request, res: Response) =>
 adminRouter.post("/country", (req: Request, res: Response) =>
   CountryController.addCountry(req, res)
 );
+
+adminRouter.get("/users",(req:Request,res:Response)=>{
+  UserController.getUsers(req,res)
+})
 
 export default adminRouter;

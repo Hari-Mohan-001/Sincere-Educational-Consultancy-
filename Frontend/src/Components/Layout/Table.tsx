@@ -33,38 +33,44 @@ const TableComponent: React.FC<TableComponentProps> = ({
         {title}
       </Typography>
 
-      <TableContainer component={Paper} className="shadow-lg">
-        <Table>
-          <TableHead className="bg-gray-800">
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column.minWidth }}
-                  className="!text-white"
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row, index) => (
-              <TableRow key={row.id}>
-                {columns.map((column) => {
-                  const value = row[column.id];
-                  return (
-                    <TableCell key={column.id} align={column.align}>
-                      {column.render ? column.render(row) : value}
-                    </TableCell>
-                  );
-                })}
+      {columns.length > 0 && data.length > 0 ? (
+        <TableContainer component={Paper} className="shadow-lg">
+          <Table>
+            <TableHead className="bg-gray-800">
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align={column.align}
+                    style={{ minWidth: column.minWidth }}
+                    className="!text-white"
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {data.map((row,index) => (
+                <TableRow key={row.id}>
+                  {columns.map((column) => {
+                    const value = row[column.id];
+                    return (
+                      <TableCell key={column.id} align={column.align}>
+                        {column.render ? column.render(row) : value}
+                      </TableCell>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography variant="h6" align="center">
+          No data available
+        </Typography>
+      )}
     </div>
   );
 };

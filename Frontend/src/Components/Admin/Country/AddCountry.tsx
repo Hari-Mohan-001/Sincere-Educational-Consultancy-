@@ -10,6 +10,7 @@ const AddCountry = () => {
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
+  const navigate = useNavigate()
 
   const previewFile = (file: File) => {
     const reader = new FileReader();
@@ -80,6 +81,7 @@ const AddCountry = () => {
       setImage(null);
       setName("");
       setErrors("");
+      navigate("/admin/countries")
     } catch (error:unknown) {
       console.log("Error:", error);
 

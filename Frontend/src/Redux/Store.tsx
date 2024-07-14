@@ -2,8 +2,9 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userReducer from "./User/UserSlice";
+import CounsellorReducer from "./Counsellor/CounsellorSlice";
 
-const rootReducer = combineReducers({ user: userReducer });
+const rootReducer = combineReducers({ user: userReducer , counsellor:CounsellorReducer});
 
 const persistConfig = {
   key: "root",
@@ -23,5 +24,5 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-export type RootState = ReturnType<typeof store.getState>;
+export type StoreRootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

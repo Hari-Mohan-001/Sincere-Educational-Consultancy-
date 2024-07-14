@@ -1,4 +1,5 @@
 import AdminRoute from "./Routes/AdminRoute";
+import CounsellorRoute from "./Routes/CounsellorRoute";
 import UserRoute from "./Routes/UserRoute";
 
 function App() {
@@ -6,6 +7,7 @@ function App() {
     <>
       <UserRoute />
       <AdminRoute />
+      <CounsellorRoute/>
     </>
   );
 }

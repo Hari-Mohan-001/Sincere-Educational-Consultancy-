@@ -72,8 +72,17 @@ export class mongoUserRepository implements IUserRepository{
        return false
     }
 
-    //  public async getAllStudents(): Promise<[{}]> {
-    //    const students = await userModel.find()
-    //    return students 
-    // }
+    public async getAllUsers(): Promise<User[]> {
+        const users = await userModel.find()
+        return users.map(user=> new User(
+            user.id,
+            user.name,
+            user.email,
+            user.mobile,
+            user.password,
+            user.qualification,
+            user.isBlocked,
+            user.isEnrolled
+        ))
+    }
 }

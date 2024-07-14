@@ -1,5 +1,5 @@
 
-export const validateName = (name: string):string|null=>{
+export const validateName = (name: string ):string|null=>{
   if(!name){
     return "Name is required"
   }else{

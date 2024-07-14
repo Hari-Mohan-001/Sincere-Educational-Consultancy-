@@ -4,16 +4,20 @@ const universitySchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
+        unique:true
     },
     address:{
         type:String,
+        required:true,
 
     },
     ranking:{
-        type:Number
+        type:String,
+        required:true,
     },
     images:{
-        type:Array
+        type:Array,
+        required:true,
     },
     logo:{
         type:String,
@@ -23,6 +27,10 @@ const universitySchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Country",
         required:true
+    },
+    isApproved:{
+        type:Boolean,
+        default:false
     }
 },{timestamps:true})
 

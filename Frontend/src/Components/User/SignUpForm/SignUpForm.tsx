@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../../../Redux/User/UserSlice";
-import { AppDispatch, RootState } from "../../../Redux/Store";
+import { AppDispatch } from "../../../Redux/Store";
 import { ResponseData, UserData } from "../../../Interface/User/UserInterface";
 import { ValidateEmail, validateMobile, validateName, validateQualification,validatePassword, validateConfirmPasswordAndCompare } from "../../../Utils/Validation/UserSignUpValidation";
 import GoogleAuth from "../GoogleAuth/GoogleAuth";

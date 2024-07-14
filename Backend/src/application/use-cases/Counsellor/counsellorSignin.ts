@@ -5,6 +5,8 @@ export const counsellorSignIn = (councellorRepository:IAdminRepository)=>{
 
     const execute =async (email:string, password:string)=>{
            const counsellor = await councellorRepository.findCounsellorByEmail(email)
+           console.log('couns');
+           
            if(!counsellor){
             throw new Error("Invalid Credentials"); 
            }

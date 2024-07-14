@@ -1,14 +1,14 @@
 import { Response, Request, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
-const jwtSecret = process.env.COUNSELLOR_JWT_SECRET || "secretkey";
+const jwtSecret = process.env.ADMIN_JWT_SECRET || "secretkey";
 
 // Extend the Express Request interface
 interface CustomRequest extends Request {
     admin?: string|JwtPayload; // Adjust this type based on your user type
   }
 
-export const verifyUserToken = (
+export const verifyAdminToken = (
     req: CustomRequest,
     res: Response,
     next: NextFunction

@@ -1,8 +1,9 @@
 import cloudinary from "../config/cloudinaryConfig";
 
-export const cloudinaryUpload = async (image: string): Promise<string> => {
+export const cloudinaryUpload = async (image: string, folder:string): Promise<string> => {
   try {
     const result = await cloudinary.uploader.upload(image, {
+      folder:folder,
       upload_preset: "Image-Preset",
       allowed_formats: ["jpg", "png", "svg", "webp", "ico"],
     });
@@ -21,3 +22,21 @@ export const cloudinaryUpload = async (image: string): Promise<string> => {
     }
   }
 };
+
+
+export const cloudinaryUploadMultiple = async (images: string[], folder: string): Promise<string[]> => {
+  try {
+    const uploadAllImages = images.map(image => cloudinaryUpload(image, folder));
+    const result = await Promise.all(uploadAllImages);
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("err", error.message);
+      throw new Error(error.message);
+    } else {
+      console.log("error");
+      throw new Error("An unknown error occurred");
+    }
+  }
+};
+
