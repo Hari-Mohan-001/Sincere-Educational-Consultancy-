@@ -1,29 +1,32 @@
-// import { useEffect } from "react";
-// import { useNavigate } from "react-router-dom";
+
 
 import axios from "axios";
 import { COUNSELLORBASEURL } from "../../../Constants/Constants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signOutCounsellor } from "../../../Redux/Counsellor/CounsellorSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
+import { useEffect } from "react";
 
 
 
 const Header = () => {
    
-     
-    //   useEffect(()=>{
-    //     if(!adminDetails){
-    //       navigate("/admin/signIn")
-    //     }
-    //   },[adminDetails,navigate])
+  const { counsellor } = useSelector(
+    (state: CounsellorRootState) => state.counsellor
+  );
+  const dispatch = useDispatch()
+    const navigate = useNavigate() 
+      useEffect(()=>{
+        if(!counsellor){
+          navigate("/counsellor/signin")
+        }
+      },[counsellor,navigate])
 
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
     
      const handleSignout = async ()=>{
-      console.log('outfrnt');
+      
       
      const response =  await axios.get(`${COUNSELLORBASEURL}/signout`,{
       withCredentials: true,

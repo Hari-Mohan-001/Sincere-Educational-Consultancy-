@@ -39,4 +39,21 @@ export class mongoCourseRepository implements ICourseRepository {
         }
    
   }
+
+   public async getAllCourse(): Promise<Course[]> {
+    const courses = await courseModel.find()
+    return courses.map(
+      (course) =>
+        new Course(
+          course._id.toString(),
+          course.name,
+          course.qualification,
+          course.fees,
+          course.description,
+          course.logo,
+          course.duration,
+          course.university.toString()
+        )
+    );
+  }
 }

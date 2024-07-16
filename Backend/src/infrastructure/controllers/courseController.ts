@@ -3,6 +3,7 @@ import { mongoCourseRepository } from "../persistance/mongoCourseRepository";
 import { CourseDTO } from "../../application/dtos/courseDto";
 import { createNewCourse } from "../../application/use-cases/Course/CreateCourse";
 import { cloudinaryUpload } from "../services/CloudinaryUpload";
+import { allCourses } from "../../application/use-cases/Course/getAllCourse";
 
 const courseRepository = new mongoCourseRepository();
 
@@ -49,8 +50,28 @@ console.log('fees',fees);
     }
   };
 
+  const getAllCourse = async (req: Request, res: Response)=>{
+    try {
+      console.log('allcorcourse');
+      
+           const courses = await allCourses(courseRepository).execute()
+           if(courses){
+            console.log('allcrs',courses);
+            
+            res.status(200).json({message:"success", data:courses})
+           }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  }
+
   return {
     addCourse,
+    getAllCourse
   };
 };
 export default courseController;

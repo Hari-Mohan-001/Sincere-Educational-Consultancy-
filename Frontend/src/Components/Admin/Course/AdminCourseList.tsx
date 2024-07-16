@@ -23,7 +23,7 @@ interface UniversityData {
   isApproved: boolean;
 }
 
-const ListCourses = () => {
+const ListUniversity = () => {
   const navigate = useNavigate();
   const { counsellor } = useSelector(
     (state: CounsellorRootState) => state.counsellor
@@ -36,7 +36,7 @@ const ListCourses = () => {
         if (counsellor) {
           const countryId = counsellor.country;
 
-          const response = await axios.get(`${URL}/courses/${countryId}`);
+          const response = await axios.get(`${URL}/universities/${countryId}`);
           console.log('res',response.data);
 
           setUniversities(response.data.getUniversities);
@@ -90,4 +90,4 @@ const ListCourses = () => {
   );
 };
 
-export default ListCourses;
+export default ListUniversity;

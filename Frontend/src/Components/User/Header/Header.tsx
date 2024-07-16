@@ -30,6 +30,8 @@ function Header() {
 
 React.useEffect(()=>{
   if(user){
+    console.log(user);
+    
     navigate("/home")
   }
 },[user,navigate])

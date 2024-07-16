@@ -3,8 +3,13 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import userReducer from "./User/UserSlice";
 import CounsellorReducer from "./Counsellor/CounsellorSlice";
+import adminReducer from "./Admin/AdminSlice";
 
-const rootReducer = combineReducers({ user: userReducer , counsellor:CounsellorReducer});
+const rootReducer = combineReducers({
+  user: userReducer,
+  counsellor: CounsellorReducer,
+  admin: adminReducer,
+});
 
 const persistConfig = {
   key: "root",

@@ -13,25 +13,25 @@ const SideNavBar = () => {
         <Typography variant="h5">Dashboard List</Typography>
       </div>
       <List>
-        <ListItemButton component={Link} to="/students" className="my-2 hover:text-blue-700 text-white">
+        <ListItemButton component={Link} to="/admin/students" className="my-2 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Student List" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/courses" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
+        <ListItemButton component={Link} to="/admin/courses" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <SchoolIcon />
           </ListItemIcon>
           <ListItemText primary="Courses" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/universities" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
+        <ListItemButton component={Link} to="/admin/universities" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <AccountBalanceIcon />
           </ListItemIcon>
           <ListItemText primary="Universities" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/countries" className="my-2 bg-white hover:text-blue-700 hover:bg-blue-700 text-white">
+        <ListItemButton component={Link} to="/admin/countries" className="my-2 bg-white hover:text-blue-700 hover:bg-blue-700 text-white">
           <ListItemIcon className="text-white">
             <PublicIcon />
           </ListItemIcon>

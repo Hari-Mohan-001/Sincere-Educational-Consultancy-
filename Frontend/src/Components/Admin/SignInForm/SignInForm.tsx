@@ -1,22 +1,33 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import Divider from "@mui/material/Divider";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ResponseData, signInUserData } from "../../../Interface/User/UserInterface";
-import { useDispatch } from "react-redux";
-import { signInUser } from "../../../Redux/User/UserSlice";
-import { AppDispatch } from "../../../Redux/Store";
-import { ADMIN_BASE_URL } from "../../../Constants/Constants";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch} from "../../../Redux/Store";
+import { toast } from "react-toastify";
+import { AdminRootState, ResponseData, signInAdminData } from "../../../Interface/Admin/AdminInterface";
+import { signInAdmin } from "../../../Redux/Admin/AdminSlice";
 
-const SignInForm = () => {
-  const [formData, setFormData] = useState<signInUserData>({
+
+const AdminSignInForm = () => {
+  const [formData, setFormData] = useState<signInAdminData>({
     email:"",
     password:""
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
+  const dispatch = useDispatch<AppDispatch>()
+  const {admin} = useSelector((state:AdminRootState)=>state.admin)
+  const navigate = useNavigate() 
+  console.log('kih',);
   
-  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(admin){
+      console.log('eff',admin);
+      
+      navigate("/admin/students")
+    }
+  },[admin, navigate])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -24,7 +35,7 @@ const SignInForm = () => {
     console.log(formData.email);
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const newErrors: { [key: string]: string } = {};
@@ -41,24 +52,22 @@ const SignInForm = () => {
       setErrors(newErrors);
       return;
     }
-       const response = await fetch(`${ADMIN_BASE_URL}/signin`,{
-          method:"POST",
-          headers:{
-           'Content-Type':'application/json'
-          },
-          body:JSON.stringify(formData)
-       })
-       const data = await response.json()
-       if(response.ok){
-        navigate("/admin/dashboard")
-       }else{
-        setErrors({signInError:data.message})
-       }
+
+    dispatch(signInAdmin(formData)).then((result)=>{
+      if(signInAdmin.fulfilled.match(result)){
+        toast.success("Login success")
+        navigate("/admin/students")
+      }else if(signInAdmin.rejected.match(result)){
+        const payload = result.payload as ResponseData
+        setErrors({signInError:payload?.message|| "Failed to login"})
+        toast.error("Login failed")
+      }
+    })
   };
 
   return (
-    <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
-      <h1 className="text-center text-2xl">Welcome to Admin Login page</h1>
+    <div className="w-full max-w-md p-8 bg-white shadow-2xl rounded-lg">
+      <h1 className="text-center text-2xl">Admin Login page</h1>
       <form onSubmit={handleSubmit} className="mt-4 gap-5">
         <Box display={"flex"} flexDirection={"column"} gap={2}>
           <Box display={"flex"} flexDirection={"column"} gap={1}>
@@ -92,31 +101,15 @@ const SignInForm = () => {
           </Box>
 
           <Box display="flex" justifyContent="center">
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" className="w-full">
               Login
             </Button>
           </Box>
           {errors.signInError && <p className="text-red-600">{errors.signInError}</p> }
         </Box>
       </form>
-
-      <Divider>Or</Divider>
-      <Typography>
-        Don't have an account ?{" "}
-        <Link className="text-blue-700" to={"/signUp"}>
-          Register here
-        </Link>{" "}
-      </Typography>
-      <Typography>
-        Forget Password ?{" "}
-        <Link className="text-blue-700" to={"/forgetPassword"}>
-          Click here
-        </Link>{" "}
-      </Typography>
     </div>
   );
 };
 
-export default SignInForm;
-
-
+export default AdminSignInForm;

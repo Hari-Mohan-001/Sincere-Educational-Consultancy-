@@ -5,13 +5,8 @@ import {
     ThunkDispatch,
   } from "@reduxjs/toolkit";
   import { Action } from "redux";
-  import {
-    UserData,
-    ResponseData,
-    UserState,
-    signInUserData,
-  } from "../../Interface/User/UserInterface";
-  import { BASE_URL } from "../../Constants/Constants";
+  import { ADMIN_BASE_URL } from "../../Constants/Constants";
+import { AdminState, ResponseData, signInAdminData } from "../../Interface/Admin/AdminInterface";
   
   interface AsyncThunkConfig {
     state?: unknown;
@@ -20,67 +15,25 @@ import {
     rejectValue?: ResponseData;
   }
   
-  const initialState: UserState = {
-    user: null,
+  const initialState: AdminState = {
+    admin: null,
     status: "idle",
     error: null,
   };
   
-  export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
-    createAsyncThunk("/user/signUp", async (userData, { rejectWithValue }) => {
+  
+  
+  
+  
+  export const signInAdmin: AsyncThunk<ResponseData, signInAdminData, AsyncThunkConfig> =
+    createAsyncThunk("/user/signIn", async (adminData, { rejectWithValue }) => {
       try {
-        const response = await fetch(`${BASE_URL}/signUp`, {
+        const response = await fetch(`${ADMIN_BASE_URL}/signin`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(userData),
-        });
-  
-        if (!response.ok) {
-          const data: ResponseData = await response.json();
-          return rejectWithValue(data);
-        }
-        const data: ResponseData = await response.json();
-        return data;
-      } catch (error) {
-        return rejectWithValue({ message: "Network Error" });
-      }
-    });
-  
-  export const verifyOtp: AsyncThunk<ResponseData, string, AsyncThunkConfig> =
-    createAsyncThunk("/user/verifyOtp", async (otp, { rejectWithValue }) => {
-      try {
-        const response = await fetch(`${BASE_URL}/verifyOtp`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ otp }),
-          credentials: "include",
-        });
-       
-        if (!response.ok) {
-          const data: ResponseData = await response.json();
-          console.log(data);
-          return rejectWithValue(data);
-        }
-        const data: ResponseData = await response.json();
-        return data;
-      } catch (error) {
-        return rejectWithValue({ message: "Network Error" });
-      }
-    });
-  
-  export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConfig> =
-    createAsyncThunk("/user/signIn", async (userData, { rejectWithValue }) => {
-      try {
-        const response = await fetch(`${BASE_URL}/signIn`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
+          body: JSON.stringify(adminData),
           credentials: "include",
         });
   
@@ -100,48 +53,31 @@ import {
   
   
   
-  const userSlice = createSlice({
-    name: "user",
+  const adminSlice = createSlice({
+    name: "admin",
     initialState,
     reducers: {
-      signOutUser: (state) => {
-        state.user = null;
+      signOutAdmin: (state) => {
+        state.admin = null;
       },
     },
     extraReducers(builder) {
       builder
-        .addCase(signUpUser.pending, (state) => {
-          state.status = "loading";
-        })
-        .addCase(signUpUser.fulfilled, (state) => {
-          (state.status = "succeeded"), (state.error = null);
-        })
-        .addCase(signUpUser.rejected, (state, action) => {
-          (state.status = "failed"), (state.error = action.error.message || null);
-        })
-        .addCase(verifyOtp.fulfilled, (state, action) => {
-          (state.status = "succeeded"),
-            (state.user = action.payload.user || null),
-            (state.error = null);
-        })
-        .addCase(verifyOtp.rejected, (state, action) => {
-          (state.status = "failed"), (state.error = action.error.message || null);
-        })
-        .addCase(signInUser.fulfilled,(state,action)=>{
+        .addCase(signInAdmin.fulfilled,(state,action)=>{
           console.log(action.payload);
           
           console.log('signin....');
           state.status = "succeeded",
-          state.user = action.payload.user || null
-          console.log('act',action.payload.user);
+          state.admin = action.payload.admin || null
+          console.log('act',action.payload.admin);
           
         })
-        .addCase(signInUser.rejected, (state,action)=>{
+        .addCase(signInAdmin.rejected, (state,action)=>{
           state.status = "failed",
           state.error = action.error.message||null
         })
     },
   });
-  export const { signOutUser } = userSlice.actions;
-  export default userSlice.reducer;
+  export const { signOutAdmin } = adminSlice.actions;
+  export default adminSlice.reducer;
   

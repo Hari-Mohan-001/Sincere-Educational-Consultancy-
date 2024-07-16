@@ -15,8 +15,10 @@ const adminRepository = new mongoAdminRepository()
             const admin_doc = await adminLoginUseCase(adminRepository).execute(email, password)
             if(admin_doc){
                 generateAdminJwtToken(res,admin_doc.id)
-             const {password:hashedPassword, ...adminData} = admin_doc
-                res.status(200).json({message:"login successfull",adminData})
+             const {password:hashedPassword, ...admin} = admin_doc
+             console.log('admin',admin);
+             
+                res.status(200).json({message:"login successfull",admin})
             }
     } catch (error) {
         if (error instanceof Error) {
@@ -37,13 +39,6 @@ const adminRepository = new mongoAdminRepository()
                 res.status(400).json({ message: "An unknown error occurred" });
               }
            }
-       }
-       const getAllstudents=async (req:Request,res:Response)=>{
-        try {
-            
-        } catch (error) {
-            
-        }
        }
        return{
         adminLogin,

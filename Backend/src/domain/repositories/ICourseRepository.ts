@@ -5,5 +5,5 @@ import { Course } from "../entities/course";
 
 export interface ICourseRepository {
   createCourse(course: CourseDTO): Promise<Course>;
-//   getAllUniversities(countryId:string): Promise<University[]>;
+  getAllCourse(): Promise<Course[]>;
 }

@@ -7,6 +7,7 @@ import { addNewUniversity } from "../../application/use-cases/University/AddUniv
 import { mongoUniversityRepository } from "../persistance/mongoUniversityRepository";
 import { universityDTO } from "../../application/dtos/universityDto";
 import { getAllUniversities } from "../../application/use-cases/Counsellor/getAllUniversity";
+import { AllUniversities } from "../../application/use-cases/Counsellor/getUniversities";
 
 const universityRepository = new mongoUniversityRepository();
 
@@ -62,8 +63,28 @@ export const universityController = () => {
       }
     }
   };
+  const getallUniversities= async (req: Request, res: Response) => {
+    console.log('getalluni');
+    
+    try {
+      const getAllUniversities = await AllUniversities(
+        universityRepository
+      ).execute();
+      if(getAllUniversities){
+        
+        res.status(200).json({message:"success", getAllUniversities})
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  };
   return {
     addUniversity,
     getAllUniversity,
+    getallUniversities
   };
 };

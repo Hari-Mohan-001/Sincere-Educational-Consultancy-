@@ -47,4 +47,20 @@ export class mongoUniversityRepository implements IUniversityRepository {
         )
     );
   }
+  public async getUniversities(): Promise<University[]> {
+    const universities = await universityModel.find()
+    return universities.map(
+      (university) =>
+        new University(
+          university._id.toString(),
+          university.name,
+          university.address,
+          university.ranking,
+          university.logo,
+          university.images,
+          university.country.toString(),
+          university.isApproved
+        )
+    );
+  }
 }

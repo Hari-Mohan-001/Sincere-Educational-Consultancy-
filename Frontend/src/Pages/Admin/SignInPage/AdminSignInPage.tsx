@@ -1,10 +1,10 @@
 
-import SignInForm from '../../../Components/Admin/SignInForm/SignInForm'
+import AdminSignInForm from '../../../Components/Admin/SignInForm/SignInForm'
 
 const AdminSignInPage = () => {
   return (
     <div className='flex justify-center mt-28'>
-    <SignInForm/>
+    <AdminSignInForm/>
     </div>
   )
 }
