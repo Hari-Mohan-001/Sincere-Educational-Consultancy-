@@ -14,8 +14,11 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useDispatch, useSelector } from 'react-redux';
 import { signOutUser } from '../../../Redux/User/UserSlice';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { RootState } from '../../../Interface/User/UserInterface';
+import axios from 'axios';
+import { BASE_URL } from '../../../Constants/Constants';
+
 
 const pages = ['Courses', 'Universities', 'About'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
@@ -28,13 +31,13 @@ function Header() {
   const navigate = useNavigate()
    const {user} = useSelector((state:RootState)=>state.user)
 
-React.useEffect(()=>{
-  if(user){
-    console.log(user);
+// React.useEffect(()=>{
+//   if(user){
+//     console.log(user);
     
-    navigate("/home")
-  }
-},[user,navigate])
+//     navigate("/home")
+//   }
+// },[user,navigate])
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -51,16 +54,28 @@ React.useEffect(()=>{
     setAnchorElUser(null);
   };
 
-  const handleLogout = ()=>{
-    dispatch(signOutUser())
-    sessionStorage.clear()
-    navigate("/signIn")
-    handleCloseUserMenu();
+  const handleLogout = async()=>{
+    try {
+      const response = await axios.get(`${BASE_URL}/signOut`,{
+        withCredentials:true
+      })
+      if(response.status===200){
+        dispatch(signOutUser())
+        sessionStorage.clear()
+        navigate("/signIn")
+        handleCloseUserMenu();
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+   
+    
     
   }
 
   return (
-    <AppBar position="static">
+    <AppBar className='!bg-cyan-500' position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
@@ -148,7 +163,16 @@ React.useEffect(()=>{
               </Button>
             ))}
           </Box>
-
+             {!user?(
+              <>
+              <Link to={"/signIn"}>
+          <Button className='!bg-white !w-28 !text-black !rounded-full p-3 uppercase mt-2 hover:opacity-90 !mr-5  ' variant="text">Login</Button>
+          </Link>
+          <Link to={"/signUp"}>
+          <Button className='!bg-cyan-700 !w-28 !text-white !rounded-full p-3 uppercase mt-2 hover:opacity-90 !mr-5  ' variant="text">Sign Up</Button>
+          </Link>
+          </>
+             ):(
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
@@ -178,6 +202,7 @@ React.useEffect(()=>{
               ))}
             </Menu>
           </Box>
+             )}
         </Toolbar>
       </Container>
     </AppBar>

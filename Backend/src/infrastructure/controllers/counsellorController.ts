@@ -6,7 +6,7 @@ import { Request, Response,NextFunction } from "express";
 import { generateCounsellorJwtToken } from "../security/generateCounsellorJwt";
 import { counsellorSignIn } from "../../application/use-cases/Counsellor/counsellorSignin";
 import { SignOut } from "../../application/use-cases/Counsellor/counsellorsignOut";
-import { verifyCounsellorToken } from "../middlewre/verifyCounsellorToken";
+import { verifyCounsellorToken } from "../middleware/verifyCounsellorToken";
 
 const cousellorRepository = new mongoAdminRepository();
 

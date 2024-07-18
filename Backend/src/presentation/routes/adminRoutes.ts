@@ -1,6 +1,5 @@
 import express from "express";
 import { Request, Response } from "express";
-import { mongoUserRepository } from "../../infrastructure/persistance/mongoUserRepository";
 import adminController from "../../infrastructure/controllers/adminController";
 import countryControler from "../../infrastructure/controllers/countryController";
 import { userController } from "../../infrastructure/controllers/userController";
@@ -24,6 +23,10 @@ adminRouter.post("/country", (req: Request, res: Response) =>
 
 adminRouter.get("/users",(req:Request,res:Response)=>{
   UserController.getUsers(req,res)
+})
+
+adminRouter.patch("/user/:userId",(req:Request,res:Response)=>{
+UserController.blockOrUnblockUser(req,res)
 })
 
 export default adminRouter;

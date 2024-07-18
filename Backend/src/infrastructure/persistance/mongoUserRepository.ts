@@ -30,6 +30,9 @@ export class mongoUserRepository implements IUserRepository{
 
      public async findUserByEmail(email: string): Promise<User | null> {
         const user = await userModel.findOne({email})
+        if(user?.isBlocked){
+            throw new Error("You are blocked");   
+        }
         if(!user) return null
         return new User( 
             user.id,
@@ -84,5 +87,39 @@ export class mongoUserRepository implements IUserRepository{
             user.isBlocked,
             user.isEnrolled
         ))
+    }
+
+    public async blockOrUnblockUser(userId: string): Promise<boolean> {
+        try {
+            console.log('mongo', typeof userId);
+            
+            const user = await userModel.findById(userId)
+            console.log('find',user);
+            
+            if(!user){
+                return false
+            }
+            if(user?.isBlocked){
+                const unblockUser = await userModel.findByIdAndUpdate(userId,{
+                    $set:{
+                        isBlocked:false
+                    },
+                },{new:true})
+                return !!unblockUser
+            }else{
+                console.log('bloc');
+                
+                const blockUser = await userModel.findByIdAndUpdate(userId,{
+                    $set:{
+                        isBlocked:true
+                    },
+                },{new:true})
+                console.log('isblk',blockUser);
+                
+                return !!blockUser
+            }
+        } catch (error) {
+            throw error
+        }
     }
 }

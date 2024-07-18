@@ -8,8 +8,9 @@ export class User {
         public mobile: string,
         public password: string,
         public qualification ?: 'PlusTwo' | "Degree" | "Masters",
-        public isEnrolled: boolean= false,
         public isBlocked: boolean= false,
+        public isEnrolled: boolean= false,
+        
     ) {}
 
     public async hashPassword():Promise<void>{

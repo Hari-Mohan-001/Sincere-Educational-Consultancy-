@@ -51,7 +51,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((row,index) => (
+              {data.map((row) => (
                 <TableRow key={row.id}>
                   {columns.map((column) => {
                     const value = row[column.id];

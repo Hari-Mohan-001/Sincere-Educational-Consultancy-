@@ -25,17 +25,18 @@ const SideNavBar = () => {
           </ListItemIcon>
           <ListItemText primary="Courses" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/universities" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
+        <ListItemButton component={Link} to="/counsellor/university" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <AccountBalanceIcon />
           </ListItemIcon>
           <ListItemText primary="Universities" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/countries" className="my-2 bg-white hover:text-blue-700 hover:bg-blue-700 text-white">
+        
+        <ListItemButton component={Link} to="/counsellor/domain" className="my-2 bg-white hover:text-blue-700 hover:bg-blue-700 text-white">
           <ListItemIcon className="text-white">
             <PublicIcon />
           </ListItemIcon>
-          <ListItemText primary="Country" />
+          <ListItemText primary="Domain" />
         </ListItemButton>
       </List>
     </div>

@@ -40,6 +40,7 @@ export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
 
       if (!response.ok) {
         const data: ResponseData = await response.json();
+  
         return rejectWithValue(data);
       }
       const data: ResponseData = await response.json();
@@ -87,7 +88,7 @@ export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConf
 
       if (!response.ok) {
         const data: ResponseData = await response.json();
-        console.log(data);
+        console.log('sign',data);
         return rejectWithValue(data);
       }
       const data: ResponseData = await response.json();
@@ -120,7 +121,7 @@ export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfi
       
       
       return data;
-    } catch (error) {
+    } catch (error) { 
       return rejectWithValue({ message: "Network Error" });
     }
   });

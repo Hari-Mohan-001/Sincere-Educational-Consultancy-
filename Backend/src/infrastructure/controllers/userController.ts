@@ -1,6 +1,7 @@
 import { Request,Response } from "express"
 import { mongoUserRepository } from "../../infrastructure/persistance/mongoUserRepository"
 import getAllUsers from "../../application/use-cases/Admin/GetAllStudents"
+import { BlockOrUnblockUser } from "../../application/use-cases/User/blockOrUnblockUser"
 
 const userRepository = new mongoUserRepository()
 
@@ -31,7 +32,26 @@ export const userController =()=>{
        
     }
 
+    const blockOrUnblockUser = async(req:Request,res:Response)=>{
+        const userId = req.params.userId
+        console.log(userId);
+        
+       try {
+         const blockOrUnblock = await BlockOrUnblockUser(userRepository).execute(userId)
+            if(blockOrUnblock){
+                res.status(200).json({message:"Success"})
+            }
+       } catch (error) {
+        if (error instanceof Error) {
+            res.status(400).json({ message: error.message });
+          } else {
+            res.status(400).json({ message: "An unknown error occurred" });
+          }
+       }
+    }
+
     return{
-        getUsers
+        getUsers,
+        blockOrUnblockUser
     }
 }

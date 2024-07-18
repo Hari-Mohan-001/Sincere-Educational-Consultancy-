@@ -13,7 +13,10 @@ export const verifyUserToken = (
     res: Response,
     next: NextFunction
   ): void => {
+    
     const token = req.cookies.userAuthToken;
+    console.log(token);
+    
     if (!token) {
       res.status(401).json({ message: "login to continue" });
       return
@@ -27,7 +30,10 @@ export const verifyUserToken = (
           res.status(401).json({ message: "login to continue" });
           return;
         }
+        
+        
         req.user = decoded;
+        console.log('verifies',req.user);
         next();
       }
     );

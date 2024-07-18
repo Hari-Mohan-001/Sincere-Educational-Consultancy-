@@ -7,4 +7,5 @@ export interface IUserRepository {
       findUserById(id:string):Promise<User | null>
       resetPassword(id:string,password:string):Promise<boolean>
       getAllUsers():Promise<User[]>
+      blockOrUnblockUser(userId:string):Promise<boolean>
 }

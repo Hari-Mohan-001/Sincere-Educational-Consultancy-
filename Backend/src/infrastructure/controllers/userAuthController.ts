@@ -86,6 +86,7 @@ const userAuthController = (
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });
+        console.log("signback", error.message);
       } else {
         res.status(500).json({ message: "Unknown error occurred" });
       }
@@ -100,7 +101,7 @@ const userAuthController = (
       const userInit = googleAuthCase(userRepository);
       const user_doc = await userInit.execute(userDto);
       const { password: hashedPassword, ...user } = user_doc;
-      generateJwtToken(res,user_doc.id)
+      generateJwtToken(res, user_doc.id);
       return res.status(201).json({ message: "Success", user });
     } catch (error) {
       if (error instanceof Error) {
@@ -163,8 +164,17 @@ const userAuthController = (
     }
   };
 
-  const signOutUser = (req: Request, res: Response): void => {
-    signOut(res);
+  const signOutUser = (req: Request, res: Response) => {
+    console.log("signout");
+    try {
+      const signOutUser = signOut(res);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(401).json({ message: error.message });
+      } else {
+        res.status(500).json({ message: "Unknown error occurred" });
+      }
+    }
   };
   return {
     signUp,

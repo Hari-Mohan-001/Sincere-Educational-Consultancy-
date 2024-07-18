@@ -57,7 +57,11 @@ const SignInForm = () => {
       if(signInUser.fulfilled.match(result)){
         navigate("/home")
       }else if(signInUser.rejected.match(result)){
+        
+        
         const payload = result.payload as ResponseData
+        console.log(payload);
+        
         setErrors({signInError:payload?.message|| "Failed to login"})
       }
     })

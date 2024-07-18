@@ -5,6 +5,8 @@ import AddUniversityPage from '../Pages/Counsellor/UniversityPage/AddUniversityP
 import CounsellorSignUpPage from '../Pages/Counsellor/CousellorSignUpPage/CounsellorSignUpPage'
 import CounsellorSignInPage from '../Pages/Counsellor/CounsellorSignInPage/CounsellorSignInPage'
 import AddCoursePage from '../Pages/Counsellor/CoursesPage/AddCoursePage'
+import AddDomainPage from '../Pages/Counsellor/DomainPage/AddDomainPage'
+import DomainListPage from '../Pages/Counsellor/DomainPage/DomainListPage'
 
 const CounsellorRoute = () => {
   return (
@@ -14,8 +16,10 @@ const CounsellorRoute = () => {
     <Route path='/counsellor/university' element={<UniversityPage/>}/>
     <Route path='/counsellor/add-university' element={<AddUniversityPage/>}/>
     <Route path='/counsellor/add-course' element={<AddCoursePage/>}/>
+    <Route path='/counsellor/add-domain' element={<AddDomainPage/>}/>
+    <Route path='/counsellor/domain' element={<DomainListPage/>}/>
    </Routes>
   )
-}
+}  
 
 export default CounsellorRoute
