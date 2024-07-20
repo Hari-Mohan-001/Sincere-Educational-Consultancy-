@@ -12,6 +12,7 @@ import { signInUseCase } from "../../interfaces/signIn";
          const isValidPassword = bcrypt.compareSync(password, user.password)
 
          if(!isValidPassword) throw new Error("Invalid credentials");
+console.log('valid',isValidPassword);
 
          return user
          

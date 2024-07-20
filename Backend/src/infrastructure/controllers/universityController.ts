@@ -8,6 +8,7 @@ import { mongoUniversityRepository } from "../persistance/mongoUniversityReposit
 import { universityDTO } from "../../application/dtos/universityDto";
 import { getAllUniversities } from "../../application/use-cases/Counsellor/getAllUniversity";
 import { AllUniversities } from "../../application/use-cases/Counsellor/getUniversities";
+import { universityApproval } from "../../application/use-cases/University/ApproveUniversity";
 
 const universityRepository = new mongoUniversityRepository();
 
@@ -28,7 +29,6 @@ export const universityController = () => {
       const createUniversity = await addNewUniversity(
         universityRepository
       ).execute(universityDto);
-      console.log("new", createUniversity);
 
       if (createUniversity) {
         res.status(200).json({ message: "university created successfully" });
@@ -43,17 +43,14 @@ export const universityController = () => {
   };
 
   const getAllUniversity = async (req: Request, res: Response) => {
-    console.log('getalluni');
-    
     const countryId = req.params.countryId;
     try {
       const getUniversities = await getAllUniversities(
         universityRepository
       ).execute(countryId);
-      if(getUniversities){
-        console.log('uni', getUniversities);
-        
-        res.status(200).json({message:"success", getUniversities})
+      if (getUniversities) {
+
+        res.status(200).json({ message: "success", getUniversities });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -63,16 +60,33 @@ export const universityController = () => {
       }
     }
   };
-  const getallUniversities= async (req: Request, res: Response) => {
-    console.log('getalluni');
-    
+  const getAllApprovedUniversities = async (req: Request, res: Response) => {
+
     try {
       const getAllUniversities = await AllUniversities(
         universityRepository
       ).execute();
-      if(getAllUniversities){
-        
-        res.status(200).json({message:"success", getAllUniversities})
+      if (getAllUniversities) {
+        res.status(200).json({ message: "success", getAllUniversities });  
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  };
+  const adminApproveUniversity = async (req: Request, res: Response) => {
+    const universityId = req.params.universityId;
+    console.log('uni', universityId);
+    
+    try {
+      const approveUniversity = await universityApproval(
+        universityRepository
+      ).execute(universityId);
+      if (approveUniversity) {
+        res.status(200).json({ message: "success" });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -85,6 +99,7 @@ export const universityController = () => {
   return {
     addUniversity,
     getAllUniversity,
-    getallUniversities
+    getAllApprovedUniversities,
+    adminApproveUniversity
   };
 };

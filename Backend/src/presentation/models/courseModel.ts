@@ -31,6 +31,11 @@ const courseSchema = new mongoose.Schema({
         ref:"University",
         required:true
     },
+    domain:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Domain",
+        required:true
+    },
 },{timestamps:true})
 
 const courseModel = mongoose.model("Course", courseSchema)

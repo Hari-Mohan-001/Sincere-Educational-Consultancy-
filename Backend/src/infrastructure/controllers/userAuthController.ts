@@ -78,11 +78,18 @@ const userAuthController = (
 
   const signInUser = async (req: Request, res: Response) => {
     const { email, password } = req.body;
+
     try {
       const user = await signInUseCase.execute(email, password);
+
       generateJwtToken(res, user.id);
+
       const { password: hashedPassword, ...userData } = user;
-      res.status(201).json({ message: "user Signed succesfully", user });
+      console.log(userData);
+
+      res
+        .status(201)
+        .json({ message: "user Signed succesfully", user: userData });
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });

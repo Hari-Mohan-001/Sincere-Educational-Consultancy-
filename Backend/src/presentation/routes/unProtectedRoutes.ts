@@ -16,7 +16,7 @@ router.get("/universities/:countryId", (req:Request,res:Response)=>{
   UniversityController.getAllUniversity(req,res)  
 })
 router.get("/universities", (req:Request,res:Response)=>{
-  UniversityController.getallUniversities(req,res)  
+  UniversityController.getAllApprovedUniversities(req,res)  
 })
 router.get("/courses", (req:Request,res:Response)=>{
   CourseController.getAllCourse(req,res)  

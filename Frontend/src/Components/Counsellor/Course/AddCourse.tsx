@@ -12,11 +12,11 @@ import { toast } from "react-toastify";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
 
-// interface Country {
-//   id: string;
-//   name: string;
-//   image: string;
-// }
+interface DomainData {
+  id: string;
+  name: string;
+  image: string;
+}
 
 interface UniversityData {
   id?: string;
@@ -35,6 +35,7 @@ interface CourseData {
   description?: string;
   duration?: string;
   university?: string;
+  domain?: string;
   logo?: string;
 }
 
@@ -43,16 +44,14 @@ const AddCourseForm = () => {
     (state: CounsellorRootState) => state.counsellor
   );
   const [universities, setUniversities] = useState<UniversityData[]>([]);
+  const [domains, setDomains] = useState<DomainData[]>([]);
   useEffect(() => {
     const fetchUniversity = async () => {
-      console.log("unisrt", counsellor);
 
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-
           const response = await axios.get(`${URL}/universities/${countryId}`);
-          console.log("resaddcrs", response.data);
           setUniversities(response.data.getUniversities);
         } else {
           navigate("/counsellor/signin");
@@ -62,6 +61,20 @@ const AddCourseForm = () => {
       }
     };
     fetchUniversity();
+  }, []);
+
+  useEffect(() => {
+    const fetchDomains = async () => {
+      console.log('domin')
+      try {
+          const response = await axios.get(`${URL}/domains`);
+          console.log("resaddcrs", response.data);
+          setDomains(response.data.data);   
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchDomains();
   }, []);
 
   const [formData, setFormData] = useState<CourseData>({
@@ -100,6 +113,10 @@ const AddCourseForm = () => {
     setFormData({ ...formData, university: e.target.value });
     setErrors({ ...errors, university: "" });
   };
+  const handleDomainSelectChange = (e: SelectChangeEvent<string>) => {
+    setFormData({ ...formData, domain: e.target.value });
+    setErrors({ ...errors, domain: "" });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -123,7 +140,7 @@ const AddCourseForm = () => {
 
   return (
     <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
-      <h1 className="text-center text-2xl">Add University</h1>
+      <h1 className="text-center text-2xl">Add Course</h1>
       <form onSubmit={handleSubmit} className="mt-4 gap-5">
         <Box display={"flex"} flexDirection={"column"} gap={1}>
           <Box>
@@ -225,13 +242,45 @@ const AddCourseForm = () => {
                 </MenuItem>
                 {universities?.map((university) => {
                   return (
-                    <MenuItem value={university.id}>{university.name}</MenuItem>
+                    <MenuItem key={university.id} value={university.id}>{university.name}</MenuItem>
                   );
                 })}
               </Select>
-              {errors.qualification && (
+              {errors.university && (
                 <Typography variant="caption" color="error">
-                  {errors.qualification}
+                  {errors.university}
+                </Typography>
+              )}
+            </FormControl>
+          </Box>
+          <Box>
+            <Typography variant="inherit">Select the Domain</Typography>
+
+            <FormControl
+              fullWidth
+              size="small"
+              error={Boolean(errors.qualification)}
+            >
+              <InputLabel id="domain-label">Domain</InputLabel>
+              <Select
+                labelId="domain-label"
+                id="domain"
+                label="Domain"
+                value={formData?.domain}
+                onChange={handleDomainSelectChange}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                {domains?.map((domain) => {
+                  return (
+                    <MenuItem key={domain.id} value={domain.id}>{domain.name}</MenuItem>
+                  );
+                })}
+              </Select>
+              {errors.doamin && (
+                <Typography variant="caption" color="error">
+                  {errors.domain}
                 </Typography>
               )}
             </FormControl>

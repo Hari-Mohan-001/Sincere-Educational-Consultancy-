@@ -18,7 +18,6 @@ const SignInForm = () => {
   const dispatch = useDispatch<AppDispatch>()
   const {user} = useSelector((state:RootState)=>state.user)
   const navigate = useNavigate()
-  console.log('kih',user);
   
 
   useEffect(()=>{

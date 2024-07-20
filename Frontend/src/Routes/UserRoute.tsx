@@ -6,6 +6,7 @@ import ForgetPasswordPage from "../Pages/User/ForgetPasswordPage/ForgetPasswordP
 import ResetPasswordPage from "../Pages/User/ResetPasswordPage/ResetPasswordPage";
 import HomePage from "../Pages/User/HomePage/HomePage";
 import UserPrivateRoute from "./PrivateRoute";
+import CoursesPage from "../Pages/User/suggestedCoursesPage/SuggestedCoursesPage";
 
 const UserRoute = () => {
   return (
@@ -18,6 +19,7 @@ const UserRoute = () => {
       <Route element={<UserPrivateRoute/>}>
       <Route path="/home" element={<HomePage />} />
       </Route>
+      <Route path="/courses" element={<CoursesPage/>}/>
     </Routes>
   );
 };

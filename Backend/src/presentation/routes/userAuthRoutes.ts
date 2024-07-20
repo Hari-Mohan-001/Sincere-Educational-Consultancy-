@@ -8,6 +8,7 @@ import signIn from "../../application/use-cases/User/signIn";
 import { verifyUserToken } from "../../infrastructure/middleware/verifyUserToken";
 import { redirectAuthenticatedUser } from "../../infrastructure/middleware/redirectAuthenticatedUser";
 import { isUserBlocked } from "../../infrastructure/middleware/isUserBlocked";
+import courseController from "../../infrastructure/controllers/courseController";
 
 const userAuthRoute = express.Router();
 const userRepository = new mongoUserRepository();
@@ -19,6 +20,7 @@ const UserAuthController = userAuthController(
   checkUser,
   signInUseCase
 );
+const CourseController = courseController()
 
 userAuthRoute.post(
   "/signUp",
@@ -58,5 +60,9 @@ userAuthRoute.use((req: Request, res: Response, next: NextFunction) => {
 userAuthRoute.get("/signOut", (req: Request, res: Response) =>
   UserAuthController.signOutUser(req, res)
 );
+
+userAuthRoute.get("/courses/:qualification", (req: Request, res: Response)=>{
+CourseController.getSuggestedCourse(req,res)
+})
 
 export default userAuthRoute;

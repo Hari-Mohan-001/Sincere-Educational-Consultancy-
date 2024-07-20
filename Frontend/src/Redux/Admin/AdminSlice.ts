@@ -26,7 +26,7 @@ import { AdminState, ResponseData, signInAdminData } from "../../Interface/Admin
   
   
   export const signInAdmin: AsyncThunk<ResponseData, signInAdminData, AsyncThunkConfig> =
-    createAsyncThunk("/user/signIn", async (adminData, { rejectWithValue }) => {
+    createAsyncThunk("/admin/signIn", async (adminData, { rejectWithValue }) => {
       try {
         const response = await fetch(`${ADMIN_BASE_URL}/signin`, {
           method: "POST",

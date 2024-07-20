@@ -30,7 +30,6 @@ const ListUniversity = () => {
   );
   useEffect(() => {
     const fetchUniversity = async () => {
-      console.log('unisrt',universities);
       
       try {
         if (counsellor) {
@@ -61,7 +60,7 @@ const ListUniversity = () => {
     { id: "name", label: "Name", minWidth: 100 },
     { id: "address", label: "Address", minWidth: 100 },
     { id: "ranking", label: "Ranking", minWidth: 50 },
-    { id: "country", label: "Country", minWidth: 100,render: (row: UniversityData) => "Canada" },
+    { id: "country", label: "Country", minWidth: 100,render: (row: UniversityData) =>row.country.name},
     {
       id: "logo",
       label: "Logo",

@@ -6,17 +6,17 @@ import { universityDTO } from "../../dtos/universityDto";
 export const addNewUniversity = (universityRepository:IUniversityRepository)=>{
       
     const execute = async(universityDto:universityDTO)=>{
-        const universityData = new University(
-            "",
-            universityDto.name,
-            universityDto.address,
-            universityDto.ranking,
-            universityDto.logo,
-            universityDto.images,
-            universityDto.country,
-            universityDto.isApproved
-          );
-            const data = await universityRepository.createUniversity(universityData)
+        // const universityData = new University(
+        //     "",
+        //     universityDto.name,
+        //     universityDto.address,
+        //     universityDto.ranking,
+        //     universityDto.logo,
+        //     universityDto.images,
+        //     universityDto.country,
+        //     universityDto.isApproved
+        //   );
+            const data = await universityRepository.createUniversity(universityDto)
             if(!data){
                 return false
             }

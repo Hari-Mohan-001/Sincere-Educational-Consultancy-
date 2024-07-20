@@ -1,10 +1,11 @@
 import mongoose, { Types } from "mongoose";
-import { University } from "../../domain/entities/university";
+import { Country, IUniversityDocument, PopulatedUniversity, University } from "../../domain/entities/university";
 import { IUniversityRepository } from "../../domain/repositories/IUniversityRepository";
 import universityModel from "../../presentation/models/universityModel";
+import { universityDTO } from "../../application/dtos/universityDto";
 
 export class mongoUniversityRepository implements IUniversityRepository {
-  public async createUniversity(university: University): Promise<University> {
+  public async createUniversity(university: universityDTO): Promise<University> {
     // Convert the country field to ObjectId if it's a string
     const countryId =
       typeof university.country === "string"
@@ -26,41 +27,63 @@ export class mongoUniversityRepository implements IUniversityRepository {
       newUniversity.ranking,
       newUniversity.logo,
       newUniversity.images,
-      newUniversity.country.toString(),
+      newUniversity.country,
       newUniversity.isApproved
     );
   }
 
-  public async getAllUniversities(countryId: string): Promise<University[]> {
-    const universities = await universityModel.find({ country: countryId }).populate('country', 'name');
+  public async getAllUniversities(countryId: string): Promise<PopulatedUniversity[]> {
+    const universities = await universityModel.find({ country: countryId }).populate('country')
     return universities.map(
       (university) =>
-        new University(
+        new PopulatedUniversity(
           university._id.toString(),
           university.name,
           university.address,
           university.ranking,
           university.logo,
           university.images,
-          university.country.toString(),
+         university.country,
           university.isApproved
         )
     );
   }
-  public async getUniversities(): Promise<University[]> {
-    const universities = await universityModel.find()
+  public async getUniversities(): Promise<PopulatedUniversity[]> {
+    const universities = await universityModel.find({isApproved:true}).populate('country')
     return universities.map(
       (university) =>
-        new University(
+        new PopulatedUniversity(
           university._id.toString(),
           university.name,
           university.address,
           university.ranking,
           university.logo,
           university.images,
-          university.country.toString(),
+          university.country,
           university.isApproved
         )
     );
+  }
+
+  public async approveUniversity(universityId: string): Promise<boolean> {
+    try {
+      const university = await universityModel.findById(universityId)
+      if(!university){
+        return false  
+      }
+      const approve = await universityModel.findByIdAndUpdate(universityId, {
+        $set:{
+          isApproved:true
+        }
+      },{new:true})
+      if(approve){
+        return true
+      }else{
+        return false
+      }
+
+    } catch (error) {
+      throw error
+    }
   }
 }

@@ -91,11 +91,8 @@ export class mongoUserRepository implements IUserRepository{
 
     public async blockOrUnblockUser(userId: string): Promise<boolean> {
         try {
-            console.log('mongo', typeof userId);
             
             const user = await userModel.findById(userId)
-            console.log('find',user);
-            
             if(!user){
                 return false
             }

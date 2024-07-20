@@ -20,6 +20,7 @@ export class mongoCourseRepository implements ICourseRepository {
             description: course.description,
             duration: course.duration,
             university: universityId,
+            domain:course.domain,
             logo:course.logo
           });
           const newCourse = await addNewCourse.save();
@@ -31,7 +32,8 @@ export class mongoCourseRepository implements ICourseRepository {
             newCourse.description,
             newCourse.logo,
             newCourse.duration,
-            newCourse.university.toString()
+            newCourse.university.toString(),
+            newCourse.domain.toString()
           );
         } catch (error) {
           console.error("Error creating the course:", error);
@@ -52,8 +54,32 @@ export class mongoCourseRepository implements ICourseRepository {
           course.description,
           course.logo,
           course.duration,
-          course.university.toString()
+          course.university.toString(),
+          course.domain.toString()
         )
     );
+  }
+   public async getSuggestedCourse(qualification: string): Promise<Course[]> {
+    try {
+      const SuggestedCourses = await courseModel.find({qualification:qualification})
+      if(!SuggestedCourses){
+        throw new Error("No courses matches your qualification");  
+      }
+      return SuggestedCourses.map((course)=>
+          new Course(
+            course._id.toString(),
+            course.name,
+            course.qualification,
+            course.fees,
+            course.description,
+            course.logo,
+            course.duration,
+            course.university.toString(),
+            course.domain.toString()
+          )
+      )
+    } catch (error) {
+      throw error
+    }
   }
 }
