@@ -8,18 +8,18 @@ import PublicIcon from '@mui/icons-material/Public';
 
 const SideNavBar = () => {
   return (
-    <div className="w-60 bg-rose-950 text-white h-full shadow-xl mt-10">
+    <div className="w-60 bg-zinc-900 text-white h-full shadow-xl mt-10">
       <div className="flex items-center justify-center h-16">
         <Typography variant="h5">Dashboard List</Typography>
       </div>
       <List>
-        <ListItemButton component={Link} to="/students" className="my-2 hover:text-blue-700 text-white">
+        <ListItemButton component={Link} to="/counsellor/students" className="my-2 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <PeopleIcon />
           </ListItemIcon>
           <ListItemText primary="Student List" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/courses" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
+        <ListItemButton component={Link} to="/counsellor/courses" className="my-2 bg-blue-600 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <SchoolIcon />
           </ListItemIcon>

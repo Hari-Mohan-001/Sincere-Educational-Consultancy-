@@ -1,46 +1,47 @@
-import { Box, Button } from "@mui/material";
+import {  Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { URL } from "../../../Constants/Constants";
+import { COUNSELLORBASEURL} from "../../../Constants/Constants";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
 
-interface Country {
-  _id: string;
-  name: string;
-}
+// interface Country {
+//   _id: string;
+//   name: string;
+// }
 
-interface UniversityData {
-  id: string;
+interface CourseData {
   name: string;
-  address: string;
-  ranking: string;
-  country:  Country;
+  qualification: string;
+  fees: string;
+  description: string;
+  duration: string;
+  university: string;
+  domain: string;
   logo: string;
-  images: string[];
-  isApproved: boolean;
+  uninversityName:string
 }
 
-const ListCourses = () => {
+const ListCourse = () => {
   const navigate = useNavigate();
   const { counsellor } = useSelector(
     (state: CounsellorRootState) => state.counsellor
   );
   useEffect(() => {
-    const fetchUniversity = async () => {
-      console.log('unisrt',universities);
+    const fetchCourses = async () => {
       
       try {
         if (counsellor) {
           const countryId = counsellor.country;
+          console.log('fetc', countryId);
+          
 
-          const response = await axios.get(`${URL}/courses/${countryId}`);
+          const response = await axios.get(`${COUNSELLORBASEURL}/courses/${countryId}`);
           console.log('res',response.data);
 
-          setUniversities(response.data.getUniversities);
-          console.log('setubi',universities);
+          setCourses(response.data.data);
         } else {
           navigate("/counsellor/signin");
         }
@@ -48,39 +49,39 @@ const ListCourses = () => {
         console.error(error);
       }
     };
-    fetchUniversity();
+    fetchCourses();
   }, []);
 
-  const [universities, setUniversities] = useState<UniversityData[]>([]);
+  const [courses, setCourses] = useState<CourseData[]>([]);
 
   const handleClick = () => {
-    navigate("/counsellor/add-university");
+    navigate("/counsellor/add-course");
   };
 
   const columns = [
     { id: "name", label: "Name", minWidth: 100 },
-    { id: "address", label: "Address", minWidth: 100 },
-    { id: "ranking", label: "Ranking", minWidth: 50 },
-    { id: "country", label: "Country", minWidth: 100,render: (row: UniversityData) => "Canada" },
+    { id: "qualification", label: "Qualification", minWidth: 100 },
+    { id: "fees", label: "Fees", minWidth: 50 },
+    { id: "description", label: "Description", minWidth: 100},
     {
       id: "logo",
       label: "Logo",
       minWidth: 100,
-      render: (row: UniversityData) => (
-        <img src={row.logo} alt={row.name} style={{ width: 50, height: 50 }} />
+      render: (row: CourseData) => (
+        <img src={row.logo} alt={row.name} style={{ width: 80, height: 80 }} />
       ),
     },
     {
-      id: "isApproved",
-      label: "Approved",
+      id: "duration",
+      label: "Duration",
       minWidth: 50,
-      render: (row: UniversityData) => (row.isApproved ? "Yes" : "No"),
     },
+    { id: "universityName", label: "University", minWidth: 100},
   ];
 
   return (
     <>
-      <TableComponent title="Universities" columns={columns} data={universities}/>
+      <TableComponent title="Courses" columns={columns} data={courses}/>
       <div className="mt-4 mr-2">
         <Button onClick={handleClick} variant="contained">
           Add
@@ -90,4 +91,4 @@ const ListCourses = () => {
   );
 };
 
-export default ListCourses;
+export default ListCourse;

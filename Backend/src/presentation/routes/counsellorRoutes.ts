@@ -35,6 +35,10 @@ counsellorRouter.post("/domain",(req:Request,res:Response)=>{
 DomainController.addDomain(req,res)
 })
 
+counsellorRouter.get("/courses/:countryId" ,(req:Request,res:Response)=>{ 
+  CourseController.counsellorCourse(req,res)
+})
+
 
 
 export default counsellorRouter;

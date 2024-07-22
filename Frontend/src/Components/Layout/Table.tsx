@@ -34,7 +34,11 @@ const TableComponent: React.FC<TableComponentProps> = ({
       </Typography>
 
       {columns.length > 0 && data.length > 0 ? (
-        <TableContainer component={Paper} className="shadow-lg">
+        <TableContainer 
+        component={Paper} 
+        className="shadow-lg"
+        style={{maxHeight:'450px', overflowY:'auto'}}
+        >
           <Table>
             <TableHead className="bg-gray-800">
               <TableRow>

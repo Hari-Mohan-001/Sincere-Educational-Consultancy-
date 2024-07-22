@@ -5,21 +5,24 @@ import { createNewCourse } from "../../application/use-cases/Course/CreateCourse
 import { cloudinaryUpload } from "../services/CloudinaryUpload";
 import { allCourses } from "../../application/use-cases/Course/getAllCourse";
 import { SuggestedCourses } from "../../application/use-cases/Course/getSuggestedCourses";
+import { getCounsellorCourses } from "../../application/use-cases/Course/getCounsellorCourses";
 
 const courseRepository = new mongoCourseRepository();
 
 const courseController = () => {
-  const addCourse = async (req: Request, res: Response) => {
+  const addCourse = async (req: Request, res: Response) => { 
     const {
       name,
       qualification,
       fees,
       duration,
-      university,
+      universities,
       domain,
       description,
       logo,
     } = req.body;
+    console.log(req.body);
+    const universityIds = req.body.universities
 
     const logoUrl = await cloudinaryUpload(logo, "Course");
 
@@ -30,13 +33,15 @@ const courseController = () => {
       duration,
       description,
       logoUrl,
-      university,
+      universities,
       domain
     );
     try {
       const newCourse = await createNewCourse(courseRepository).execute(
         courseDto
       );
+      console.log('newcrs', newCourse);
+      
       if (newCourse) {
         res.status(200).json({ message: "Course created", data: newCourse });
       }
@@ -89,10 +94,32 @@ const courseController = () => {
     }
   };
 
+  const counsellorCourse = async (req: Request, res: Response)=>{
+    console.log('counscrs');
+    
+              const countryId = req.params.countryId
+              try {
+                const courses = await getCounsellorCourses(courseRepository).execute(countryId)
+                console.log('cons crs',courses);
+                
+                if(courses.length>0){
+                  res.status(200).json({message:"success", data:courses})
+                }
+              } catch (error) {
+                if (error instanceof Error) { 
+                  res.status(400).json({ message: error.message });
+                } else {
+                  res.status(400).json({ message: "An unknown error occurred" });
+                }
+              }
+  }
+
+
   return {
     addCourse,
     getAllCourse,
     getSuggestedCourse,
+    counsellorCourse
   };
 };
 export default courseController;

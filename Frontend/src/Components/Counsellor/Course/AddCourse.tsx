@@ -1,9 +1,9 @@
-import { Box, Button, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { COUNSELLORBASEURL, URL } from "../../../Constants/Constants";
@@ -34,7 +34,7 @@ interface CourseData {
   fees?: string;
   description?: string;
   duration?: string;
-  university?: string;
+  universities?: string[];
   domain?: string;
   logo?: string;
 }
@@ -65,10 +65,8 @@ const AddCourseForm = () => {
 
   useEffect(() => {
     const fetchDomains = async () => {
-      console.log('domin')
       try {
           const response = await axios.get(`${URL}/domains`);
-          console.log("resaddcrs", response.data);
           setDomains(response.data.data);   
       } catch (error) {
         console.error(error);
@@ -79,7 +77,7 @@ const AddCourseForm = () => {
 
   const [formData, setFormData] = useState<CourseData>({
     qualification:"",
-    university:""
+    universities:[]
   });
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
@@ -109,9 +107,9 @@ const AddCourseForm = () => {
     setFormData({ ...formData, qualification: e.target.value });
     setErrors({ ...errors, qualification: "" });
   };
-  const handleUniversitySelectChange = (e: SelectChangeEvent<string>) => {
-    setFormData({ ...formData, university: e.target.value });
-    setErrors({ ...errors, university: "" });
+  const handleUniversitySelectChange = (e: SelectChangeEvent<string[]>) => {
+    setFormData({ ...formData, universities: e.target.value as string[] });
+    setErrors({ ...errors, universities: "" });
   };
   const handleDomainSelectChange = (e: SelectChangeEvent<string>) => {
     setFormData({ ...formData, domain: e.target.value });
@@ -132,10 +130,16 @@ const AddCourseForm = () => {
         }
       );
       console.log('crse',response.data);
+      navigate("/counsellor/courses")
       toast.success("Course added successfully");
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const getUniversityNameById = (id: string) => {
+    const university = universities.find((uni) => uni.id === id);
+    return university ? university.name : "";
   };
 
   return (
@@ -147,6 +151,7 @@ const AddCourseForm = () => {
             <Typography variant="inherit">Enter the course name</Typography>
             <TextField
               id="name"
+              label="name"
               fullWidth
               variant="outlined"
               size="small"
@@ -189,6 +194,7 @@ const AddCourseForm = () => {
             <Typography variant="inherit">Enter the fees</Typography>
             <TextField
               id="fees"
+              label="fees"
               fullWidth 
               variant="outlined"
               size="small"
@@ -201,6 +207,7 @@ const AddCourseForm = () => {
             <Typography variant="inherit">Enter the Description</Typography>
             <TextField
               id="description"
+              label="Description"
               fullWidth
               variant="outlined"
               size="small"
@@ -213,6 +220,7 @@ const AddCourseForm = () => {
             <Typography variant="inherit">Enter the Duartion</Typography>
             <TextField
               id="duration"
+              label="Duration"
               fullWidth
               variant="outlined"
               size="small"
@@ -229,13 +237,16 @@ const AddCourseForm = () => {
               size="small"
               error={Boolean(errors.qualification)}
             >
-              <InputLabel id="country-label">University</InputLabel>
+              <InputLabel id="country-label">Universities</InputLabel>
               <Select
                 labelId="qualification-label"
-                id="qualification"
-                label="Qualification"
-                value={formData?.university}
+                id="universities"
+                label="Universities"
+                multiple
+                value={formData?.universities}
                 onChange={handleUniversitySelectChange}
+                renderValue={(selected) => 
+                  (selected as string[]).map(getUniversityNameById).join(", ")}
               >
                 <MenuItem value="">
                   <em>None</em>

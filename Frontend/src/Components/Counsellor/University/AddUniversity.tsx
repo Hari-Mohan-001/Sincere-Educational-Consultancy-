@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { COUNSELLORBASEURL, URL } from "../../../Constants/Constants";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
@@ -49,7 +49,9 @@ const AddUniversityForm = () => {
   }, []);
 
   const [countries, setCountries] = useState<Country[]>([]);
-  const [formData, setFormData] = useState<UniversityData>();
+  const [formData, setFormData] = useState<UniversityData>({
+    country:""
+  });
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -135,8 +137,8 @@ const AddUniversityForm = () => {
       setErrors(newErrors);
       return;
     }
-    try {
-      const response = await axios.post(
+    toast.promise(
+      axios.post(
         `${COUNSELLORBASEURL}/university`,
         formData,
         {
@@ -144,14 +146,28 @@ const AddUniversityForm = () => {
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log(response.data);
-      navigate("/counsellor/university");
-      toast.success("University added successfully");
-     
-    } catch (error) {
-      console.log(error);
-    }
+      ),
+      {
+        pending: "Please wait",
+        success: {
+          render({ data }) {
+            const response = data as AxiosResponse;
+            // Perform any success logic here
+            navigate("/counsellor/university");
+            return "University added successfully";
+          }
+        },
+        error: {
+          render({ data }) {
+            if (data instanceof Error) {
+              // Handle the error and return the error message
+              return `Error: ${data.message}`;
+            }
+            return "An unknown error occurred";
+          }
+        }
+      }
+    );
   };
 
   return (
@@ -213,7 +229,7 @@ const AddUniversityForm = () => {
                   <em>None</em>
                 </MenuItem>
                 {countries?.map((country) => {
-                  return <MenuItem value={country.id}>{country.name}</MenuItem>;
+                  return <MenuItem key={country.id} value={country.id}>{country.name}</MenuItem>;
                 })}
               </Select>
               {errors.country && (

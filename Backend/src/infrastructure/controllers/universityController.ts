@@ -9,6 +9,7 @@ import { universityDTO } from "../../application/dtos/universityDto";
 import { getAllUniversities } from "../../application/use-cases/Counsellor/getAllUniversity";
 import { AllUniversities } from "../../application/use-cases/Counsellor/getUniversities";
 import { universityApproval } from "../../application/use-cases/University/ApproveUniversity";
+import { adminGetAllUniversities } from "../../application/use-cases/University/adminGetAllUniversities";
 
 const universityRepository = new mongoUniversityRepository();
 
@@ -96,10 +97,26 @@ export const universityController = () => {
       }
     }
   };
+
+  const getAllUniversitiesForAdmin = async (req: Request, res: Response)=>{
+    try {
+            const universities = await adminGetAllUniversities(universityRepository).execute()
+            console.log('admin',universities);
+            
+            res.status(200).json({message:'success', data:universities})
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  }
   return {
     addUniversity,
     getAllUniversity,
     getAllApprovedUniversities,
-    adminApproveUniversity
+    adminApproveUniversity,
+    getAllUniversitiesForAdmin
   };
 };

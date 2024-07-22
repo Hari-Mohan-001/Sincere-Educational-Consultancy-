@@ -27,6 +27,10 @@ adminRouter.get("/users",(req:Request,res:Response)=>{
   UserController.getUsers(req,res)
 })
 
+adminRouter.get("/universities",(req:Request,res:Response)=>{
+  UniversityController.getAllUniversitiesForAdmin(req,res)
+})
+
 adminRouter.patch("/user/:userId",(req:Request,res:Response)=>{
 UserController.blockOrUnblockUser(req,res)
 })

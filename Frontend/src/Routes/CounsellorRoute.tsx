@@ -7,6 +7,7 @@ import CounsellorSignInPage from '../Pages/Counsellor/CounsellorSignInPage/Couns
 import AddCoursePage from '../Pages/Counsellor/CoursesPage/AddCoursePage'
 import AddDomainPage from '../Pages/Counsellor/DomainPage/AddDomainPage'
 import DomainListPage from '../Pages/Counsellor/DomainPage/DomainListPage'
+import ListCounsellorCoursePage from '../Pages/Counsellor/CoursesPage/ListCounsellorCoursePage'
 
 const CounsellorRoute = () => {
   return (
@@ -18,6 +19,8 @@ const CounsellorRoute = () => {
     <Route path='/counsellor/add-course' element={<AddCoursePage/>}/>
     <Route path='/counsellor/add-domain' element={<AddDomainPage/>}/>
     <Route path='/counsellor/domain' element={<DomainListPage/>}/>
+    <Route path='/counsellor/courses' element={<ListCounsellorCoursePage/>}/>
+  
    </Routes>
   )
 }  

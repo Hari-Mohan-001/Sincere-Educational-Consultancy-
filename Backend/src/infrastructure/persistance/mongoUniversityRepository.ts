@@ -86,4 +86,44 @@ export class mongoUniversityRepository implements IUniversityRepository {
       throw error
     }
   }
+
+  public async getAllUniversitiesForAdmin(): Promise<University[]> {
+    try {
+      const universities = await universityModel.aggregate([
+        {
+          $lookup:{
+            from:'countries',
+            localField:'country',
+            foreignField:'_id',
+            as:'countryDetails'
+          }
+        },
+        {
+          $unwind:'$countryDetails'
+        },
+        {
+          $addFields:{
+            countryName:'$countryDetails.name'
+          }
+        },
+        {
+          $project:{
+            _id:1,
+            name:1,
+            address:1,
+            ranking:1,
+            logo:1,
+            images:1,
+            country:1,
+            isApproved:1,
+            countryName:1
+          }
+        }
+      ])
+
+      return universities as University[];
+    } catch (error) {
+      throw error
+    }
+  }
 }

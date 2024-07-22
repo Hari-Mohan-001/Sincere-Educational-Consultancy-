@@ -175,6 +175,7 @@ const userAuthController = (
     console.log("signout");
     try {
       const signOutUser = signOut(res);
+      res.status(200).json({message:" signout success"})
     } catch (error) {
       if (error instanceof Error) {
         res.status(401).json({ message: error.message });

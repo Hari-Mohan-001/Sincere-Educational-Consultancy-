@@ -26,11 +26,11 @@ const courseSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    university:{
+    universities:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"University",
         required:true
-    },
+    }],
     domain:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Domain",

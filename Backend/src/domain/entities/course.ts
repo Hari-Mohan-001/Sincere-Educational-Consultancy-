@@ -9,7 +9,7 @@ export class Course {
         public description:string,
         public logo: string,
         public duration: string,
-        public university:string,
+        public university:string[],
         public domain:string
     ) {}
 }

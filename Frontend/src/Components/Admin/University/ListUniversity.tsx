@@ -10,20 +10,21 @@ import { toast } from "react-toastify";
 
 const mySwal = withReactContent(Swal);
 
-interface Country {
-  _id: string;
-  name: string;
-}
+// interface Country {
+//   _id: string;
+//   name: string;
+// }
 
 interface UniversityData {
-  id: string;
+  _id: string;
   name: string;
   address: string;
   ranking: string;
-  country: Country;
+  country: string;
   logo: string;
   images: string[];
   isApproved: boolean;
+  countryName:string;
 }
 
 const AdminListUniversity = () => {
@@ -34,10 +35,10 @@ const AdminListUniversity = () => {
   useEffect(() => {
     const fetchUniversity = async () => {
       try {
-        const response = await axios.get(`${URL}/universities`);
+        const response = await axios.get(`${ADMIN_BASE_URL}/universities`);
         console.log("res", response.data);
 
-        setUniversities(response.data.getAllUniversities);
+        setUniversities(response.data.data);
         console.log("setubi", universities);
       } catch (error) {
         console.error(error);
@@ -53,7 +54,7 @@ const AdminListUniversity = () => {
         university.name.toLowerCase().includes(lowerCaseQuery)||
         university.address.toLowerCase().includes(lowerCaseQuery)||
         university.ranking.toLowerCase().includes(lowerCaseQuery)||
-        university.country.name.toLowerCase().includes(lowerCaseQuery)||
+        university.countryName.toLowerCase().includes(lowerCaseQuery)||
         (university.isApproved ? "approved" : "not approved").includes(lowerCaseQuery)
       )
     })
@@ -69,7 +70,7 @@ const AdminListUniversity = () => {
         toast.success("University approved Successfully");
         setUniversities((prevUniversity) =>
           prevUniversity.map((university) =>
-            university.id === id
+            university._id === id
               ? { ...university, isApproved: !isApproved }
               : university
           )
@@ -110,7 +111,7 @@ const AdminListUniversity = () => {
       id: "country",
       label: "Country",
       minWidth: 100,
-      render: (row: UniversityData) => row.country.name,
+      render: (row: UniversityData) => row.countryName,
     },
     {
       id: "logo",
@@ -131,7 +132,7 @@ const AdminListUniversity = () => {
           </Button>
         ) : (
           <Button
-            onClick={() => handleClick(row.id, row.isApproved)}
+            onClick={() => handleClick(row._id, row.isApproved)}
             variant="contained"
             color="error"
           >
@@ -150,7 +151,7 @@ const AdminListUniversity = () => {
       <div className="flex justify-end mt-3">
       <input
           type="text"
-          placeholder="Search users..."
+          placeholder="Search university"
           onChange={handleSearchChange}
           value={searchQuery}
           className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"

@@ -8,7 +8,7 @@ export class CourseDTO {
     public duration: string,
     public description: string,
     public logo: string,
-    public university: string | ObjectId,
+    public universities: string[],
     public domain: string | ObjectId
   ) {}
 }

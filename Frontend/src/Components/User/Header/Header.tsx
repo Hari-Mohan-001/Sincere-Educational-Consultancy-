@@ -59,11 +59,13 @@ function Header() {
       const response = await axios.get(`${BASE_URL}/signOut`,{
         withCredentials:true
       })
-      
+      if(response.status===200){
         dispatch(signOutUser())
         sessionStorage.clear()
         navigate("/signIn")
         handleCloseUserMenu();
+      }
+        
       
     } catch (error) {
       console.log(error);

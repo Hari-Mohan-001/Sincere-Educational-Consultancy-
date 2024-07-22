@@ -1,17 +1,16 @@
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { CourseDTO } from "../../application/dtos/courseDto";
 import { Course } from "../../domain/entities/course";
 import { ICourseRepository } from "../../domain/repositories/ICourseRepository";
 import courseModel from "../../presentation/models/courseModel";
+import universityModel from "../../presentation/models/universityModel";
+import courseUniversityModel from "../../presentation/models/CourseUniversityModel";
 
 export class mongoCourseRepository implements ICourseRepository {
   public async createCourse(course: CourseDTO): Promise<Course> {
     
     // Convert the university field to ObjectId if it's a string
-    const universityId =
-      typeof course.university === "string"
-        ? new Types.ObjectId(course.university)
-        : course.university;
+        const universityIds = course.universities
         try {
           const addNewCourse = new courseModel({
             name: course.name,
@@ -19,11 +18,17 @@ export class mongoCourseRepository implements ICourseRepository {
             fees: course.fees,
             description: course.description,
             duration: course.duration,
-            university: universityId,
+            universities: course.universities,
             domain:course.domain,
             logo:course.logo
           });
           const newCourse = await addNewCourse.save();
+          const courseUniversityEntries = universityIds.map((universityId) => ({
+            courseId: newCourse._id,
+            universityId,
+          }));
+           await courseUniversityModel.insertMany(courseUniversityEntries)
+
           return new Course(
             newCourse._id.toString(),
             newCourse.name,
@@ -32,7 +37,7 @@ export class mongoCourseRepository implements ICourseRepository {
             newCourse.description,
             newCourse.logo,
             newCourse.duration,
-            newCourse.university.toString(),
+            newCourse.universities.map((university: Types.ObjectId) => university.toString()),
             newCourse.domain.toString()
           );
         } catch (error) {
@@ -54,7 +59,7 @@ export class mongoCourseRepository implements ICourseRepository {
           course.description,
           course.logo,
           course.duration,
-          course.university.toString(),
+          course.universities.map((university: Types.ObjectId) => university.toString()),
           course.domain.toString()
         )
     );
@@ -74,11 +79,53 @@ export class mongoCourseRepository implements ICourseRepository {
             course.description,
             course.logo,
             course.duration,
-            course.university.toString(),
+            course.universities.map((university: Types.ObjectId) => university.toString()),
             course.domain.toString()
           )
       )
     } catch (error) {
+      throw error
+    }
+  }
+
+  public async getCounsellorCourse(countryId: string): Promise<Course[]> {
+    try {
+      const courses = await universityModel.aggregate([
+        {
+          $match:{country:new mongoose.Types.ObjectId(countryId)}
+        },
+        {
+          $lookup:{
+            from:'courses',
+            localField:'_id',
+            foreignField:'university',
+            as:'courses'
+          }
+        },
+        {$unwind:'$courses'},
+        {
+          $addFields:{
+             'courses.universityName':"$name"
+          }
+        },
+        {
+          $replaceRoot:{
+            newRoot:'$courses'
+          }
+
+        }
+      ])
+
+      if (!courses.length) {
+       throw new Error("No courses found"); 
+      }
+console.log('aggrecrs',courses);
+
+      return courses
+
+    } catch (error) {
+      console.log(error);
+      
       throw error
     }
   }
