@@ -17,7 +17,9 @@ const StudentList = () => {
     const getAllUser = async () => {
       try {
         console.log("use");
-        const response = await axios.get(`${ADMIN_BASE_URL}/users`);
+        const response = await axios.get(`${ADMIN_BASE_URL}/users`,{
+          withCredentials:true
+        });
         const data = response.data;
         console.log("dat", data);
 

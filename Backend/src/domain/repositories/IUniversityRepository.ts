@@ -8,4 +8,5 @@ export interface IUniversityRepository {
   getUniversities():Promise<PopulatedUniversity[]>
   approveUniversity(universityId:string):Promise<boolean>
   getAllUniversitiesForAdmin():Promise<University[]>
+  getUniversity(universityId:string):Promise<University>
 }

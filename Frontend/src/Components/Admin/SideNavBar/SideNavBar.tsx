@@ -37,6 +37,12 @@ const SideNavBar = () => {
           </ListItemIcon>
           <ListItemText primary="Country" />
         </ListItemButton>
+        <ListItemButton component={Link} to="/admin/enrollment" className="my-2 bg-white hover:text-blue-700 hover:bg-blue-700 text-white">
+          <ListItemIcon className="text-white">
+            <PublicIcon />
+          </ListItemIcon>
+          <ListItemText primary="Enrollment" />
+        </ListItemButton>
       </List>
     </div>
   );

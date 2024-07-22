@@ -33,14 +33,13 @@ const Countries = () => {
   };
 
   const column = [
-    { id: "no", label: "No", minWidth: 50 },
     { id: "name", label: "Name", minWidth: 100 },
     {
       id: "image",
       label: "Image",
       minWidth: 100,
       render: (row: any) => (
-        <img src={row.image} alt={row.name} style={{ width: 50, height: 50 }} />
+        <img src={row.image} alt={row.name} style={{ width: 100, height: 50 }} />
       ),
     },
   ];

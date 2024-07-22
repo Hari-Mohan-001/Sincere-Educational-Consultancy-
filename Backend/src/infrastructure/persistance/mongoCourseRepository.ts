@@ -129,4 +129,26 @@ console.log('aggrecrs',courses);
       throw error
     }
   }
+  public async getACourse(courseId: string): Promise<Course> {
+    try {
+      const course = await courseModel.findById(courseId)
+      if (!course) {
+        throw new Error(`Course with ID ${courseId} not found`);
+      }
+      return new Course(
+            course._id.toString(),
+            course.name,
+            course.qualification,
+            course.fees,
+            course.description,
+            course.logo,
+            course.duration,
+            course.universities.map((university: Types.ObjectId) => university.toString()),
+            course.domain.toString()
+      )
+    } catch (error) {
+      console.log(error);
+      throw error
+    }
+  }
 }

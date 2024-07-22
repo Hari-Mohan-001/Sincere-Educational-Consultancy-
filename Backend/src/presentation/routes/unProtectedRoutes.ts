@@ -3,10 +3,12 @@ import countryControler from "../../infrastructure/controllers/countryController
 import { universityController } from "../../infrastructure/controllers/universityController";
 import courseController from "../../infrastructure/controllers/courseController";
 import domainController from "../../infrastructure/controllers/domainController";
+import courseUniversityController from "../../infrastructure/controllers/courseUniversityController";
 const CountryControler = countryControler() 
 const UniversityController = universityController()
 const CourseController = courseController()
 const DomainContoller = domainController()
+const CourseUniversityController = courseUniversityController()
 const router = express.Router()
 
 router.get("/countries",(req:Request,res:Response)=>{
@@ -24,5 +26,13 @@ router.get("/courses", (req:Request,res:Response)=>{
 router.get("/domains",(req:Request,res:Response)=>{
 DomainContoller.getDomains(req,res)
 })
-
+router.get("/course/:courseId",(req:Request,res:Response)=>{
+  CourseController.getACourse(req,res)
+})
+router.get("/universities-course/:courseId",(req:Request,res:Response)=>{
+CourseUniversityController.getAllUniversity(req,res)
+})
+router.get("/university/:universityId",(req:Request,res:Response)=>{
+UniversityController.getUniversityById(req,res)
+})
 export default router

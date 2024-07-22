@@ -1,4 +1,10 @@
+import { useNavigate } from "react-router-dom";
+
 const EnrollCard = () => {
+const navigate = useNavigate()
+  const handleClick = ()=>{
+  navigate("/enrollment")
+  }
   return (
     <div className='flex flex-col lg:flex-row lg:items-center h-auto lg:h-72 mt-10 sm:w-fit'>
       <div className='w-full lg:w-1/2 p-4'>
@@ -15,7 +21,7 @@ const EnrollCard = () => {
           </div>
         </div>
         <div>
-          <button className='bg-cyan-700 text-white rounded-2xl w-36 h-10'>Enroll Now</button>
+          <button onClick={handleClick} className='bg-cyan-700 text-white rounded-2xl w-36 h-10'>Enroll Now</button>
         </div>
       </div>
       <div className='w-full lg:w-1/2 p-4'>

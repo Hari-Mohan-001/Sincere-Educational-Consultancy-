@@ -172,7 +172,6 @@ const userAuthController = (
   };
 
   const signOutUser = (req: Request, res: Response) => {
-    console.log("signout");
     try {
       const signOutUser = signOut(res);
       res.status(200).json({message:" signout success"})

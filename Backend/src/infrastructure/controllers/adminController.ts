@@ -1,7 +1,7 @@
 import { Request,Response } from "express"
 import { adminLoginUseCase} from "../../application/use-cases/Admin/login"
 import { generateAdminJwtToken } from "../security/generateAdminJwt"
-import { logOut } from "../../application/use-cases/Admin/logout"
+import { adminLogOut } from "../../application/use-cases/Admin/logout"
 import { mongoAdminRepository } from "../persistance/mongoAdminRepository"
 
 
@@ -31,7 +31,7 @@ const adminRepository = new mongoAdminRepository()
 
        const adminLogout = async (req:Request,res:Response)=>{
            try {
-               logOut(res)
+             const logout = adminLogOut(res)
            } catch (error) {
             if (error instanceof Error) {
                 res.status(400).json({ message: error.message });

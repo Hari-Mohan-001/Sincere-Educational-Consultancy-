@@ -126,4 +126,25 @@ export class mongoUniversityRepository implements IUniversityRepository {
       throw error
     }
   }
+
+  public async getUniversity(universityId: string): Promise<University> {
+    try {
+      const university = await universityModel.findById(universityId)
+      if(!university){
+        throw new Error("University not found");
+      }
+      return new University(
+        university._id.toString(),
+        university.name,
+        university.address,
+        university.ranking,
+        university.logo,
+        university.images,
+        university.country,
+        university.isApproved
+      )
+    } catch (error) {
+      throw error
+    }
+  }
 }

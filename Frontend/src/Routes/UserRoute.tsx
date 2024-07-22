@@ -8,6 +8,8 @@ import HomePage from "../Pages/User/HomePage/HomePage";
 import UserPrivateRoute from "./PrivateRoute";
 import CoursesPage from "../Pages/User/suggestedCoursesPage/SuggestedCoursesPage";
 import CourseDeatailsPage from "../Pages/User/CourseDetailsPage/CourseDeatailsPage";
+import UniversityDetailsPage from "../Pages/User/UniversityDetailsPage/UniversityDetailsPage";
+import EnrollmentPage from "../Pages/User/EnrollmentPage/EnrollmentPage";
 
 const UserRoute = () => {
   return (
@@ -19,9 +21,11 @@ const UserRoute = () => {
       <Route path="/reset-Password" element={<ResetPasswordPage />} />
       <Route element={<UserPrivateRoute/>}>
       <Route path="/home" element={<HomePage />} />
+      <Route path="/enrollment" element={<EnrollmentPage/>}/>
       </Route>
       <Route path="/courses" element={<CoursesPage/>}/>
-      <Route path="/courseDetails/:id" element={<CourseDeatailsPage/>}/>
+      <Route path="/courseDetails/:courseId" element={<CourseDeatailsPage/>}/>
+      <Route path="/universityDetails/:universityId" element={<UniversityDetailsPage/>}/>
     </Routes>
   );
 };

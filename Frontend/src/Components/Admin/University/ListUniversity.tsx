@@ -35,7 +35,9 @@ const AdminListUniversity = () => {
   useEffect(() => {
     const fetchUniversity = async () => {
       try {
-        const response = await axios.get(`${ADMIN_BASE_URL}/universities`);
+        const response = await axios.get(`${ADMIN_BASE_URL}/universities`,{
+          withCredentials:true
+        });
         console.log("res", response.data);
 
         setUniversities(response.data.data);
@@ -65,7 +67,9 @@ const AdminListUniversity = () => {
 
   const approveUniversity = async (id: string, isApproved: Boolean) => {
     try {
-      const response = await axios.patch(`${ADMIN_BASE_URL}/university/${id}`);
+      const response = await axios.patch(`${ADMIN_BASE_URL}/university/${id}`,{},{
+        withCredentials:true
+      });
       if (response.status === 200) {
         toast.success("University approved Successfully");
         setUniversities((prevUniversity) =>
@@ -77,7 +81,11 @@ const AdminListUniversity = () => {
         );
       }
     } catch (error) {
-      if (error instanceof Error) {
+      if (axios.isAxiosError(error) && error.response) {
+        // Handle axios-specific errors here
+        toast.error(`Error: ${error.response.data.message}`);
+      } else if (error instanceof Error) {
+        // Handle other error types
         toast.error(error.message);
       } else {
         toast.error("An unknown error occurred");

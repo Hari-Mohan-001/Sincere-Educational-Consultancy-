@@ -2,12 +2,12 @@
 import axios from "axios";
 import { ADMIN_BASE_URL} from "../../../Constants/Constants";
 import { useDispatch, useSelector } from "react-redux";
-import { signOutCounsellor } from "../../../Redux/Counsellor/CounsellorSlice";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AdminRootState } from "../../../Interface/Admin/AdminInterface";
 import { useEffect } from "react";
 import { signOutAdmin } from "../../../Redux/Admin/AdminSlice";
+import { Button } from "@mui/material";
 
 
 
@@ -41,13 +41,16 @@ const Header = () => {
           <div className="flex justify-between items-center max max-w-7xl mx-auto p-3">
             <h1 className="font-bold">SeC</h1>
             <ul className="flex gap-4">
-              <li className="cursor-pointer" onClick={handleSignout}>SignOut</li>
+              {/* <li className="cursor-pointer" onClick={handleSignout}>SignOut</li> */}
+              <h1 className="rounded-full">{admin?.name}</h1>
     
-              {/* <img
+              <img
                 className="w-7 h-7 rounded-full object-cover"
-                src={adminDetails && adminDetails.profileImage}
+                src={admin && admin.image ? admin.image : undefined}
                 alt="image"
-              /> */}
+              />
+              <Button variant="contained" onClick={handleSignout}>SignOut</Button>
+              
             </ul>
           </div>
         </div>

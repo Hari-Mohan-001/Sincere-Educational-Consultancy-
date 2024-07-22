@@ -14,6 +14,8 @@ export const verifyAdminToken = (
     next: NextFunction
   ): void => {
     const token = req.cookies.adminAuthToken;
+    console.log('enter adnmintok',token);
+    
     if (!token) {
       res.status(401).json({ message: "login to continue" });
       return
@@ -24,6 +26,8 @@ export const verifyAdminToken = (
       jwtSecret,
       (err: VerifyErrors | null, decoded: JwtPayload | string| undefined) => {
         if (err) {
+          console.log(err);
+          
           res.status(401).json({ message: "login to continue" });
           return;
         }

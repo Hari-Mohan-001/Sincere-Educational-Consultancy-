@@ -8,4 +8,5 @@ export interface ICourseRepository {
   getAllCourse(): Promise<Course[]>;
   getSuggestedCourse(qualification:string):Promise<Course[]>
   getCounsellorCourse(countryId:string):Promise<Course[]>
+  getACourse(courseId:string): Promise<Course>;
 }

@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
-import Header from "../../../Components/User/Header/Header"
 import axios, { AxiosError } from "axios"
 import { BASE_URL } from "../../../Constants/Constants"
 import { useSelector } from "react-redux"
 import { RootState } from "../../../Interface/User/UserInterface"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@mui/material"
 
 interface CourseData {
@@ -14,7 +13,7 @@ interface CourseData {
   fees: string;
   description: string;
   duration: string;
-  university: string;
+  university: string[];
   domain: string;
   logo: string;
 }

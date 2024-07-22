@@ -25,25 +25,17 @@ interface UniversityData {
 
 const ListUniversity = () => {
   const navigate = useNavigate();
-  const { counsellor } = useSelector(
-    (state: CounsellorRootState) => state.counsellor
-  );
   useEffect(() => {
     const fetchUniversity = async () => {
       console.log('unisrt',universities);
       
       try {
-        if (counsellor) {
-          const countryId = counsellor.country;
-
-          const response = await axios.get(`${URL}/universities/${countryId}`);
+       
+          const response = await axios.get(`${URL}/universities/`);
           console.log('res',response.data);
 
           setUniversities(response.data.getUniversities);
           console.log('setubi',universities);
-        } else {
-          navigate("/counsellor/signin");
-        }
       } catch (error) {
         console.error(error);
       }

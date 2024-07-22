@@ -1,4 +1,4 @@
-import React from 'react'
+
 import Header from '../../../Components/User/Header/Header'
 import CourseDetails from '../../../Components/User/CourseDetails/CourseDetails'
 

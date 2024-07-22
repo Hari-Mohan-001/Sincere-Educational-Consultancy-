@@ -10,6 +10,7 @@ import { getAllUniversities } from "../../application/use-cases/Counsellor/getAl
 import { AllUniversities } from "../../application/use-cases/Counsellor/getUniversities";
 import { universityApproval } from "../../application/use-cases/University/ApproveUniversity";
 import { adminGetAllUniversities } from "../../application/use-cases/University/adminGetAllUniversities";
+import { getUniversity } from "../../application/use-cases/University/getUniversity";
 
 const universityRepository = new mongoUniversityRepository();
 
@@ -112,11 +113,30 @@ export const universityController = () => {
       }
     }
   }
+
+  const getUniversityById = async (req: Request, res: Response)=>{
+      try {
+         const universityId = req.params.universityId
+         console.log(universityId);
+         
+         const university = await getUniversity(universityRepository).execute(universityId)
+         if(university){
+          res.status(200).json({message:'Success',data:university})
+         }
+      } catch (error) {
+        if (error instanceof Error) {
+          res.status(400).json({ message: error.message });
+        } else {
+          res.status(400).json({ message: "An unknown error occurred" });
+        }
+      }
+  }
   return {
     addUniversity,
     getAllUniversity,
     getAllApprovedUniversities,
     adminApproveUniversity,
-    getAllUniversitiesForAdmin
+    getAllUniversitiesForAdmin,
+    getUniversityById
   };
 };

@@ -1,6 +1,5 @@
 import {Response} from "express"
-export const logOut =(res:Response)=>{
+export const adminLogOut =(res:Response)=>{
     res.clearCookie("adminAuthToken")
-    res.status(200).json({message: "signedOut successfully"})
-    
+    res.status(200).json({message: "signedOut successfully"})   
 }

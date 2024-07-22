@@ -6,6 +6,7 @@ import { cloudinaryUpload } from "../services/CloudinaryUpload";
 import { allCourses } from "../../application/use-cases/Course/getAllCourse";
 import { SuggestedCourses } from "../../application/use-cases/Course/getSuggestedCourses";
 import { getCounsellorCourses } from "../../application/use-cases/Course/getCounsellorCourses";
+import { getCourseByCourseId } from "../../application/use-cases/Course/getACourse";
 
 const courseRepository = new mongoCourseRepository();
 
@@ -109,9 +110,27 @@ const courseController = () => {
                 if (error instanceof Error) { 
                   res.status(400).json({ message: error.message });
                 } else {
-                  res.status(400).json({ message: "An unknown error occurred" });
+                  res.status(400).json({ message: "An unknown error occurred" }); 
                 }
               }
+  }
+
+  const getACourse = async(req: Request, res: Response)=>{    
+    const courseId = req.params.courseId
+    console.log('get crs ', courseId);
+    
+    try {
+      const course = await getCourseByCourseId(courseRepository).execute(courseId)
+      if(course){
+        res.status(200).json({message:'Success' , data:course})
+      }
+    } catch (error) {
+      if (error instanceof Error) { 
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
   }
 
 
@@ -119,7 +138,8 @@ const courseController = () => {
     addCourse,
     getAllCourse,
     getSuggestedCourse,
-    counsellorCourse
+    counsellorCourse,
+    getACourse
   };
 };
 export default courseController;
