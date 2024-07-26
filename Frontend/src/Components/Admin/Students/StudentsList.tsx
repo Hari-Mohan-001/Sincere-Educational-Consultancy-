@@ -16,12 +16,10 @@ const StudentList = () => {
   useEffect(() => {
     const getAllUser = async () => {
       try {
-        console.log("use");
-        const response = await axios.get(`${ADMIN_BASE_URL}/users`,{
-          withCredentials:true
+        const response = await axios.get(`${ADMIN_BASE_URL}/users`, {
+          withCredentials: true,
         });
         const data = response.data;
-        console.log("dat", data);
 
         setUsers(data.userData);
         console.log(users);
@@ -32,9 +30,15 @@ const StudentList = () => {
     getAllUser();
   }, []);
 
-  const blockUser = async (id: string, isBlocked:Boolean) => {
+  const blockUser = async (id: string, isBlocked: Boolean) => {
     try {
-      const response = await axios.patch(`${ADMIN_BASE_URL}/user/${id}`);
+      const response = await axios.patch(
+        `${ADMIN_BASE_URL}/user/${id}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
       if (response.status == 200) {
         toast.success("User blocked Successfully");
         setUsers((prevUsers) =>

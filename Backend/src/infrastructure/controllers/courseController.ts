@@ -7,6 +7,7 @@ import { allCourses } from "../../application/use-cases/Course/getAllCourse";
 import { SuggestedCourses } from "../../application/use-cases/Course/getSuggestedCourses";
 import { getCounsellorCourses } from "../../application/use-cases/Course/getCounsellorCourses";
 import { getCourseByCourseId } from "../../application/use-cases/Course/getACourse";
+import { getAllCourseForAdmin } from "../../application/use-cases/Course/getAllCourseForAdmin";
 
 const courseRepository = new mongoCourseRepository();
 
@@ -99,6 +100,8 @@ const courseController = () => {
     console.log('counscrs');
     
               const countryId = req.params.countryId
+             
+              
               try {
                 const courses = await getCounsellorCourses(courseRepository).execute(countryId)
                 console.log('cons crs',courses);
@@ -133,13 +136,31 @@ const courseController = () => {
     }
   }
 
+  const getAllCoursesForAdmin = async(req: Request, res: Response)=>{
+    try {
+       const adminCourses = await getAllCourseForAdmin(courseRepository).execute()
+       console.log('admincrs',adminCourses);
+       
+       if(adminCourses.length){
+          res.status(200).json({message:'success',data:adminCourses})
+       }
+    } catch (error) {
+      if (error instanceof Error) { 
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  }
+
 
   return {
     addCourse,
     getAllCourse,
     getSuggestedCourse,
     counsellorCourse,
-    getACourse
+    getACourse,
+    getAllCoursesForAdmin
   };
 };
 export default courseController;

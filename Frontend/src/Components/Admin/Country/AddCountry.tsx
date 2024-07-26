@@ -64,6 +64,7 @@ const AddCountry = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials:true
         }
       );
       console.log("success", response.data);

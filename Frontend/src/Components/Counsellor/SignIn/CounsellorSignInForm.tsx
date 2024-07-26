@@ -24,9 +24,7 @@ const CounsellorSignInForm = () => {
   
 
   useEffect(()=>{
-    if(counsellor){
-      console.log('eff',counsellor);
-      
+    if(counsellor){  
       navigate("/counsellor/university")
     }
   },[counsellor, navigate])

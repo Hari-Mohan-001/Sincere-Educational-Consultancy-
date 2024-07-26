@@ -8,7 +8,7 @@ import PublicIcon from '@mui/icons-material/Public';
 
 const SideNavBar = () => {
   return (
-    <div className="w-60 bg-gray-800 text-white h-full shadow-xl mt-10">
+    <div className="w-60 bg-gray-800 text-white h-full shadow-xl">
       <div className="flex items-center justify-center h-16">
         <Typography variant="h5">Dashboard List</Typography>
       </div>

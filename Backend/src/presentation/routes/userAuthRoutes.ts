@@ -9,6 +9,9 @@ import { verifyUserToken } from "../../infrastructure/middleware/verifyUserToken
 import { redirectAuthenticatedUser } from "../../infrastructure/middleware/redirectAuthenticatedUser";
 import { isUserBlocked } from "../../infrastructure/middleware/isUserBlocked";
 import courseController from "../../infrastructure/controllers/courseController";
+import enrollmentContoller from "../../infrastructure/controllers/enrollmentController";
+import checkoutController from "../../infrastructure/controllers/checkoutController";
+import { userController } from "../../infrastructure/controllers/userController";
 
 const userAuthRoute = express.Router();
 const userRepository = new mongoUserRepository();
@@ -21,6 +24,9 @@ const UserAuthController = userAuthController(
   signInUseCase
 );
 const CourseController = courseController()
+const EnrollmentController = enrollmentContoller()
+const CheckoutController = checkoutController()
+const UserController = userController()
 
 userAuthRoute.post(
   "/signUp",
@@ -57,12 +63,24 @@ userAuthRoute.post(
 userAuthRoute.use((req: Request, res: Response, next: NextFunction) => {
   verifyUserToken(req, res, next);
 });
+
+userAuthRoute.get("/user/:userId",(req: Request, res: Response)=>{
+  UserController.getUser(req,res)
+})
 userAuthRoute.get("/signOut", (req: Request, res: Response) =>
   UserAuthController.signOutUser(req, res)
 );
 
-userAuthRoute.get("/courses/:qualification", (req: Request, res: Response)=>{
+userAuthRoute.get("/courses/:qualification", isUserBlocked, (req: Request, res: Response)=>{
 CourseController.getSuggestedCourse(req,res)
+})
+
+userAuthRoute.get("/enrollments", (req: Request, res: Response)=>{
+EnrollmentController.getEnrollments(req,res)
+})
+
+userAuthRoute.post("/create-checkout",(req: Request, res: Response)=>{
+  CheckoutController.createCheckout(req,res)
 })
 
 export default userAuthRoute;

@@ -7,13 +7,15 @@ import Divider from "@mui/material/Divider";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signUpCounsellor } from "../../../Redux/Counsellor/CounsellorSlice";
 import { AppDispatch } from "../../../Redux/Store";
 import { toast } from "react-toastify";
-import { ResponseData } from "../../../Interface/Counsellor/CounsellorInterface";
+import {
+  CounsellorRootState,
+  ResponseData,
+} from "../../../Interface/Counsellor/CounsellorInterface";
 import { URL } from "../../../Constants/Constants";
-
 
 interface Country {
   id: string;
@@ -26,40 +28,42 @@ interface Counsellor {
   email: string;
   mobile: string;
   password: string;
-  confirmPassword: string
+  confirmPassword: string;
   country: string;
 }
 
 const CounsellorSignUpForm = () => {
-
-    useEffect(()=>{
-        const fetchCountries = async () => {
-            try {
-              const response = await axios.get(`${URL}/countries`);
-              console.log(response.data);
-              
-              setCountries(response.data.data);
-              console.log(countries);
-              
-            } catch (error) {
-              console.error(error);
-            }
-          };
-          fetchCountries();
-    },[])
+  const { counsellor } = useSelector(
+    (state: CounsellorRootState) => state.counsellor
+  );
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (counsellor) {
+      navigate("/counsellor/university");
+    }
+    const fetchCountries = async () => {
+      try {
+        const response = await axios.get(`${URL}/countries`);
+        setCountries(response.data.data);
+        console.log(countries);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchCountries();
+  }, []);
   const [formData, setFormData] = useState<Counsellor>({
-    name: '',
-    email: '',
-    mobile: '',
-    password: '',
-    confirmPassword: '',
-    country: '',
+    name: "",
+    email: "",
+    mobile: "",
+    password: "",
+    confirmPassword: "",
+    country: "",
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [countries, setCountries] = useState<Country[]>([]);
- const dispatch = useDispatch<AppDispatch>()
-  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -74,18 +78,16 @@ const CounsellorSignUpForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({ signUpError: "" });
-   dispatch(signUpCounsellor(formData)).then((result)=>{
-    
-     if(signUpCounsellor.fulfilled.match(result)){
-        toast.success("signup successfull")
-        navigate("/counsellor/university")
-     }else if(signUpCounsellor.rejected.match(result)){
-        const payload = result.payload as ResponseData
+    dispatch(signUpCounsellor(formData)).then((result) => {
+      if (signUpCounsellor.fulfilled.match(result)) {
+        toast.success("signup successfull");
+        navigate("/counsellor/university");
+      } else if (signUpCounsellor.rejected.match(result)) {
+        const payload = result.payload as ResponseData;
         setErrors({ signUpError: payload?.message || "Failed to signup" });
-        toast.error("Signup falied")
-     }
-   })
-
+        toast.error("Signup falied");
+      }
+    });
   };
 
   return (
@@ -189,7 +191,6 @@ const CounsellorSignUpForm = () => {
             <Button type="submit" variant="contained">
               Register
             </Button>
-            
           </Box>
         </Box>
       </form>

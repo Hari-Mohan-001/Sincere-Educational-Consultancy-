@@ -7,11 +7,6 @@ import { COUNSELLORBASEURL} from "../../../Constants/Constants";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
 
-// interface Country {
-//   _id: string;
-//   name: string;
-// }
-
 interface CourseData {
   name: string;
   qualification: string;
@@ -35,12 +30,11 @@ const ListCourse = () => {
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-          console.log('fetc', countryId);
+          
           
 
           const response = await axios.get(`${COUNSELLORBASEURL}/courses/${countryId}`);
-          console.log('res',response.data);
-
+          
           setCourses(response.data.data);
         } else {
           navigate("/counsellor/signin");

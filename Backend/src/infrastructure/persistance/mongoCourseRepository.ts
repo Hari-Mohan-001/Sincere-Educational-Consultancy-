@@ -98,7 +98,7 @@ export class mongoCourseRepository implements ICourseRepository {
           $lookup:{
             from:'courses',
             localField:'_id',
-            foreignField:'university',
+            foreignField:'universities',
             as:'courses'
           }
         },
@@ -148,6 +148,45 @@ console.log('aggrecrs',courses);
       )
     } catch (error) {
       console.log(error);
+      throw error
+    }
+  }
+  public async getCoursesForAdmin(): Promise<Course[]> {
+    
+    try {
+      const courses = await universityModel.aggregate([
+        {
+          $lookup:{
+            from:'courses',
+            localField:'_id',
+            foreignField:'universities',
+            as:'courses'
+          }
+        },
+        {$unwind:'$courses'},
+        {
+          $addFields:{
+             'courses.universityName':"$name"
+          }
+        },
+        {
+          $replaceRoot:{
+            newRoot:'$courses'
+          }
+
+        }
+      ])
+
+      if (!courses.length) {
+       throw new Error("No courses found"); 
+      }
+console.log('aggrecrs',courses);
+
+      return courses
+
+    } catch (error) {
+      console.log(error);
+      
       throw error
     }
   }

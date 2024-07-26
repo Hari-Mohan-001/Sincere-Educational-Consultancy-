@@ -7,6 +7,7 @@ export interface IUniversityRepository {
   getAllUniversities(countryId:string): Promise<PopulatedUniversity[]>;
   getUniversities():Promise<PopulatedUniversity[]>
   approveUniversity(universityId:string):Promise<boolean>
-  getAllUniversitiesForAdmin():Promise<University[]>
-  getUniversity(universityId:string):Promise<University>
+  getApprovedUniversitiesForAdmin():Promise<University[]>
+  getUniversity(universityId:string):Promise<PopulatedUniversity>
+  getNotApprovedUniversities():Promise<University[]>
 }

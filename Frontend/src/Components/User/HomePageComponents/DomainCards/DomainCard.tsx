@@ -26,8 +26,8 @@ const DomainCard = () => {
       }, []);
       const[domains,setDomains] = useState<Domain[]>()
   return (
-
-    <div className="mt-9">
+  //  <section className="flex justify-center items-center box-border">
+    <div className="mt-16">
       <h1 className="text-center text-2xl font-bold">Major domains</h1>
       <div className="flex flex-wrap justify-around mt-12 p-1 bg-blue-950 rounded-lg shadow-xl ml-10 mr-10">
         {domains?.map((domain) => (
@@ -47,6 +47,7 @@ const DomainCard = () => {
         ))}
       </div>
     </div>
+    // </section>
   );
 }
 

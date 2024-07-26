@@ -5,15 +5,26 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Divider from "@mui/material/Divider";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../../../Redux/User/UserSlice";
 import { AppDispatch } from "../../../Redux/Store";
-import { ResponseData, UserData } from "../../../Interface/User/UserInterface";
+import { ResponseData, RootState, UserData } from "../../../Interface/User/UserInterface";
 import { ValidateEmail, validateMobile, validateName, validateQualification,validatePassword, validateConfirmPasswordAndCompare } from "../../../Utils/Validation/UserSignUpValidation";
 import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SignUpForm = () => {
+  const {user} = useSelector((state:RootState)=>state.user)
+  const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(user){
+      console.log(user);
+      
+      navigate("/home")
+    }
+  },[user, navigate])
+
   const [formData, setFormData] = useState<UserData>({
     name: "",
     email: "",
@@ -26,7 +37,7 @@ const SignUpForm = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });

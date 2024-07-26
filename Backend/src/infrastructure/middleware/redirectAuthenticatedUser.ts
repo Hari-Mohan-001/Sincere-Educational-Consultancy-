@@ -20,8 +20,8 @@ export const redirectAuthenticatedUser = (
       token,
       jwtSecret,
       (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
-        if (!err) {
-          return res.redirect("/user/profile");
+        if (err) {
+          return    
         }
       }
     );

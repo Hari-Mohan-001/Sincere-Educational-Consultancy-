@@ -1,4 +1,3 @@
-import React from "react";
 import Header from "../../../Components/Admin/Header/Header";
 import SideNavBar from "../../../Components/Admin/SideNavBar/SideNavBar";
 import AdminListUniversity from "../../../Components/Admin/University/ListUniversity";
@@ -8,7 +7,10 @@ const UniversityListPage = () => {
     <div>
       <Header />
       <div className="flex ">
-        <SideNavBar />
+        <div>
+          <SideNavBar />
+        </div>
+
         <div className="w-4/5">
           <AdminListUniversity />
         </div>

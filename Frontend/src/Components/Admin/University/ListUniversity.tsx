@@ -1,19 +1,16 @@
-import { Button } from "@mui/material";
+import { Badge, Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ADMIN_BASE_URL, URL } from "../../../Constants/Constants";
+import { ADMIN_BASE_URL} from "../../../Constants/Constants";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 
 const mySwal = withReactContent(Swal);
 
-// interface Country {
-//   _id: string;
-//   name: string;
-// }
+
 
 interface UniversityData {
   _id: string;
@@ -32,21 +29,31 @@ const AdminListUniversity = () => {
   const [universities, setUniversities] = useState<UniversityData[]>([]);
   const [filteredUniversities, setFilteredUniversities] = useState<UniversityData[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [count, setCount] =useState()
   useEffect(() => {
     const fetchUniversity = async () => {
       try {
-        const response = await axios.get(`${ADMIN_BASE_URL}/universities`,{
+        const response = await axios.get(`${ADMIN_BASE_URL}/approved-universities`,{
           withCredentials:true
         });
-        console.log("res", response.data);
-
         setUniversities(response.data.data);
-        console.log("setubi", universities);
       } catch (error) {
         console.error(error);
       }
     };
+
+    const getNotApprovedUniversitiesCount = async()=>{
+      const response = await axios.get(`${ADMIN_BASE_URL}/not-approved-universities-count`,{
+        withCredentials:true
+      })
+      const count = response.data.data
+      console.log('count',count);
+      
+      setCount(count)
+    }
+    getNotApprovedUniversitiesCount()
     fetchUniversity();
+    
   }, []);
 
   useEffect(()=>{
@@ -65,51 +72,9 @@ const AdminListUniversity = () => {
 
 
 
-  const approveUniversity = async (id: string, isApproved: Boolean) => {
-    try {
-      const response = await axios.patch(`${ADMIN_BASE_URL}/university/${id}`,{},{
-        withCredentials:true
-      });
-      if (response.status === 200) {
-        toast.success("University approved Successfully");
-        setUniversities((prevUniversity) =>
-          prevUniversity.map((university) =>
-            university._id === id
-              ? { ...university, isApproved: !isApproved }
-              : university
-          )
-        );
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        // Handle axios-specific errors here
-        toast.error(`Error: ${error.response.data.message}`);
-      } else if (error instanceof Error) {
-        // Handle other error types
-        toast.error(error.message);
-      } else {
-        toast.error("An unknown error occurred");
-      }
-    }
-  };
-
-  const handleClick = async (id: string, isApproved: Boolean) => {
-    mySwal
-      .fire({
-        title: `Are you sure you want to ${
-          isApproved ? "Approve" : "Approve"
-        } this university?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes",
-        cancelButtonText: "No",
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          approveUniversity(id, isApproved);
-        }
-      });
-  };
+  const handleApproval = ()=>{
+      navigate("/admin/not-approved-universities")
+  }
 
   const columns = [
     { id: "name", label: "Name", minWidth: 100 },
@@ -140,7 +105,6 @@ const AdminListUniversity = () => {
           </Button>
         ) : (
           <Button
-            onClick={() => handleClick(row._id, row.isApproved)}
             variant="contained"
             color="error"
           >
@@ -156,7 +120,8 @@ const AdminListUniversity = () => {
 
   return (
     <div className="flex flex-col">
-      <div className="flex justify-end mt-3">
+      <div className="flex justify-end mt-3 gap-2">
+        <div>
       <input
           type="text"
           placeholder="Search university"
@@ -164,6 +129,12 @@ const AdminListUniversity = () => {
           value={searchQuery}
           className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
         />
+        </div>
+        <div>
+        <Badge badgeContent={count} color="primary">
+        <Button onClick={handleApproval} variant="contained" color="secondary">Pending Approvals</Button>
+        </Badge>
+        </div>
       </div>
       <div>
         <TableComponent

@@ -26,7 +26,7 @@ const UniversityCard = () => {
         const response = await axios.get(`${URL}/universities`);
         console.log(response.data);
         
-        setUniversities(response.data.getAllUniversities);
+        setUniversities(response.data.getAllUniversities.slice(0,4));
       } catch (error) {
         console.error('Error fetching country data:', error);
       } finally {
@@ -45,7 +45,7 @@ const UniversityCard = () => {
         {universities.map((university) => (
           <div key={university.id} className="flex flex-col items-center w-1/2 sm:w-1/4 lg:w-1/3 p-2">
            
-            <img className="w-96 h-60  shadow-2xl border" src={university.logo} alt={university.name} />
+            <img className="w-80 h-60  shadow-2xl border" src={university.logo} alt={university.name} />
             
           </div>
         ))}

@@ -65,7 +65,7 @@ getSuggestedCourses()
       </div>
       <div className="flex flex-wrap justify-center gap-10 ml-16 mr-16">
         {suggestedCourses.map((courses) => (
-          <div key={courses.id} className="flex flex-col items-center  sm:w-1/4 lg:w-1/3 p-2">
+          <div key={courses.id} className="flex flex-col items-center  sm:w-1/4 lg:w-1/4 p-2">
            
             <img className="w-96 h-60  shadow-2xl border rounded-lg" src={courses.logo} alt={courses.name} />
             <Button onClick={ ()=>handleClick(courses.id)} variant="outlined">{courses.name}</Button>

@@ -7,16 +7,19 @@ import Career from "../../../Components/User/LandingPageComponents/Career/Career
 import Features from "../../../Components/User/LandingPageComponents/Features/Features"
 
 
+
 const LandingPage = () => {
   return (
     <>
     <Header/>
+    
     <Banner/>
     <Success/>
     <About/>
     <Country/>
     <Career/>
     <Features/>
+   
     </>
   )
 }

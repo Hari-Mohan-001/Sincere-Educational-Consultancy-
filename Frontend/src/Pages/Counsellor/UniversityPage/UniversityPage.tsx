@@ -8,9 +8,13 @@ const UniversityPage = () => {
     <>
       <Header />
       <div className="flex">
+        <div>
         <SideNavBar />
+        </div>
+        
         <ListUniversity />
-      </div>
+      
+    </div>
     </>
   );
 };

@@ -2,10 +2,26 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { URL } from "../../../Constants/Constants"
-import { UniversityData } from "../../../Interface/University/UniversityData"
-import * as React from 'react';
+// import { UniversityData } from "../../../Interface/University/UniversityData"
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
+
+interface CountryData{
+  id:string,
+  name:string,
+  image:string
+}
+
+interface UniversityData {
+  _id: string;
+  name: string;
+  address: string;
+  ranking: string;
+  country: CountryData;
+  logo: string;
+  images: string[];
+  isApproved: boolean;
+}
 
 
 const UniversityDetails = () => {
@@ -35,7 +51,7 @@ const UniversityDetails = () => {
         <div className="flex justify-center">
       <div className="w-2/3 h-auto bg-indigo-200 mt-5 rounded-md">
       <div className="flex p-5">
-        <div>
+        <div className="max-w-48">
           <img className="rounded-lg shadow-md" src={university?.logo} alt="" />
         </div>
         <div className="flex items-center ml-10">
@@ -49,7 +65,7 @@ const UniversityDetails = () => {
           <p>Address: {university?.address}</p>
         </div>
         <div>
-          <p>Country: {university?.country}</p>
+          <p>Country: {university?.country.name}</p>
         </div>
         <div>
           <p>Ranking: {university?.ranking}</p>

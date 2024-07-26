@@ -8,7 +8,9 @@ const ListEnrollmentPage = () => {
     <>
     <Header />
     <div className="flex">
+      <div>
       <SideNavBar />
+      </div>
       <ListEnrollment />
     </div>
   </>

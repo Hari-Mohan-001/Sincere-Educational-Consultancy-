@@ -9,6 +9,8 @@ export const isUserBlocked = async (
 ) => {
   try {
     const token = req.cookies.userAuthToken;
+    console.log('isblock');
+    
     if (!token) {
       return res.status(401).json({ message: "Unauthorised" });
     }
@@ -22,7 +24,9 @@ export const isUserBlocked = async (
       return res.status(404).json({ message: "User not found" });
     }
     if (user?.isBlocked) {
-      return res.status(403).json({ message: "You are blocked" });
+      console.log('here'); 
+    return res.redirect('http://localhost:5173/signIn')
+      // return res.status(403).json({ message: "You are blocked" });
     }
     next();
   } catch (error) {

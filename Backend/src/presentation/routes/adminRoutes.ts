@@ -6,6 +6,7 @@ import { userController } from "../../infrastructure/controllers/userController"
 import { universityController } from "../../infrastructure/controllers/universityController";
 import enrollmentContoller from "../../infrastructure/controllers/enrollmentController";
 import { verifyAdminToken } from "../../infrastructure/middleware/verifyAdminToken";
+import courseController from "../../infrastructure/controllers/courseController";
 
 const adminRouter = express.Router();
 const AdminController = adminController();
@@ -13,6 +14,7 @@ const CountryController = countryControler();
 const UserController = userController() 
 const UniversityController = universityController()
 const EnrollmentController = enrollmentContoller()
+const CourseController = courseController()
 
 adminRouter.post("/signin", (req: Request, res: Response) =>
   AdminController.adminLogin(req, res)
@@ -35,9 +37,18 @@ adminRouter.get("/users",(req:Request,res:Response)=>{
   UserController.getUsers(req,res)
 })
 
-adminRouter.get("/universities",(req:Request,res:Response)=>{ 
-  UniversityController.getAllUniversitiesForAdmin(req,res)
+adminRouter.get("/approved-universities",(req:Request,res:Response)=>{ 
+  UniversityController.getApprovedUniversitiesForAdmin(req,res)
 })
+
+adminRouter.get("/not-approved-universities",(req:Request,res:Response)=>{
+  UniversityController.getNotApprovedUniversities(req, res)
+})
+
+adminRouter.get("/not-approved-universities-count",(req:Request,res:Response)=>{
+  UniversityController.getNotApprovedUniversitiesCount(req, res)
+})
+
 
 adminRouter.patch("/user/:userId",(req:Request,res:Response)=>{
 UserController.blockOrUnblockUser(req,res)
@@ -53,6 +64,10 @@ EnrollmentController.createEnrollment(req,res)
 
 adminRouter.get("/enrollment",(req: Request, res: Response)=>{
   EnrollmentController.getEnrollments(req,res)
+})
+
+adminRouter.get("/courses",(req: Request, res: Response)=>{
+CourseController.getAllCoursesForAdmin(req,res)
 })
 
 export default adminRouter;

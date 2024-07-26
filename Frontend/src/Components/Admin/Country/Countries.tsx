@@ -15,17 +15,17 @@ const Countries = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get(`${URL}/countries`);
-        console.log("res", response.data);
+        const response = await axios.get(`${URL}/countries`, {
+          withCredentials: true,
+        });
 
         setCountries(response.data.data);
-        console.log("setubi", countries);
       } catch (error) {
         console.error(error);
       }
     };
     fetchCountries();
-  },[]);
+  }, []);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -39,7 +39,11 @@ const Countries = () => {
       label: "Image",
       minWidth: 100,
       render: (row: any) => (
-        <img src={row.image} alt={row.name} style={{ width: 100, height: 50 }} />
+        <img
+          src={row.image}
+          alt={row.name}
+          style={{ width: 100, height: 50 }}
+        />
       ),
     },
   ];

@@ -3,83 +3,79 @@ import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { URL } from "../../../Constants/Constants";
-import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
-import { useSelector } from "react-redux";
+import { ADMIN_BASE_URL} from "../../../Constants/Constants";
 
-interface Country {
+
+
+interface CourseData {
   _id: string;
   name: string;
-}
-
-interface UniversityData {
-  id: string;
-  name: string;
-  address: string;
-  ranking: string;
-  country:  Country;
+  qualification: string;
+  fees: string;
+  description:string;
   logo: string;
-  images: string[];
-  isApproved: boolean;
+  duration: string;
+  universities: string[];
+  universityName:string;
 }
 
-const ListUniversity = () => {
+const AdminCourseList = () => {
   const navigate = useNavigate();
   useEffect(() => {
-    const fetchUniversity = async () => {
-      console.log('unisrt',universities);
+    const fetchCourses = async () => {
       
       try {
        
-          const response = await axios.get(`${URL}/universities/`);
-          console.log('res',response.data);
-
-          setUniversities(response.data.getUniversities);
-          console.log('setubi',universities);
+          const response = await axios.get(`${ADMIN_BASE_URL}/courses`,{
+            withCredentials:true
+          });
+          setCourses(response.data.data);
+          console.log('setubi',courses);
       } catch (error) {
         console.error(error);
       }
     };
-    fetchUniversity();
+    fetchCourses();
   }, []);
 
-  const [universities, setUniversities] = useState<UniversityData[]>([]);
+  const [courses, setCourses] = useState<CourseData[]>([]);
 
-  const handleClick = () => {
-    navigate("/counsellor/add-university");
-  };
+  // const handleClick = () => {
+  //   navigate("/counsellor/add-university");
+  // };
 
   const columns = [
     { id: "name", label: "Name", minWidth: 100 },
-    { id: "address", label: "Address", minWidth: 100 },
-    { id: "ranking", label: "Ranking", minWidth: 50 },
-    { id: "country", label: "Country", minWidth: 100,render: (row: UniversityData) => "Canada" },
+    { id: "qualification", label: "Qualification", minWidth: 100 },
+    { id: "fees", label: "Fees", minWidth: 50 },
+    { id: "description", label: "Description", minWidth: 100},
     {
       id: "logo",
       label: "Logo",
       minWidth: 100,
-      render: (row: UniversityData) => (
+      render: (row: CourseData) => (
         <img src={row.logo} alt={row.name} style={{ width: 50, height: 50 }} />
       ),
     },
     {
-      id: "isApproved",
-      label: "Approved",
-      minWidth: 50,
-      render: (row: UniversityData) => (row.isApproved ? "Yes" : "No"),
+      id: "duration",
+      label: "Duration",
+      minWidth: 100,
+    },
+    {
+      id: "universityName",
+      label: "University",
+      minWidth: 100,
     },
   ];
 
   return (
     <>
-      <TableComponent title="Universities" columns={columns} data={universities}/>
+      <TableComponent title="Courses" columns={columns} data={courses}/>
       <div className="mt-4 mr-2">
-        <Button onClick={handleClick} variant="contained">
-          Add
-        </Button>
       </div>
     </>
   );
 };
 
-export default ListUniversity;
+export default AdminCourseList;

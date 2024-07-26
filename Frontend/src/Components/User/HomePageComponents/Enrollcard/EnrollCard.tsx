@@ -6,7 +6,8 @@ const navigate = useNavigate()
   navigate("/enrollment")
   }
   return (
-    <div className='flex flex-col lg:flex-row lg:items-center h-auto lg:h-72 mt-10 sm:w-fit'>
+    <section className="flex justify-center items-center box-border">
+    <div className='flex flex-col lg:flex-row lg:items-center h-auto lg:h-72 mt-16 p-5 sm:w-fit'>
       <div className='w-full lg:w-1/2 p-4'>
         <div className='mb-4'>
           <h1 className='mb-4'>
@@ -34,6 +35,7 @@ const navigate = useNavigate()
         </div>
       </div>
     </div>
+    </section>
   )
 }
 

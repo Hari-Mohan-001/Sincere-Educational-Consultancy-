@@ -1,59 +1,75 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { validateConfirmPasswordAndCompare, validatePassword } from "../../../Utils/Validation/UserSignUpValidation";
+import { useEffect, useState } from "react";
+import {
+  validateConfirmPasswordAndCompare,
+  validatePassword,
+} from "../../../Utils/Validation/UserSignUpValidation";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
-
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Interface/User/UserInterface";
 
 const ResetPassword = () => {
-const [formData, setFormData]= useState<{ [key: string]: string }>({
-  password:"",
-  confirmPassword:""
-})
-const [errors, setErrors] = useState<{ [key: string]: string }>({});
-const navigate = useNavigate()
-const location = useLocation()
-const queryParams = new URLSearchParams(location.search)
-const token = queryParams.get("token")
-const id = queryParams.get("id")
+  const { user } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
-const handleChange =(e:React.ChangeEvent<HTMLInputElement>)=>{
-       setFormData({...formData,[e.target.id]:e.target.value})
-       setErrors({ ...errors, [e.target.id]: "" });
-}
+  useEffect(() => {
+    if (user) {
+      navigate("/home");
+    }
+  }, [user, navigate]);
 
-const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
-     e.preventDefault()
-     const newErrors: { [key: string]: string } = {};
-     newErrors.password = validatePassword(formData.password)||"";
-     newErrors.confirmPassword = validateConfirmPasswordAndCompare(formData.password, formData.confirmPassword)||"";
-     Object.keys(newErrors).forEach(key => {
+  const [formData, setFormData] = useState<{ [key: string]: string }>({
+    password: "",
+    confirmPassword: "",
+  });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const token = queryParams.get("token");
+  const id = queryParams.get("id");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+    setErrors({ ...errors, [e.target.id]: "" });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const newErrors: { [key: string]: string } = {};
+    newErrors.password = validatePassword(formData.password) || "";
+    newErrors.confirmPassword =
+      validateConfirmPasswordAndCompare(
+        formData.password,
+        formData.confirmPassword
+      ) || "";
+    Object.keys(newErrors).forEach((key) => {
       if (newErrors[key] === "") delete newErrors[key];
     });
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-     const password = formData.password
-    const response = await fetch(`${BASE_URL}/reset-password?token=${token}&id=${id}`,{
-            method:"POST",
-            headers:{
-              "Content-Type":"application/json"
-            },
-            body:JSON.stringify({password})
-    })
-    const data = await response.json()
-    if(response.ok){
-      toast.success("Password updated successfully")
-         navigate("/signIn")
-    }else{
-      toast.error(data.message)
+    const password = formData.password;
+    const response = await fetch(
+      `${BASE_URL}/reset-password?token=${token}&id=${id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      }
+    );
+    const data = await response.json();
+    if (response.ok) {
+      toast.success("Password updated successfully");
+      navigate("/signIn");
+    } else {
+      toast.error(data.message);
     }
-
-    
-    
-}
+  };
 
   return (
     <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
@@ -63,22 +79,21 @@ const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
           <Box display={"flex"} flexDirection={"column"} gap={1}>
             <Typography variant="inherit">Enter your Password</Typography>
             <TextField
-            type="password"
+              type="password"
               id="password"
               label="password"
               fullWidth
               variant="outlined"
               size="small"
-              
-               error={Boolean(errors.password)}
-               helperText={errors.password}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
               onChange={handleChange}
             />
           </Box>
           <Box display={"flex"} flexDirection={"column"} gap={1}>
             <Typography variant="inherit">Confirm your Password</Typography>
             <TextField
-            type="password"
+              type="password"
               fullWidth
               id="confirmPassword"
               label="Password"
@@ -99,7 +114,7 @@ const handleSubmit = async (e:React.FormEvent<HTMLFormElement>)=>{
         </Box>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default ResetPassword
+export default ResetPassword;

@@ -1,10 +1,10 @@
-import { Response, Request, NextFunction } from "express";
-import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
+import { Response } from "express";
+import jwt from "jsonwebtoken";
 
 const jwtSecret = process.env.ADMIN_JWT_SECRET || "secretkey";
 
-export const generateAdminJwtToken = (res: Response, email: string) => {
-  const token = jwt.sign({ email }, jwtSecret, { expiresIn: "3d" });
+export const generateAdminJwtToken = (res: Response, adminId: string) => {
+  const token = jwt.sign({adminId, role:'admin' }, jwtSecret, { expiresIn: "3d" });
 
   res.cookie("adminAuthToken", token, {
     httpOnly: true,

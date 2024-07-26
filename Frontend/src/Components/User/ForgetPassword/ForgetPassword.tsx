@@ -1,11 +1,25 @@
 import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { BASE_URL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Interface/User/UserInterface";
 
 const ForgetPassword = () => {
+
+  const {user} = useSelector((state:RootState)=>state.user)
+  const navigate = useNavigate()
+  
+
+  useEffect(()=>{
+    if(user){
+      console.log(user);
+      
+      navigate("/home")
+    }
+  },[user, navigate])
 
   const [email, setEmail] = useState<string>("")
   const [error, setError] = useState<string>("")

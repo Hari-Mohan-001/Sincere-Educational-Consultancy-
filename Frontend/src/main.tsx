@@ -8,13 +8,16 @@ import { persistor, store } from "./Redux/Store.tsx";
 import { PersistGate } from "redux-persist/integration/react";
 import {ToastContainer} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
+import { Container } from "@mui/material";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
+          <Container style={{maxWidth: "1500px", padding:"0"}}>
           <App />
+          </Container>
           <ToastContainer/>
         </PersistGate>
       </Provider>

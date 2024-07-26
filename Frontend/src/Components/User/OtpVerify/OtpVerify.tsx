@@ -1,17 +1,29 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { verifyOtp } from "../../../Redux/User/UserSlice";
 import { AppDispatch } from "../../../Redux/Store";
-import { ResponseData } from "../../../Interface/User/UserInterface";
+import { ResponseData, RootState } from "../../../Interface/User/UserInterface";
 
 const OtpVerify = () => {
+
+  const navigate = useNavigate()
+  const {user} = useSelector((state:RootState)=>state.user)
+
+  useEffect(()=>{
+    if(user){
+      console.log(user);
+      
+      navigate("/home")
+    }
+  },[user, navigate])
+  
   const [otp, setOtp] = useState("");
   const [error, setError] = useState<string>("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
     setOtp(e.target.value);

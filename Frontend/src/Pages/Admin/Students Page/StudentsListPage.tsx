@@ -7,7 +7,9 @@ const StudentsListPage = () => {
     <div>
       <Header/>
       <div className="flex ">
-      <SideNavBar/>
+        <div>
+        <SideNavBar/>
+        </div>
       <StudentList/>
       </div>
       

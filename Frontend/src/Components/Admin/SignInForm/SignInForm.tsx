@@ -2,32 +2,31 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch} from "../../../Redux/Store";
+import { AppDispatch } from "../../../Redux/Store";
 import { toast } from "react-toastify";
-import { AdminRootState, ResponseData, signInAdminData } from "../../../Interface/Admin/AdminInterface";
+import {
+  AdminRootState,
+  ResponseData,
+  signInAdminData,
+} from "../../../Interface/Admin/AdminInterface";
 import { signInAdmin } from "../../../Redux/Admin/AdminSlice";
-
 
 const AdminSignInForm = () => {
   const [formData, setFormData] = useState<signInAdminData>({
-    email:"",
-    password:""
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const dispatch = useDispatch<AppDispatch>()
-  const {admin} = useSelector((state:AdminRootState)=>state.admin)
-  const navigate = useNavigate() 
-  console.log('kih',);
-  
+  const dispatch = useDispatch<AppDispatch>();
+  const { admin } = useSelector((state: AdminRootState) => state.admin);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(admin){
-      console.log('eff',admin);
-      
-      navigate("/admin/students")
+  useEffect(() => {
+    if (admin) {
+      navigate("/admin/students");
     }
-  },[admin, navigate])
+  }, [admin, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -47,22 +46,22 @@ const AdminSignInForm = () => {
     const password: string = formData.password;
     if (!password) {
       newErrors.password = "Password is required";
-    } 
+    }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    dispatch(signInAdmin(formData)).then((result)=>{
-      if(signInAdmin.fulfilled.match(result)){
-        toast.success("Login success")
-        navigate("/admin/students")
-      }else if(signInAdmin.rejected.match(result)){
-        const payload = result.payload as ResponseData
-        setErrors({signInError:payload?.message|| "Failed to login"})
-        toast.error("Login failed")
+    dispatch(signInAdmin(formData)).then((result) => {
+      if (signInAdmin.fulfilled.match(result)) {
+        toast.success("Login success");
+        navigate("/admin/students");
+      } else if (signInAdmin.rejected.match(result)) {
+        const payload = result.payload as ResponseData;
+        setErrors({ signInError: payload?.message || "Failed to login" });
+        toast.error("Login failed");
       }
-    })
+    });
   };
 
   return (
@@ -105,7 +104,9 @@ const AdminSignInForm = () => {
               Login
             </Button>
           </Box>
-          {errors.signInError && <p className="text-red-600">{errors.signInError}</p> }
+          {errors.signInError && (
+            <p className="text-red-600">{errors.signInError}</p>
+          )}
         </Box>
       </form>
     </div>

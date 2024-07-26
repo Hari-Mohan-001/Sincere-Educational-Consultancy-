@@ -7,7 +7,9 @@ const ListCountryPage = () => {
     <>
       <Header />
       <div className="flex">
+        <div>
         <SideNavBar />
+        </div>
         <Countries />
       </div>
     </>

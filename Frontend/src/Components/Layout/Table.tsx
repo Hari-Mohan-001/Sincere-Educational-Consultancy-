@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { TablePagination } from "@mui/material";
 
 interface Column {
   id: string;
@@ -22,11 +23,32 @@ interface TableComponentProps {
   data: any[];
 }
 
+
+
+
 const TableComponent: React.FC<TableComponentProps> = ({
   title,
   columns,
   data,
 }) => {
+
+  const [page, setPage] = useState(0)
+const [rowsPerPage , setRowsPerPage] = useState(4)
+
+const paginatedData = data.slice(page*rowsPerPage , page*rowsPerPage+rowsPerPage)
+
+const handleChangePage =(event: React.MouseEvent<HTMLButtonElement> | null, newPage: number)=>{
+  setPage(newPage)
+}
+
+// Handle rows per page change
+const handleChangeRowsPerPage = (
+  event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+) => {
+  setRowsPerPage(parseInt(event.target.value, 10));
+  setPage(0); // Reset page to first page
+};
+
   return (
     <div className="container mx-3 my-0 mt-8">
       <Typography variant="h4" align="center">
@@ -37,7 +59,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
         <TableContainer 
         component={Paper} 
         className="shadow-lg"
-        style={{maxHeight:'450px', overflowY:'auto'}}
+        style={{}}
         >
           <Table>
             <TableHead className="bg-gray-800">
@@ -55,7 +77,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.map((row) => (
+              {paginatedData.map((row) => (
                 <TableRow key={row.id}>
                   {columns.map((column) => {
                     const value = row[column.id];
@@ -69,6 +91,15 @@ const TableComponent: React.FC<TableComponentProps> = ({
               ))}
             </TableBody>
           </Table>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={data.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
         </TableContainer>
       ) : (
         <Typography variant="h6" align="center">
