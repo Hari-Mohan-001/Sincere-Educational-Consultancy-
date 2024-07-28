@@ -4,11 +4,13 @@ import { universityController } from "../../infrastructure/controllers/universit
 import courseController from "../../infrastructure/controllers/courseController";
 import domainController from "../../infrastructure/controllers/domainController";
 import courseUniversityController from "../../infrastructure/controllers/courseUniversityController";
+import orderController from "../../infrastructure/controllers/orderController";
 const CountryControler = countryControler() 
 const UniversityController = universityController()
 const CourseController = courseController()
 const DomainContoller = domainController()
 const CourseUniversityController = courseUniversityController()
+const OrderController = orderController()
 const router = express.Router()
 
 router.get("/countries",(req:Request,res:Response)=>{
@@ -35,4 +37,12 @@ CourseUniversityController.getAllUniversity(req,res)
 router.get("/university/:universityId",(req:Request,res:Response)=>{
 UniversityController.getUniversityById(req,res)
 })
-export default router
+
+// Stripe requires the raw body to validate the signature
+
+
+// router.post("/webhook", express.raw({ type: "application/json" }),(req:Request,res:Response)=>{
+//   console.log("Webhook received:");
+// OrderController.CheckPaymentAndCreateOrder(req,res)
+// })
+export default router 

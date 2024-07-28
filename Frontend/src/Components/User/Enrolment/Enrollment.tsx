@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import { BASE_URL, URL } from "../../../Constants/Constants";
 import {useStripe} from "@stripe/react-stripe-js" 
 import {loadStripe} from "@stripe/stripe-js"
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Interface/User/UserInterface";
 
 interface CountryData {
   id: string;    
@@ -36,14 +38,13 @@ const Enrollment = () => {
   const [enrollments, setEnrollments] = useState<EnrollmentData[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>(""); // State for selected country
   const [selectedEnrollment, setSelectedEnrollment] = useState<string>(""); // State for selected enrollment
-
+  const {user} = useSelector((state:RootState)=>state.user)
   useEffect(() => {
     const fetchCountries = async () => {
       const response = await axios.get(`${URL}/countries`);
       if (response.status === 200) {
         const countries = response.data.data;
         setCountries(countries);
-        console.log("st", countries);
       }
     };
 
@@ -55,7 +56,6 @@ const Enrollment = () => {
       console.log(response.data);
       const enrollmentData = response.data.data;
       setEnrollments(enrollmentData);
-      console.log("stat", enrollments);
     };
 
     fetchCountries();
@@ -75,8 +75,7 @@ const Enrollment = () => {
   const selectedEnrollmentDetails = enrollments.find(
     (enroll) => enroll.id === selectedEnrollment
   );
-console.log('seect', selectedEnrollmentDetails);
-console.log('seectcont', selectedCountry);
+
 
   // Calculate tax function
   const calculateTax = (amount: string | undefined): number => {
@@ -97,14 +96,16 @@ console.log('seectcont', selectedCountry);
   };
   const tax = calculateTax(selectedEnrollmentDetails?.amount);
   const totalAmount = selectedEnrollmentDetails
-    ? parseFloat(selectedEnrollmentDetails.amount) + tax
+    ?Math.floor(parseFloat(selectedEnrollmentDetails.amount) + tax)
     : 0; // Handle undefined amount
 
     const handlePayment = async()=>{
         const stripe = await loadStripe("pk_test_51PfgkcEAV82mMSI8Belvs1HZbtQMRdEst21OkbFOcgth5MRQVsQLjpvoIkKtKGrBlteQJbdrBmPH9gy6o28AwKj000T9mE7F4p")
          const body={
             enrolldetails:selectedEnrollmentDetails,
-            country:selectedCountry
+            country:selectedCountry,
+            userId:user?.id,
+            totalAmount:totalAmount
            }
            const headers={
             "Content-Type":"application/json"
@@ -116,8 +117,11 @@ console.log('seectcont', selectedCountry);
             body:JSON.stringify(body),
             credentials:"include"
            })
+           
+           
            const session = await response.json()
            if (stripe) {
+            
             const result = await stripe.redirectToCheckout({
               sessionId: session.id,
             });

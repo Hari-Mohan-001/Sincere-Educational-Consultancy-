@@ -9,6 +9,7 @@ import AddDomainPage from '../Pages/Counsellor/DomainPage/AddDomainPage'
 import DomainListPage from '../Pages/Counsellor/DomainPage/DomainListPage'
 import ListCounsellorCoursePage from '../Pages/Counsellor/CoursesPage/ListCounsellorCoursePage'
 import CounsellorPrivateRoute from './CounsellorPrivateRoute'
+import EnrolledStudentsPage from '../Pages/Counsellor/EnrolledStudentsPage/EnrolledStudentsPage'
 
 const CounsellorRoute = () => {
   return (
@@ -22,6 +23,7 @@ const CounsellorRoute = () => {
     <Route path='/counsellor/add-domain' element={<AddDomainPage/>}/>
     <Route path='/counsellor/domain' element={<DomainListPage/>}/>
     <Route path='/counsellor/courses' element={<ListCounsellorCoursePage/>}/>
+    <Route path='/counsellor/students' element={<EnrolledStudentsPage/>}/>
     </Route>
    </Routes>
   )

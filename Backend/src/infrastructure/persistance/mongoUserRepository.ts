@@ -119,4 +119,20 @@ export class mongoUserRepository implements IUserRepository{
             throw error
         }
     }
+
+    public async updateUserEnrollStatus(userId: string): Promise<boolean> {
+        try {
+            const updateUser = await userModel.findByIdAndUpdate({_id:userId},
+                {
+                    $set:{
+                        isEnrolled:true
+                    }
+                },
+                {new:true}
+            )
+            return updateUser != null
+        } catch (error) {
+            throw error   
+        }
+    }
 }

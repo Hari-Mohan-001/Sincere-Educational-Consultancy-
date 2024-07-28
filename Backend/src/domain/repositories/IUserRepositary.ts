@@ -8,4 +8,5 @@ export interface IUserRepository {
       resetPassword(id:string,password:string):Promise<boolean>
       getAllUsers():Promise<User[]>
       blockOrUnblockUser(userId:string):Promise<boolean>
+      updateUserEnrollStatus(userId:string):Promise<boolean>
 }

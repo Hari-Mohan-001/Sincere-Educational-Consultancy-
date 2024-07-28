@@ -5,12 +5,14 @@ import { universityController } from "../../infrastructure/controllers/universit
 import courseController from "../../infrastructure/controllers/courseController";
 import { verifyCounsellorToken } from "../../infrastructure/middleware/verifyCounsellorToken";
 import domainController from "../../infrastructure/controllers/domainController";
+import orderController from "../../infrastructure/controllers/orderController";
 
 const counsellorRouter = express.Router();
 const CounsellorController = counsellorController();
 const UniversityController = universityController()
 const CourseController = courseController()
 const DomainController = domainController()
+const OrderController = orderController()
 
 counsellorRouter.post("/signup", (req: Request, res: Response) =>
   CounsellorController.signUp(req, res)
@@ -37,6 +39,10 @@ DomainController.addDomain(req,res)
 
 counsellorRouter.get("/courses/:countryId" ,(req:Request,res:Response)=>{ 
   CourseController.counsellorCourse(req,res)
+})
+
+counsellorRouter.get("/enrollments/:countryId",(req:Request,res:Response)=>{
+OrderController.getEnrolledOrders(req,res)
 })
 
 

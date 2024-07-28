@@ -12,7 +12,6 @@ const LandingPage = () => {
   return (
     <>
     <Header/>
-    
     <Banner/>
     <Success/>
     <About/>
