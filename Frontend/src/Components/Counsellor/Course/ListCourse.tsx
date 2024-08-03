@@ -33,7 +33,9 @@ const ListCourse = () => {
           
           
 
-          const response = await axios.get(`${COUNSELLORBASEURL}/courses/${countryId}`);
+          const response = await axios.get(`${COUNSELLORBASEURL}/courses/${countryId}`,{
+            withCredentials:true
+          });
           
           setCourses(response.data.data);
         } else {

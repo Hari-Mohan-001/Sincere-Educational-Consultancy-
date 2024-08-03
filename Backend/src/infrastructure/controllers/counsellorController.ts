@@ -68,10 +68,10 @@ const counsellorController = () => {
     }
   };
 
-  const signout = async (req: Request, res: Response, next:NextFunction) => {
+  const signout = async (req: Request, res: Response) => {
     try {
       console.log("out");
-          // verifyCounsellorToken(req,res,next)
+    
       const Counsellorsignout = await SignOut(res);
       res.status(200).json({ message: "signout success" });
     } catch (error) {}

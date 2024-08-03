@@ -8,6 +8,8 @@ import adminRouter from "./src/presentation/routes/adminRoutes";
 import counsellorRouter from "./src/presentation/routes/counsellorRoutes";
 import router from "./src/presentation/routes/unProtectedRoutes";
 import verfyRouter from "./src/presentation/routes/verfiyroute";
+import http from "http"
+import configureSocket from "./src/infrastructure/config/socketIoConfig";
 
 dotenv.config()
 dbConnect()
@@ -29,10 +31,18 @@ app.use(cookieParser())
 
 const port = process.env.PORT || 3000
 
-app.listen(port , ()=>{
+const server = http.createServer(app)
+
+const io = configureSocket(server)
+
+app.set('io',io)
+
+server.listen(port , ()=>{
     console.log(`server running on the port ${port}`);   
 })
- app.use("/api", router )
+
+
+app.use("/api", router )
 app.use("/api/user", userAuthRoute)
 app.use("/api/admin",adminRouter)
 app.use("/api/counsellor",counsellorRouter)

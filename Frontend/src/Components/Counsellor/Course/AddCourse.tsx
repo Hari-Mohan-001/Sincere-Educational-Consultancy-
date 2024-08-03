@@ -127,6 +127,7 @@ const AddCourseForm = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          withCredentials:true
         }
       );
       console.log('crse',response.data);

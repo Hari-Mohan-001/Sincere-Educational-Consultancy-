@@ -12,6 +12,8 @@ import courseController from "../../infrastructure/controllers/courseController"
 import enrollmentContoller from "../../infrastructure/controllers/enrollmentController";
 import checkoutController from "../../infrastructure/controllers/checkoutController";
 import { userController } from "../../infrastructure/controllers/userController";
+import eventController from "../../infrastructure/controllers/eventController";
+import { messageController } from "../../infrastructure/controllers/messageController";
 
 const userAuthRoute = express.Router();
 const userRepository = new mongoUserRepository();
@@ -27,6 +29,8 @@ const CourseController = courseController()
 const EnrollmentController = enrollmentContoller()
 const CheckoutController = checkoutController()
 const UserController = userController()
+const EventController = eventController()
+const MessageController = messageController()
 
 userAuthRoute.post(
   "/signUp",
@@ -60,6 +64,7 @@ userAuthRoute.post(
   (req: Request, res: Response) => UserAuthController.googleAuth(req, res)
 );
 
+//token verify middleware
 userAuthRoute.use((req: Request, res: Response, next: NextFunction) => {
   verifyUserToken(req, res, next);
 });
@@ -75,12 +80,20 @@ userAuthRoute.get("/courses/:qualification", isUserBlocked, (req: Request, res: 
 CourseController.getSuggestedCourse(req,res)
 })
 
-userAuthRoute.get("/enrollments", (req: Request, res: Response)=>{
+userAuthRoute.get("/enrollments", (req: Request, res: Response)=>{  
 EnrollmentController.getEnrollments(req,res)
 })
 
 userAuthRoute.post("/create-checkout",(req: Request, res: Response)=>{
   CheckoutController.createCheckout(req,res)
+})
+
+userAuthRoute.get("/events/:userId", (req: Request, res: Response)=>{
+ EventController.getEvents(req,res)
+})
+
+userAuthRoute.get("/messages",(req: Request, res: Response)=>{
+  MessageController.getMessagesForCounsellor(req,res)
 })
 
 export default userAuthRoute;

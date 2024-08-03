@@ -8,8 +8,11 @@ import { mongoUserRepository } from "../persistance/mongoUserRepository";
 import { getAllOrders } from "../../application/use-cases/Order/getOrders";
 const orderRepository = new mongoOrderRepository();
 const userRepository = new mongoUserRepository();
+
 const orderController = () => {
-  const CheckPaymentAndCreateOrder = async (req: Request, res: Response) => {
+  const CheckPaymentAndCreateOrder = async (req: Request, res: Response) => { 
+    console.log('checpay');
+    
     try {
       const sessionObj = paymentSuccessResponse(req, res);
 
@@ -38,9 +41,15 @@ const orderController = () => {
     const countryId = req.params.countryId;
     try {
       const Orders = await getAllOrders(orderRepository).execute(countryId);
-      console.log(Orders);
+      console.log('creord',Orders);
       res.status(200).json({ message: "success", data: Orders });
-    } catch (error) {}
+    } catch (error) {
+      if (error instanceof Error) { 
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      } 
+    }
   };
   return {
     CheckPaymentAndCreateOrder,

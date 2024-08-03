@@ -8,5 +8,6 @@ export class Order {
         public country: string,
         public total: string,
         public orderStatus:string,
-    ) {}
+        public meetingSchedule:{date:string, time:string}
+    ) {} 
 }

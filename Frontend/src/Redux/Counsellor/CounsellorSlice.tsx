@@ -77,6 +77,8 @@ import { CounsellorData, CounsellorState, ResponseCounsellorData, ResponseData, 
     initialState,
     reducers: {
       signOutCounsellor: (state) => {
+        console.log('counsiut');
+        
         state.counsellor = null;
       },
     },

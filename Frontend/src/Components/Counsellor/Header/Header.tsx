@@ -50,7 +50,7 @@ const Header = () => {
                 src={counsellor && counsellor.image ? counsellor.image: undefined}
                 alt="image"   
               />
-              <Button variant="contained" className="!bg-violet-900">SignOut</Button>
+              <Button onClick={handleSignout} variant="contained" className="!bg-violet-900">SignOut</Button>
             </ul>
           </div>
         </div>

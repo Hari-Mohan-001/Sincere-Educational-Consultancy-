@@ -16,6 +16,8 @@ export class mongoOrderRepository implements IOrderRepository{
                 orderStatus:"Complete"
             })
           const saveNewOrder=  await newOrder.save()
+          console.log('order',saveNewOrder);
+          
           if(saveNewOrder){
             return true
           }else{
@@ -63,10 +65,28 @@ export class mongoOrderRepository implements IOrderRepository{
             userEmail:'$userDetails.email',
             enrollType:'$enrollDetails.name',
             enrollImage:'$enrollDetails.image',
+            meetingSchedule:1,
           }
          }
         ])
         return orders
+      } catch (error) {
+        throw error
+      }
+    }
+    public async updateOrder(orderId: string,date:string,time:string): Promise<boolean> {
+      try {
+        const updateOrder = await orderModel.findByIdAndUpdate({_id:orderId},
+          {
+            $set:{
+              meetingSchedule:{
+                date:date,
+                time:time
+              },
+            },
+          }
+        )
+        return updateOrder != null
       } catch (error) {
         throw error
       }

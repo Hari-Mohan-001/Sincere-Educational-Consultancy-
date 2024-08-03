@@ -28,14 +28,14 @@ const SuggestedCourse = () => {
     const getSuggestedCourses = async()=>{
   try {
     const qualification = user?.qualification
-    console.log('user',user);
+   
     
      const response = await axios.get(`${BASE_URL}/courses/${qualification}`,{
         withCredentials:true
      })
      
      const courses = response.data.data
-     console.log('sgst', courses);
+   
      
      setSuggestedCourses(courses)
 

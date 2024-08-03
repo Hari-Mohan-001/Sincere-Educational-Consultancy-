@@ -37,7 +37,7 @@ export const createCheckoutSession = async (
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:5173/home",
+      success_url: "http://localhost:5173/orderSuccess",
       // cancel_url: ,
       metadata: {
         enrollDetails: JSON.stringify(enrolldetails),

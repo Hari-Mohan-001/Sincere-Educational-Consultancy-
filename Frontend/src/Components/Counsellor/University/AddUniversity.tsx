@@ -140,12 +140,14 @@ const AddUniversityForm = () => {
     toast.promise(
       axios.post(
         `${COUNSELLORBASEURL}/university`,
-        formData,
+        formData, 
         {
+          withCredentials:true,
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
+        
       ),
       {
         pending: "Please wait",

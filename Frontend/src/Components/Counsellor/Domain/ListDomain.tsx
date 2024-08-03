@@ -15,7 +15,9 @@ const DomainList = () => {
   useEffect(() => {
     const fetchDomains = async () => {
       try {
-        const response = await axios.get(`${URL}/domains`);
+        const response = await axios.get(`${URL}/domains`,{
+          withCredentials:true
+        });
         console.log("res", response.data);
 
         setDomains(response.data.data);

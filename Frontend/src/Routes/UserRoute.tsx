@@ -12,7 +12,11 @@ import UniversityDetailsPage from "../Pages/User/UniversityDetailsPage/Universit
 import EnrollmentPage from "../Pages/User/EnrollmentPage/EnrollmentPage";
 import SuggestedCoursesPage from "../Pages/User/suggestedCoursesPage/SuggestedCoursesPage";
 import CoursePage from "../Pages/User/CoursePage/CoursePage";
-import BlockUserRoute from "./BlockUserRoute";
+import EventPage from "../Pages/User/EventPage/EventPage";
+import UserChatPage from "../Pages/User/UserChatPage/UserChatPage";
+import OrderSuccessPage from "../Pages/User/OrderSuccessPage/OrderSuccessPage";
+import UniversitiesPage from "../Pages/User/UniversitiesPage/UniversitiesPage";
+import UserVideoCallPage from "../Pages/User/UserVideoCallPage/UserVideoCallPage";
 
 const UserRoute = () => {
   return (
@@ -26,10 +30,16 @@ const UserRoute = () => {
       <Route path="/home" element={<HomePage />} />
       <Route path="/enrollment" element={<EnrollmentPage/>}/>
       <Route path="/suggestedCourses" element={<SuggestedCoursesPage/>}/>
+      <Route path="/orderSuccess" element={<OrderSuccessPage/>}/>
+      <Route path="/events" element={<EventPage/>}/>
+      <Route path="/chat/:userId/:counsellorId" element={<UserChatPage/>}/>
+      <Route path="/join-call/:roomId" element={<UserVideoCallPage/>}/>
       </Route>
       <Route path="/courseDetails/:courseId" element={<CourseDeatailsPage/>}/>
       <Route path="/universityDetails/:universityId" element={<UniversityDetailsPage/>}/>
       <Route path="/courses" element={<CoursePage/>}/>
+      <Route path="/universities" element={<UniversitiesPage/>}/>
+      
     </Routes>
   );
 };

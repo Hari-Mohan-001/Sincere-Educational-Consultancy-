@@ -26,6 +26,16 @@ const OrderSchema = new mongoose.Schema({
         required:true,
         default:"pending"
     },
+    meetingSchedule:{
+         date:{
+            type:String,
+            default:""
+         },
+         time:{
+            type:String,
+            default:""
+         }
+    },
     
 },{timestamps:true})
 

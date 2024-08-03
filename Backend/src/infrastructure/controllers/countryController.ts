@@ -9,7 +9,6 @@ const countryRepository = new mongoCountryRepository();
 const countryControler = () => {
   const addCountry = async (req: Request, res: Response) => {
     const { name, image } = req.body;
-    console.log(name);
 
     try {
       const imageUploadUrl = await cloudinaryUpload(image, "Country");
@@ -31,10 +30,10 @@ const countryControler = () => {
   };
   const getAllCountries = async (req: Request, res: Response) => {
     try {
-      console.log("get");
+      
 
       const data = await getCountries(countryRepository).execute();
-      console.log(data);
+     
 
       res.status(200).json({ message: "success", data });
     } catch (error) {

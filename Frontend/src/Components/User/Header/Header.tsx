@@ -19,13 +19,14 @@ import { RootState } from "../../../Interface/User/UserInterface";
 import axios from "axios";
 import { BASE_URL } from "../../../Constants/Constants";
 
-const pages = ["Courses", "Universities", "About"];
+const pages = ["Home","Courses", "Universities", "Events"];
 const pageRoutes: Record<string, string> = {
+  Home:"/home",
   Courses: "/courses",
   Universities: "/universities",
-  About: "/about",
+  Events: "/events",
 }; // Define routes for each page
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Profile", "Account", "Dashboard", "Logout"]; 
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -98,6 +99,9 @@ function Header() {
     navigate("/")
   }
 
+    // Conditionally include "Home" in the navigation pages if the user is logged in
+    const userPages = user ? ["Home", ...pages] : pages;
+
   return (
     <AppBar className="!bg-cyan-500" position="static">
       <Container maxWidth="xl">
@@ -107,7 +111,7 @@ function Header() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+           
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -151,11 +155,8 @@ function Header() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page}
-    
-                  
-                >
+              {userPages.map((page,index) => (
+                <MenuItem key={page+index}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}

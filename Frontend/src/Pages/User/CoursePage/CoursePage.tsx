@@ -1,4 +1,4 @@
-import Courses from "../../../Components/User/Courses/Courses"
+import AllCourses from "../../../Components/User/AllCourses/AllCourses"
 import Header from "../../../Components/User/Header/Header"
 
 
@@ -6,7 +6,7 @@ const CoursePage = () => {
   return (
     <div>
         <Header/>
-        <Courses/>
+        <AllCourses/>
     </div>
   )
 }

@@ -50,7 +50,7 @@ const UniversityCard = () => {
           </div>
         ))}
       </div>
-      <Link to={"/user/universities"}><p className="text-blue-600 mt-5 text-xl underline">See More</p></Link>
+      <Link to={"/universities"}><p className="text-blue-600 mt-5 text-xl underline">See More</p></Link>
     </div>
   )
 }

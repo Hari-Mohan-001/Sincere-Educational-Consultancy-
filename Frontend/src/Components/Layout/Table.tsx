@@ -77,8 +77,8 @@ const handleChangeRowsPerPage = (
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedData.map((row) => (
-                <TableRow key={row.id}>
+              {paginatedData.map((row,index) => (
+                <TableRow key={`${row.id}-${index}`}>
                   {columns.map((column) => {
                     const value = row[column.id];
                     return (

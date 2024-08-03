@@ -12,6 +12,8 @@ import { getAllCourseForAdmin } from "../../application/use-cases/Course/getAllC
 const courseRepository = new mongoCourseRepository();
 
 const courseController = () => {
+  console.log('newcres');
+  
   const addCourse = async (req: Request, res: Response) => { 
     const {
       name,
@@ -23,7 +25,7 @@ const courseController = () => {
       description,
       logo,
     } = req.body;
-    console.log(req.body);
+    
     const universityIds = req.body.universities
 
     const logoUrl = await cloudinaryUpload(logo, "Course");
@@ -42,7 +44,7 @@ const courseController = () => {
       const newCourse = await createNewCourse(courseRepository).execute(
         courseDto
       );
-      console.log('newcrs', newCourse);
+      ;
       
       if (newCourse) {
         res.status(200).json({ message: "Course created", data: newCourse });
@@ -73,13 +75,13 @@ const courseController = () => {
   const getSuggestedCourse = async (req: Request, res: Response) => {
     try {
       const qualification = req.params.qualification;
-      console.log("allcorcourse", qualification);
+     
 
       const courses = await SuggestedCourses(courseRepository).execute(
         qualification
       );
       if (courses.length>0) {
-        console.log("allsgstcrs", courses);
+        
 
         res.status(200).json({ message: "success", data: courses });
       }
@@ -97,14 +99,14 @@ const courseController = () => {
   };
 
   const counsellorCourse = async (req: Request, res: Response)=>{
-    console.log('counscrs');
+    
     
               const countryId = req.params.countryId
              
               
               try {
                 const courses = await getCounsellorCourses(courseRepository).execute(countryId)
-                console.log('cons crs',courses);
+              
                 
                 if(courses.length>0){
                   res.status(200).json({message:"success", data:courses})
@@ -120,7 +122,7 @@ const courseController = () => {
 
   const getACourse = async(req: Request, res: Response)=>{    
     const courseId = req.params.courseId
-    console.log('get crs ', courseId);
+
     
     try {
       const course = await getCourseByCourseId(courseRepository).execute(courseId)
@@ -139,7 +141,7 @@ const courseController = () => {
   const getAllCoursesForAdmin = async(req: Request, res: Response)=>{
     try {
        const adminCourses = await getAllCourseForAdmin(courseRepository).execute()
-       console.log('admincrs',adminCourses);
+       
        
        if(adminCourses.length){
           res.status(200).json({message:'success',data:adminCourses})

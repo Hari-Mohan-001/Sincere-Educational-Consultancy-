@@ -34,7 +34,6 @@ const ListUniversity = () => {
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-
           const response = await axios.get(`${URL}/universities/${countryId}`);
           console.log('res',response.data);
 
