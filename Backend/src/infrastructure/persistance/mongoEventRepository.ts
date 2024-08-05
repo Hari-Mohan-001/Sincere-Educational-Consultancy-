@@ -1,5 +1,5 @@
 import { EventDTO } from "../../application/dtos/eventDto";
-import { Event } from "../../domain/entities/events";
+import { Event, PopulatedEvent } from "../../domain/entities/events";
 import { IEventRepository } from "../../domain/repositories/IEventRepository";
 import eventModel from "../../presentation/models/eventModel";
 
@@ -17,7 +17,7 @@ export class mongoEventRepository implements IEventRepository{
             date:event.date,
             time:event.time,
             selectedDateTime:event.selectedDateTime,
-            counsellorId:event.counsellorId
+            counsellor:event.counsellorId
            })
            const saveEvent = await newEvent.save()
            return saveEvent != null
@@ -26,10 +26,10 @@ export class mongoEventRepository implements IEventRepository{
         }
     }
 
-    public async getAllEvents(userId: string): Promise<Event[]> {
+    public async getAllEvents(userId: string): Promise<PopulatedEvent[]> {
         try {
-            const events = await eventModel.find({userId:userId})
-            return events.map((event)=> new Event(
+            const events = await eventModel.find({userId:userId}).populate('counsellor', 'name')
+            return events.map((event)=> new PopulatedEvent(
                 event._id.toString(),
                 event.userId.toString(),
                 event.userName,
@@ -39,7 +39,7 @@ export class mongoEventRepository implements IEventRepository{
                 event.date,
                 event.time,
                 event.selectedDateTime,
-                event.counsellorId.toString()
+                event.counsellor
             ))
         } catch (error) {
             throw error

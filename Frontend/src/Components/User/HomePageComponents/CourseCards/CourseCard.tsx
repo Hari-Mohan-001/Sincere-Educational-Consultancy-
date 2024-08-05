@@ -23,7 +23,7 @@ const CourseCard = () => {
             const data = response.data;
             console.log("dom", data);
     
-            setCourses(data.data);
+            setCourses(data.data.slice(0,4));
           } catch (error) {
             console.log(error);
             // setError(error)
@@ -35,7 +35,7 @@ const CourseCard = () => {
   return (
 
     <div className="mt-9">
-      <h1 className="text-center text-2xl font-bold">Courses offered</h1>
+      <h1 className="text-center text-2xl font-bold">Courses Offered</h1>
       <div className="flex flex-wrap justify-around mt-12 p-1 bg-cyan-500 rounded-lg shadow-xl ml-10 mr-10">
         {courses?.map((course) => (
           <div

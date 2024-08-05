@@ -12,23 +12,26 @@ import CounsellorPrivateRoute from './CounsellorPrivateRoute'
 import EnrolledStudentsPage from '../Pages/Counsellor/EnrolledStudentsPage/EnrolledStudentsPage'
 import CounsellorChatPage from '../Pages/Counsellor/CounsellorChatPage/CounsellorChatPage'
 import CounsellorVideoCallPage from '../Pages/Counsellor/CounsellorVideoCallPage/CounsellorVideoCallPage'
+import CounsellorNotFoundPage from '../Pages/Counsellor/CounsellorNotFoundPage/CounsellorNotFoundPage'
+
 
 const CounsellorRoute = () => {
   return (
    <Routes>
-    <Route path='/counsellor/signup' element={<CounsellorSignUpPage/>}/>
-    <Route path='/counsellor/signin' element={<CounsellorSignInPage/>}/>
+    <Route path='signup' element={<CounsellorSignUpPage/>}/>
+    <Route path='signin' element={<CounsellorSignInPage/>}/>
     <Route element={<CounsellorPrivateRoute/>}>
-    <Route path='/counsellor/university' element={<UniversityPage/>}/>
-    <Route path='/counsellor/add-university' element={<AddUniversityPage/>}/>
-    <Route path='/counsellor/add-course' element={<AddCoursePage/>}/>
-    <Route path='/counsellor/add-domain' element={<AddDomainPage/>}/>
-    <Route path='/counsellor/domain' element={<DomainListPage/>}/>
-    <Route path='/counsellor/courses' element={<ListCounsellorCoursePage/>}/>
-    <Route path='/counsellor/students' element={<EnrolledStudentsPage/>}/>
-    <Route path='/counsellor/chat/:counsellorId/:userId' element={<CounsellorChatPage/>}/>
-    <Route path='/counsellor/video-call/:counsellorId/:userId' element={<CounsellorVideoCallPage/>}/>
+    <Route path='university' element={<UniversityPage/>}/>
+    <Route path='add-university' element={<AddUniversityPage/>}/>
+    <Route path='add-course' element={<AddCoursePage/>}/>
+    <Route path='add-domain' element={<AddDomainPage/>}/>
+    <Route path='domain' element={<DomainListPage/>}/>
+    <Route path='courses' element={<ListCounsellorCoursePage/>}/>
+    <Route path='students' element={<EnrolledStudentsPage/>}/>
+    <Route path='chat/:counsellorId/:userId' element={<CounsellorChatPage/>}/>
+    <Route path='video-call/:counsellorId/:userId' element={<CounsellorVideoCallPage/>}/>
     </Route>
+    <Route path='*' element={<CounsellorNotFoundPage/>}/>
    </Routes>
   )
 }  

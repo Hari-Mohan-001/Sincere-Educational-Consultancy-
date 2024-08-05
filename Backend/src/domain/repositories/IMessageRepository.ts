@@ -1,4 +1,5 @@
 import { EventDTO } from "../../application/dtos/eventDto";
+import { MessageFetchingData } from "../../application/interfaces/messageFetchData";
 import { Event } from "../entities/events";
 
  import { Document, Types } from 'mongoose';
@@ -9,7 +10,8 @@ interface IMessage {
   senderModel: "admin" | "User";
   receiver: Types.ObjectId;
   receiverModel: "admin" | "User";
-  content: string;
+  content: string | null;
+  image:string|null;
   timestamp: Date;
 }
 

@@ -10,22 +10,25 @@ import AddEnrollmentPage from "../Pages/Admin/AdminEnrollmentPage/AddEnrollmentP
 import AdminPrivateRoute from "./AdminPrivateRoute";
 import AdminCourseListPage from "../Pages/Admin/AdminCourseListPage/AdminCourseListPage";
 import NotApprovedUniversitiesPage from "../Pages/Admin/NotApprovedUniversitiesPage/NotApprovedUniversitiesPage";
+import AdminNotFoundPage from "../Pages/Admin/AdminNotFoundPage/AdminNotFoundPage";
+
 
 const AdminRoute = () => {
   return (
     <Routes>
-      <Route path="/admin/signin" element={<AdminSignInPage />} />
+      <Route path="signin" element={<AdminSignInPage />} />
       <Route element={<AdminPrivateRoute/>}>
-      <Route path="/admin/dashboard" element={<AdminDashboard />} />
-      <Route path="/admin/students" element={<StudentsListPage />} />
-      <Route path="/admin/countries" element={<ListCountryPage />} />
-      <Route path="/admin/add-country" element={<AddCountryPage/>}/>
-      <Route path="/admin/universities" element={<UniversityListPage/>}/>
-      <Route path="/admin/enrollment" element={<ListEnrollmentPage/>}/>
-      <Route path="/admin/add-enrollment" element={<AddEnrollmentPage/>}/>
-      <Route path="/admin/courses" element={<AdminCourseListPage/>}/>
-      <Route path="/admin/not-approved-universities" element={<NotApprovedUniversitiesPage/>}/>
+      <Route path="dashboard" element={<AdminDashboard />} />
+      <Route path="students" element={<StudentsListPage />} />
+      <Route path="countries" element={<ListCountryPage />} />
+      <Route path="add-country" element={<AddCountryPage/>}/>
+      <Route path="universities" element={<UniversityListPage/>}/>
+      <Route path="enrollment" element={<ListEnrollmentPage/>}/>
+      <Route path="add-enrollment" element={<AddEnrollmentPage/>}/>
+      <Route path="courses" element={<AdminCourseListPage/>}/>
+      <Route path="not-approved-universities" element={<NotApprovedUniversitiesPage/>}/>
       </Route>
+      <Route path="*" element={<AdminNotFoundPage />} />
     </Routes>
   );
 };

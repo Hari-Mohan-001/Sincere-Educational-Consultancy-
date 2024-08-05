@@ -1,6 +1,6 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {COUNSELLORBASEURL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
@@ -13,7 +13,7 @@ const AddDomain = () => {
   const navigate = useNavigate()
 
   const previewFile = (file: File) => {
-    const reader = new FileReader();
+    const reader = new FileReader(); 
     reader.readAsDataURL(file);
 
     reader.onloadend = () => {

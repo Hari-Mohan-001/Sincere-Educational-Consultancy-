@@ -7,6 +7,12 @@ import { BASE_URL} from "../../../Constants/Constants";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
 
+
+interface CounsellorData{
+  _id:string,
+  name:string
+}
+
 interface EventData {
   id: string;
   userId: string;
@@ -16,7 +22,7 @@ interface EventData {
   enrollImage: string;
   date: string;
   time: string;
-  counsellorId:string
+  counsellor:CounsellorData
 }
 
 const ListEvents = () => {
@@ -34,6 +40,7 @@ const ListEvents = () => {
           const response = await axios.get(`${BASE_URL}/events/${userId}`,{
             withCredentials:true
           });
+          console.log('event',response.data.data);
           
           setEvents(response.data.data);
         } else {
@@ -66,6 +73,9 @@ const ListEvents = () => {
         <img src={row.enrollImage} alt={row.enrollType} style={{ width: 80, height: 80 }} />
       ),
     },
+    { id: "counsellorName", label: "Counsellor", minWidth: 100,
+      render:(row:EventData)=> row.counsellor.name
+    },
     { id: "date", label: "Date", minWidth: 100},
     {
       id: "time",
@@ -75,7 +85,7 @@ const ListEvents = () => {
     { id: "action", label: "Action", minWidth: 100,
         render: (row: EventData) => (
             row.enrollType==='Chat' ? 
-            <Button onClick={()=>handleChatClick(row.counsellorId)} variant="contained">Chat</Button>:
+            <Button onClick={()=>handleChatClick(row.counsellor._id)} variant="contained">Chat</Button>:
             <Button>Video call</Button>
           ),
     },

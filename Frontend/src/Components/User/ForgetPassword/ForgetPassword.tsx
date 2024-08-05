@@ -1,5 +1,5 @@
 import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
-import Divider from "@mui/material/Divider";
+import {Divider} from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { BASE_URL } from "../../../Constants/Constants";

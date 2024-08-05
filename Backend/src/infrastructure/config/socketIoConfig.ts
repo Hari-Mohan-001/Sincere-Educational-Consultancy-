@@ -18,13 +18,14 @@ const configureSocket = (server:any)=>{
     })
 
     socket.on('sendMessage', async (messageData) => {
-        const { senderId, senderModel, receiverId, receiverModel, content } = messageData;
+        const { senderId, senderModel, receiverId, receiverModel, content,image } = messageData;
         const message = new messageModel({
           sender: senderId,
           senderModel,
           receiver: receiverId,
           receiverModel,
-          content
+          content,
+          image
         });
         const savedMessage = await message.save();
         

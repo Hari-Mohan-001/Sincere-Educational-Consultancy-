@@ -21,7 +21,7 @@ interface UniversityData {
   logo: string;
   images: string[];
   isApproved: boolean;
-}
+}         
 
 const ListUniversity = () => {
   const navigate = useNavigate();

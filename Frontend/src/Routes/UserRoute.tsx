@@ -17,29 +17,32 @@ import UserChatPage from "../Pages/User/UserChatPage/UserChatPage";
 import OrderSuccessPage from "../Pages/User/OrderSuccessPage/OrderSuccessPage";
 import UniversitiesPage from "../Pages/User/UniversitiesPage/UniversitiesPage";
 import UserVideoCallPage from "../Pages/User/UserVideoCallPage/UserVideoCallPage";
+import LandingPage from "../Pages/User/LandingPage/LandingPage";
+import UserNotFoundPage from "../Pages/User/UserNotFoundPage/UserNotFoundPage";
 
 const UserRoute = () => {
   return (
     <Routes>
-      <Route path="/signUp" element={<SignUpPage />} />
-      <Route path="/signIn" element={<SignInPage />} />
-      <Route path="/verifyOtp" element={<OtpVerifyPage />} />
-      <Route path="/forgetPassword" element={<ForgetPasswordPage />} />
-      <Route path="/reset-Password" element={<ResetPasswordPage />} />
+       <Route path="" element={<LandingPage/>}/>
+      <Route path="signUp" element={<SignUpPage />} />
+      <Route path="signIn" element={<SignInPage />} />
+      <Route path="verifyOtp" element={<OtpVerifyPage />} />
+      <Route path="forgetPassword" element={<ForgetPasswordPage />} />
+      <Route path="reset-Password" element={<ResetPasswordPage />} />
       <Route element={<UserPrivateRoute/>}>
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/enrollment" element={<EnrollmentPage/>}/>
-      <Route path="/suggestedCourses" element={<SuggestedCoursesPage/>}/>
-      <Route path="/orderSuccess" element={<OrderSuccessPage/>}/>
-      <Route path="/events" element={<EventPage/>}/>
-      <Route path="/chat/:userId/:counsellorId" element={<UserChatPage/>}/>
-      <Route path="/join-call/:roomId" element={<UserVideoCallPage/>}/>
+      <Route path="home" element={<HomePage />} />
+      <Route path="enrollment" element={<EnrollmentPage/>}/>
+      <Route path="suggestedCourses" element={<SuggestedCoursesPage/>}/>
+      <Route path="orderSuccess" element={<OrderSuccessPage/>}/>
+      <Route path="events" element={<EventPage/>}/>
+      <Route path="chat/:userId/:counsellorId" element={<UserChatPage/>}/>
+      <Route path="join-call/:roomId" element={<UserVideoCallPage/>}/>
       </Route>
-      <Route path="/courseDetails/:courseId" element={<CourseDeatailsPage/>}/>
-      <Route path="/universityDetails/:universityId" element={<UniversityDetailsPage/>}/>
-      <Route path="/courses" element={<CoursePage/>}/>
-      <Route path="/universities" element={<UniversitiesPage/>}/>
-      
+      <Route path="courseDetails/:courseId" element={<CourseDeatailsPage/>}/>
+      <Route path="universityDetails/:universityId" element={<UniversityDetailsPage/>}/>
+      <Route path="courses" element={<CoursePage/>}/>
+      <Route path="universities" element={<UniversitiesPage/>}/>
+      <Route path="*" element={<UserNotFoundPage/>}/>  
     </Routes>
   );
 };

@@ -35,7 +35,7 @@ const EventSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    counsellorId:{
+    counsellor:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"admin",
         required:true,

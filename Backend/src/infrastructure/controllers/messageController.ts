@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { getAllMessages } from "../../application/use-cases/Messages/getAllMessagesForCounsellor";
 import { mongoMessageRepository } from "../persistance/mongoMessageRepository";
 import { MessageFetchingData } from "../../application/interfaces/messageFetchData";
+import { cloudinaryUpload } from "../services/CloudinaryUpload";
 
 const messageRepository = new mongoMessageRepository()
 
@@ -24,7 +25,25 @@ export const messageController = ()=>{
         }
       
     }
+
+    const chatImageUpload = async (req:Request,res:Response)=>{
+        // console.log('logchatimage',req.body);
+        try {
+            const {image} = req.body
+            
+            const imageUrl = await cloudinaryUpload(image,"chat")
+            console.log(imageUrl);
+            
+            res.status(200).json({message:'success', data:imageUrl})
+        } catch (error) {
+            console.log(error);
+            
+        } 
+       
+        
+    }
     return{
-        getMessagesForCounsellor
+        getMessagesForCounsellor,
+        chatImageUpload
     }
 }

@@ -12,7 +12,7 @@ const messageSchema = new mongoose.Schema({
         enum: ['admin', 'User']
       },
       receiver: { 
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId, 
         required: true,
         refPath: 'receiverModel'
       },
@@ -21,7 +21,14 @@ const messageSchema = new mongoose.Schema({
         required: true,
         enum: ['admin', 'User']
       },
-      content: { type: String, required: true },
+      content: { 
+        type: String,
+        default:"",
+      },
+      image:{
+             type:String,
+             default:"",
+      },
       timestamp: { type: Date, default: Date.now }
 })
 

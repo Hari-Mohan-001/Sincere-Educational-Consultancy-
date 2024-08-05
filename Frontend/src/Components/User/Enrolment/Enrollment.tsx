@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Divider,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -14,8 +13,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BASE_URL, URL } from "../../../Constants/Constants";
-import {useStripe} from "@stripe/react-stripe-js" 
+import { BASE_URL, URL } from "../../../Constants/Constants"; 
 import {loadStripe} from "@stripe/stripe-js"
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
