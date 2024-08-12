@@ -1,11 +1,14 @@
-import axios from "axios";
+
 import { useState, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
-import { BASE_URL, COUNSELLORBASEURL } from "../../Constants/Constants";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
 import SendIcon from "@mui/icons-material/Send";
 import ClipLoader from "react-spinners/ClipLoader";
-import { chatApi } from "../Api/chatApi";
+import { chatApi } from "../../Api/chatApi";
+import { toast } from "react-toastify";
+import { useDispatch } from 'react-redux';
+import { updateNotifications } from '../../Redux/Notification/NotificationSlice';
+import { AppDispatch } from "../../Redux/Store";
 
 interface Data {
   counsellorId: string;
@@ -21,10 +24,12 @@ interface Message {
   receiver: {
     _id: string;
     name: string;
+    image:string;
   };
   sender: {
     _id: string;
     name: string;
+    image:string;
   };
   image?: string;
   timestamp: string;
@@ -44,8 +49,10 @@ const ChatComponent = ({
   const [image, setImage] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // Modal visibility state
   const [isLoading, setIsLoading] = useState<boolean>(false); // Loading state for image upload
+  const dispatch = useDispatch<AppDispatch>();
 
   const fileRef = useRef<HTMLInputElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const newSocket: Socket = io("http://localhost:3001");
@@ -54,27 +61,39 @@ const ChatComponent = ({
     fetchMessages();
     newSocket.on("newMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
+      scrollToBottom();
+
     });
 
     return () => {
       newSocket.disconnect();
     };
-  }, [counsellorId, userId, isCounsellor]);
+  }, [counsellorId, userId, isCounsellor,dispatch]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const fetchMessages = async () => {
-    const BASEURL = isCounsellor ? COUNSELLORBASEURL : BASE_URL;
-    const response = await axios.get(`${BASEURL}/messages`, {
-      params: {
+    try {
+      const endPoint = isCounsellor ? 'counsellor' : 'user';
+      const params= {
         counsellorId: counsellorId,
         counsellorModel: counsellorModel,
         userId: userId,
         userModel: userModel,
-      },
-      withCredentials: true,
-    });
-
-    const data = response.data.data;
+      }
+    const messages = await chatApi.fetchAllMessages(endPoint,params)
+    const data = messages;
+    console.log(data);
+    
     setMessages(data);
+     // Scroll to bottom after messages are set
+     setTimeout(scrollToBottom, 100); // Small delay to ensure DOM update
+    } catch (error) {
+      toast.error("Failed to fetch messages.");
+    }
+    
   };
 
   const previewFile = (file: File) => {
@@ -85,7 +104,7 @@ const ChatComponent = ({
       if (typeof reader.result === "string") {
         setImage(reader.result);
       } else {
-        // setErrors("Error loading image");
+       toast.error('failed to load')
       }
     };
   };
@@ -107,12 +126,12 @@ const ChatComponent = ({
       if (selectedFile) {
         setIsLoading(true);
         try {
-          console.log("Uploading image..."); // Debug log
           const response = await chatApi.uploadChatImage(image);
           imageUrl = response;
-          console.log("Image uploaded successfully:", imageUrl); // Debug log
+          toast.success('Image send successfully')
         } catch (error) {
           console.log(error);
+          toast.error("Failed to upload image"); 
         } finally {
           setIsLoading(false);
         }
@@ -132,6 +151,9 @@ const ChatComponent = ({
       setSelectedFile(null); // Clear the selected file
       setImage(null); // Clear the image preview
       setIsModalOpen(false); // Close the modal
+
+        // Scroll to bottom after sending
+    setTimeout(scrollToBottom, 100);
     }
   };
 
@@ -141,17 +163,30 @@ const ChatComponent = ({
     setIsModalOpen(false); // Close modal on cancel
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
       <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Header */}
         <div className="bg-indigo-600 text-white px-4 py-3">
-          <h2 className="text-lg font-semibold">
-            {messages.length > 0 &&
-              (isCounsellor
-                ? `Chat with ${messages[0].receiver.name}`
-                : `Chat with ${messages[0].sender.name}`)}
-          </h2>
+        <h2 className="text-lg font-semibold">
+  {messages.length > 0 && (
+    isCounsellor ? (
+      <>
+        <img src={messages[0].receiver.image} alt={messages[0].receiver.name} className="inline-block h-8 w-8 rounded-full mr-2" />
+        {`Chat with ${messages[0].receiver.name}`}
+      </>
+    ) : (
+      <>
+        <img src={messages[0].sender.image} alt={messages[0].sender.name} className="inline-block h-8 w-8 rounded-full mr-2" />
+        {`Chat with ${messages[0].sender.name}`}
+      </>
+    )
+  )}
+</h2>
         </div>
 
         {/* Messages Area */}
@@ -205,6 +240,7 @@ const ChatComponent = ({
               </div>
             );
           })}
+           <div ref={messagesEndRef} />
         </div>
 
         {/* Input Area */}
@@ -247,7 +283,7 @@ const ChatComponent = ({
               alt="Preview"
               className="max-w-md max-h-96 object-contain mb-4"
             />
-
+               
             {isLoading && (
               <div className="flex justify-center items-center mb-4">
                 <ClipLoader color="#4A90E2" loading={isLoading} size={30} />{" "}

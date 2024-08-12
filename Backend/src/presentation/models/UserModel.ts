@@ -22,6 +22,10 @@ const userSchema = new mongoose.Schema({
         enum:["PlusTwo", "Degree" , "Masters"],
         required:true
     },
+    image:{
+        type:String,
+        default:"https://static-00.iconduck.com/assets.00/user-icon-1024x1024-dtzturco.png"
+    },
     isEnrolled:{
         type:Boolean,
         default: false

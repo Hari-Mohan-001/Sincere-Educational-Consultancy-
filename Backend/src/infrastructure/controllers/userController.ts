@@ -4,6 +4,9 @@ import getAllUsers from "../../application/use-cases/Admin/GetAllStudents"
 import { BlockOrUnblockUser } from "../../application/use-cases/User/blockOrUnblockUser"
 import { getAUser } from "../../application/use-cases/User/getAUser"
 import { sendMail } from "../services/nodeMailer"
+import { cloudinaryUpload } from "../services/CloudinaryUpload"
+import { userUpdateDTO } from "../../application/dtos/userUpdateDto"
+import { updateTheUser } from "../../application/use-cases/User/updateUser"
 
 const userRepository = new mongoUserRepository()
 
@@ -17,7 +20,7 @@ export const userController =()=>{
                     const{password, ...Usersdata} = user
                     return Usersdata
                 }) 
-                console.log(Usersdata);
+                
                 
                 res.status(200).json({message:"success", userData: Usersdata })
             } else{
@@ -83,10 +86,42 @@ export const userController =()=>{
       }
     }
 
+    const updateUser = async (req:Request,res:Response)=>{
+      try {
+        
+        
+        const userId = req.params.userId
+        const {image,name,email,password,mobile} = req.body.userData
+        console.log(req.body.userData);
+        
+      
+        
+        if(image){
+         const imageUrl = await cloudinaryUpload(image,'UserImage')
+         const userUpdateDto = new userUpdateDTO(name,email,mobile,imageUrl,password)
+         const updatedUser = await updateTheUser(userRepository).execute(userId,userUpdateDto)
+         res.status(200).json({message:'success',user:updatedUser})
+        }else{
+          
+          const userUpdateDto = new userUpdateDTO(name,email,mobile,image,password) 
+        const updatedUser = await updateTheUser(userRepository).execute(userId,userUpdateDto)
+        res.status(200).json({message:'success',user:updatedUser})
+        }
+      
+      } catch (error) {  
+        if (error instanceof Error) {
+          res.status(400).json({ message: error.message });
+        } else {
+          res.status(400).json({ message: "An unknown error occurred" });
+        }
+      }
+    }
+
     return{
         getUsers,
         blockOrUnblockUser,
         getUser,
-        sendlink
+        sendlink,
+        updateUser
     }
 }

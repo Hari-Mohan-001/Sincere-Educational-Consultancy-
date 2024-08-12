@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react"
 import axios, { AxiosError } from "axios"
 import { URL } from "../../../Constants/Constants"
-import { useSelector } from "react-redux"
-import { RootState } from "../../../Interface/User/UserInterface"
 import { useNavigate } from "react-router-dom"
-import { Button } from "@mui/material"
+import { Button, Pagination } from "@mui/material"
 import { toast } from "react-toastify"
 
 interface UniversityData {
@@ -20,9 +18,11 @@ interface UniversityData {
 
 const AllUniversities = () => {
 
-  const {user} = useSelector((state:RootState)=>state.user)
+  // const {user} = useSelector((state:RootState)=>state.user)
   const [universities, setUniversities] = useState<UniversityData[]>([]);
   const[err,setErr]= useState<string>("")
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const universitiesPerPage = 6; // Number of universities to display per page
   const navigate = useNavigate()
   useEffect(()=>{
     const getAllUniversities = async()=>{
@@ -54,15 +54,27 @@ getAllUniversities()
   },[])
 
   const handleClick = (universityId:string)=>{
-    navigate(`/universityDetails/${universityId}`)
+    navigate(`/universityDetails/`,{state:{universityId}})
   }
+
+  const indexOfLastUniversity = currentPage * universitiesPerPage;
+  const indexOfFirstUniversity = indexOfLastUniversity - universitiesPerPage;
+  const currentUniversities = universities.slice(
+    indexOfFirstUniversity,
+    indexOfLastUniversity
+  );
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+  };
+
   return (
-    <div className="flex flex-col items-center mt-5 w-full">
+    <div className="flex flex-col items-center  w-full bg-cyan-100">
       <div className="mb-4">
         <h1 className="text-2xl font-semibold">Universities</h1>
       </div>
       <div className="flex flex-wrap justify-center gap-10 ml-16 mr-16">
-        {universities.map((university) => (
+        {currentUniversities.map((university) => (
           <div key={university.id} className="flex flex-col items-center  sm:w-1/4 lg:w-1/4 p-2">
            
             <img className="w-96 h-60  shadow-2xl border rounded-lg" src={university.logo} alt={university.name} />
@@ -72,6 +84,13 @@ getAllUniversities()
         ))}
         
       </div>
+      <Pagination
+        count={Math.ceil(universities.length / universitiesPerPage)}
+        page={currentPage}
+        onChange={handlePageChange}
+        color="primary"
+        sx={{ mt: 4 }}
+      />
     </div>
   )
 }

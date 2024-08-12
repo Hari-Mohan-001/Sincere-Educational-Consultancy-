@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { verifyOtp } from "../../../Redux/User/UserSlice";
 import { AppDispatch } from "../../../Redux/Store";
 import { ResponseData, RootState } from "../../../Interface/User/UserInterface";
+import { toast } from "react-toastify";
 
 const OtpVerify = () => {
 
@@ -39,9 +40,11 @@ const OtpVerify = () => {
     }
     dispatch(verifyOtp(otp)).then((result) => {
       if (verifyOtp.fulfilled.match(result)) {
+        toast.success("User created Successfully")
         navigate("/signIn");
       } else if (verifyOtp.rejected.match(result)) {
         const payload = result.payload as ResponseData;
+        toast.error("Failed to create")
         setError(payload?.message || "Otp verification failed");
       }
     });

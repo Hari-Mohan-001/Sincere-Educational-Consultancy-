@@ -96,4 +96,8 @@ userAuthRoute.get("/messages",(req: Request, res: Response)=>{
   MessageController.getMessagesForCounsellor(req,res)
 })
 
-export default userAuthRoute;
+userAuthRoute.put("/:userId",(req: Request, res: Response)=>{
+UserController.updateUser(req,res)
+})
+
+export default userAuthRoute; 

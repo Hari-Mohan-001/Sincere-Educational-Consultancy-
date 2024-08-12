@@ -1,6 +1,7 @@
 import { IUserRepository } from "../../domain/repositories/IUserRepositary";
 import userModel from "../../presentation/models/UserModel";
 import { User } from "../../domain/entities/User";
+import { userUpdateDTO } from "../../application/dtos/userUpdateDto";
 
 export class mongoUserRepository implements IUserRepository{
      public async createUser(user: User): Promise<User> {
@@ -19,6 +20,7 @@ export class mongoUserRepository implements IUserRepository{
             newSavedUser.mobile,
             newSavedUser.password,
             newSavedUser.qualification,
+            newSavedUser.image,
            newSavedUser.isBlocked,
            newSavedUser.isEnrolled)
     }
@@ -41,6 +43,7 @@ export class mongoUserRepository implements IUserRepository{
             user.mobile,
             user.password,
             user.qualification,
+            user.image,
             user.isBlocked,
             user.isEnrolled)
     }
@@ -57,6 +60,7 @@ export class mongoUserRepository implements IUserRepository{
             user.mobile,
             user.password,
             user.qualification,
+            user.image,
             user.isBlocked,
             user.isEnrolled)
     }
@@ -84,6 +88,7 @@ export class mongoUserRepository implements IUserRepository{
             user.mobile,
             user.password,
             user.qualification,
+            user.image,
             user.isBlocked,
             user.isEnrolled
         ))
@@ -133,6 +138,43 @@ export class mongoUserRepository implements IUserRepository{
             return updateUser != null
         } catch (error) {
             throw error   
+        }
+    }
+
+    public async updateUser(userId: string, userDto: userUpdateDTO): Promise<User|null> {
+        try {
+            console.log('update',userDto);
+            
+            const updatedUser = await userModel.findByIdAndUpdate({_id:userId},
+                {
+                    $set:{
+                        name:userDto.name,
+                        email:userDto.email,
+                        mobile:userDto.mobile,
+                        password:userDto.password,
+                        image:userDto.image 
+                    }
+                },
+                {new:true},
+            )
+            if(updatedUser){
+                return new User( 
+                    updatedUser.id,
+                    updatedUser.name,
+                    updatedUser.email,
+                    updatedUser.mobile,
+                    updatedUser.password,
+                    updatedUser.qualification,
+                    updatedUser.image,
+                    updatedUser.isBlocked,
+                    updatedUser.isEnrolled)
+            }else{
+                return null
+            }
+            
+
+        } catch (error) {
+            throw error
         }
     }
 }

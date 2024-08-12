@@ -20,6 +20,7 @@ const googleAuthCase = (userRepository: IUserRepository) => {
         userDto.mobile,
         userDto.password,
         userDto.qualification,
+        userDto.image,
         userDto.isEnrolled,
         userDto.isBlocked
       );

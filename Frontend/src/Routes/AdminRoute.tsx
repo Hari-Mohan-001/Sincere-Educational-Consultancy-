@@ -1,5 +1,4 @@
 import AdminSignInPage from "../Pages/Admin/SignInPage/AdminSignInPage";
-import AdminDashboard from "../Pages/Admin/Dashboard/AdminDashboard";
 import StudentsListPage from "../Pages/Admin/Students Page/StudentsListPage";
 import ListCountryPage from "../Pages/Admin/CountriesPage/ListCountryPage";
 import { Route, Routes } from "react-router-dom";
@@ -11,6 +10,7 @@ import AdminPrivateRoute from "./AdminPrivateRoute";
 import AdminCourseListPage from "../Pages/Admin/AdminCourseListPage/AdminCourseListPage";
 import NotApprovedUniversitiesPage from "../Pages/Admin/NotApprovedUniversitiesPage/NotApprovedUniversitiesPage";
 import AdminNotFoundPage from "../Pages/Admin/AdminNotFoundPage/AdminNotFoundPage";
+import AdminDashboardPage from "../Pages/Admin/Dashboard/AdminDashboardPage";
 
 
 const AdminRoute = () => {
@@ -18,7 +18,7 @@ const AdminRoute = () => {
     <Routes>
       <Route path="signin" element={<AdminSignInPage />} />
       <Route element={<AdminPrivateRoute/>}>
-      <Route path="dashboard" element={<AdminDashboard />} />
+      <Route path="dashboard" element={<AdminDashboardPage/>} />
       <Route path="students" element={<StudentsListPage />} />
       <Route path="countries" element={<ListCountryPage />} />
       <Route path="add-country" element={<AddCountryPage/>}/>

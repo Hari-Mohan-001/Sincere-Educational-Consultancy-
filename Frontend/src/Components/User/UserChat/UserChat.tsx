@@ -1,17 +1,24 @@
 import { useParams } from 'react-router-dom'
 import ChatComponent from '../../Layout/ChatComponent'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '../../../Interface/User/UserInterface'
+import { useEffect } from 'react'
+import { AppDispatch } from '../../../Redux/Store'
+import { clearNotifications } from '../../../Redux/Notification/NotificationSlice'
 
 const UserChat = () => {
     const {user} = useSelector((state:RootState)=>state.user)
-   
+    const dispatch = useDispatch<AppDispatch>()
   const {counsellorId,userId} = useParams()
   console.log('usr',counsellorId,'user',userId);
   
   if (!counsellorId || !userId) {
     return <div>Error: Missing required parameters</div>
   }
+
+  useEffect(() => {
+    dispatch(clearNotifications());
+  }, [dispatch]);
   return (
     <div>
       

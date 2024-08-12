@@ -5,6 +5,7 @@ export class userDTO {
         public mobile: string,
         public password:string,
         public qualification ? : 'PlusTwo' | "Degree" | "Masters",
+        public image?:string,
         public isEnrolled : boolean=false,
         public isBlocked : boolean= false
 

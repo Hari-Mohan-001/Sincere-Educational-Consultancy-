@@ -1,9 +1,9 @@
 import axios from "axios";
-import {URL} from "../../Constants/Constants"
+import {URL} from "../Constants/Constants"
 
 const BASE_URL = URL
 
-//creating instance
+//creating instance of the axios to use globally
 
 const axiosInstance = axios.create({
     baseURL:BASE_URL,
@@ -13,7 +13,7 @@ const axiosInstance = axios.create({
     },
 })
 
-// request interceptor
+// request interceptor to make chnages before sending request
 axiosInstance.interceptors.request.use((config)=>{
     return config
 },

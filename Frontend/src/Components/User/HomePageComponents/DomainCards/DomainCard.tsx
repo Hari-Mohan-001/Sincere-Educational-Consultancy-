@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
 import { URL } from "../../../../Constants/Constants";
+import { useNavigate } from "react-router-dom";
 
 interface Domain{
     id:string,
@@ -8,6 +9,8 @@ interface Domain{
     image:string
 }
 const DomainCard = () => {
+
+  const navigate = useNavigate()
 
     useEffect(() => {
         const getDomains = async () => {
@@ -25,6 +28,10 @@ const DomainCard = () => {
         getDomains();
       }, []);
       const[domains,setDomains] = useState<Domain[]>()
+
+      const handleClick=(domainId:string)=>{
+        navigate(`/courses/${domainId}`)
+      }
   return (
   //  <section className="flex justify-center items-center box-border">
     <div className="mt-16">
@@ -39,7 +46,7 @@ const DomainCard = () => {
               <img className="w-52 h-48 rounded-lg" src={domain.image} alt={domain.name} />
             </div>
             <div className="mt-3">
-              <button className="bg-slate-400 font-medium text-black rounded-lg px-4 py-2">
+              <button onClick={()=>handleClick(domain.id)} className="bg-slate-400 font-medium text-black rounded-lg px-4 py-2">
                 {domain.name}
               </button>
             </div>

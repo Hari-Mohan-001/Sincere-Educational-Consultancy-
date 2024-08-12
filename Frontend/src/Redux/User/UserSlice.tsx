@@ -11,8 +11,10 @@ import {
   UserState,
   signInUserData,
   googleAuthData,
+  UpdateUserData,
 } from "../../Interface/User/UserInterface";
-import { BASE_URL } from "../../Constants/Constants";
+import { BASE_URL, USER_ENDPOINT } from "../../Constants/Constants";
+import axiosInstance from "../../Api/axiosInstance";
 
 interface AsyncThunkConfig {
   state?: unknown;
@@ -88,7 +90,6 @@ export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConf
 
       if (!response.ok) {
         const data: ResponseData = await response.json();
-        console.log('sign',data);
         return rejectWithValue(data);
       }
       const data: ResponseData = await response.json();
@@ -126,6 +127,26 @@ export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfi
     }
   });
 
+  export const updateUser: AsyncThunk<ResponseData, { userData: UpdateUserData, userId: string }, AsyncThunkConfig> =
+  createAsyncThunk("/user/updateUser", async ({ userData, userId }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put(`/${USER_ENDPOINT}/${userId}`,{userData});
+      console.log('update goinfg');
+      
+      if (response.status === 200) {
+        console.log(response.data.user);
+        const data: ResponseData = response.data.user
+        console.log(data);
+        return response.data; // Assuming the updated user data is returned in response
+      } else {
+        return rejectWithValue({ message: "Failed to update user" });
+      }
+    } catch (error) {
+      return rejectWithValue({ message: "Network Error" });
+    }
+  });
+
+
 
 
 const userSlice = createSlice({
@@ -161,7 +182,6 @@ const userSlice = createSlice({
         console.log('signin....');
         state.status = "succeeded",
         state.user = action.payload.user || null
-        console.log('act',action.payload.user);
         
       })
       .addCase(signInUser.rejected, (state,action)=>{
@@ -172,6 +192,19 @@ const userSlice = createSlice({
         state.status = "succeeded",
         state.user = action.payload.user || null,
         state.error = null
+      })
+      .addCase(updateUser.pending,(state)=>{
+        state.status = 'loading'
+      })
+      .addCase(updateUser.fulfilled,(state,action)=>{
+        state.status = "succeeded";
+        state.user = action.payload.user || null; // Update user data in state
+        console.log('act',action.payload);
+        state.error = null;
+      })
+      .addCase(updateUser.rejected,(state, action)=>{
+        state.status = "failed";
+        state.error = action.error.message || null;
       })
   },
 });

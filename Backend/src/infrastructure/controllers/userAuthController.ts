@@ -36,6 +36,7 @@ const userAuthController = (
     const { name, email, mobile, password, qualification } = req.body;
     const userDto = new userDTO(name, email, mobile, password, qualification);
     try {
+      
       await checkUser.execute(userDto);
       const otp = generateOtp();
       const token = uuidv4();

@@ -19,6 +19,7 @@ import UniversitiesPage from "../Pages/User/UniversitiesPage/UniversitiesPage";
 import UserVideoCallPage from "../Pages/User/UserVideoCallPage/UserVideoCallPage";
 import LandingPage from "../Pages/User/LandingPage/LandingPage";
 import UserNotFoundPage from "../Pages/User/UserNotFoundPage/UserNotFoundPage";
+import UserProfilePage from "../Pages/User/UserProfilePage/UserProfilePage";
 
 const UserRoute = () => {
   return (
@@ -37,11 +38,15 @@ const UserRoute = () => {
       <Route path="events" element={<EventPage/>}/>
       <Route path="chat/:userId/:counsellorId" element={<UserChatPage/>}/>
       <Route path="join-call/:roomId" element={<UserVideoCallPage/>}/>
+      <Route path="profile" element={<UserProfilePage/>}/>
       </Route>
       <Route path="courseDetails/:courseId" element={<CourseDeatailsPage/>}/>
-      <Route path="universityDetails/:universityId" element={<UniversityDetailsPage/>}/>
       <Route path="courses" element={<CoursePage/>}/>
+      <Route path="courses/:domainId" element={<CoursePage/>}/>
+      
       <Route path="universities" element={<UniversitiesPage/>}/>
+      <Route path="universityDetails" element={<UniversityDetailsPage/>}/>
+      
       <Route path="*" element={<UserNotFoundPage/>}/>  
     </Routes>
   );

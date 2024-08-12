@@ -11,13 +11,15 @@ export class mongoMessageRepository implements IMessageRepository{
                     {sender:data.userId, senderModel:data.userModel, receiver:data.counsellorId,receiverModel:data.counsellorModel}
                 ]
             })
-            .populate('sender', 'name')
-            .populate('receiver', 'name')
+            .populate('sender', 'name image')
+            .populate('receiver', 'name image')
             .sort('timestamp')
             
             
             return messages
         } catch (error) {
+            console.log('err',error);
+            
             throw error
         }
     }

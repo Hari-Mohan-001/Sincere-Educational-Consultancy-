@@ -14,6 +14,7 @@ export class SignUp {
       userDto.mobile,
       userDto.password,
       userDto.qualification,
+      userDto?.image,
       userDto.isEnrolled,
       userDto.isBlocked
     );

@@ -8,6 +8,7 @@ export class User {
         public mobile: string,
         public password: string,
         public qualification ?: 'PlusTwo' | "Degree" | "Masters",
+        public image?:string,
         public isBlocked: boolean= false,
         public isEnrolled: boolean= false,
         

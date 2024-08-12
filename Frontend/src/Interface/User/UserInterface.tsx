@@ -5,7 +5,7 @@ export interface UserData{
     qualification:string,
     image?:string,
     password:string,
-    confirmPassword: string
+    confirmPassword?: string
 }
 
 export interface ResponseUserData{
@@ -14,6 +14,7 @@ export interface ResponseUserData{
     email:string,
     mobile: string,
     qualification:string,
+    image?:string,
     isEnrolled:Boolean,
     isBlocked:Boolean
 }
@@ -46,3 +47,11 @@ export interface UserState {
         image:string,
         mobile?: string
   }
+
+  export interface UpdateUserData{
+    name?:string,
+    email?:string,
+    mobile?: string,
+    image?:string,
+    password?:string,
+}

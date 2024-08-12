@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useLocation, useNavigate} from "react-router-dom"
 import { URL } from "../../../Constants/Constants"
 // import { UniversityData } from "../../../Interface/University/UniversityData"
 import ImageList from '@mui/material/ImageList';
@@ -25,11 +25,15 @@ interface UniversityData {
 
 
 const UniversityDetails = () => {
-    const {universityId} = useParams()
+  const location = useLocation()
+  const universityId = location.state?.universityId
+  const navigate = useNavigate()
+    // const {universityId} = useParams()
     const [university, setUniversity] = useState<UniversityData>()
 
     useEffect(()=>{
         try {
+          if(universityId){
             const getUniversityDetails = async()=>{
                 const response = await axios.get(`${URL}/university/${universityId}`)
                 if(response.status===200){
@@ -40,12 +44,15 @@ const UniversityDetails = () => {
                 }
               }
               getUniversityDetails()
+            }else{
+              navigate('/universities')
+            }
         } catch (error) {
             console.log(error);
             
         }
       
-    })
+    },[universityId])
   return (
     <section>
         <div className="flex justify-center">

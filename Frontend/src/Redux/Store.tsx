@@ -4,11 +4,13 @@ import storage from "redux-persist/lib/storage";
 import userReducer from "./User/UserSlice";
 import CounsellorReducer from "./Counsellor/CounsellorSlice";
 import adminReducer from "./Admin/AdminSlice";
+import notificationReducer from "./Notification/NotificationSlice"
 
 const rootReducer = combineReducers({
   user: userReducer,
   counsellor: CounsellorReducer,
   admin: adminReducer,
+  notifications: notificationReducer 
 });
 
 const persistConfig = {

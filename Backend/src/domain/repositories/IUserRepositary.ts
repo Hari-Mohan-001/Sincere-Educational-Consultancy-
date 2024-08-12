@@ -1,3 +1,4 @@
+import { userUpdateDTO } from "../../application/dtos/userUpdateDto"
 import {User} from "../entities/User"
 
 export interface IUserRepository {
@@ -9,4 +10,5 @@ export interface IUserRepository {
       getAllUsers():Promise<User[]>
       blockOrUnblockUser(userId:string):Promise<boolean>
       updateUserEnrollStatus(userId:string):Promise<boolean>
+      updateUser(userId:string, userDto:userUpdateDTO):Promise<User|null>
 }

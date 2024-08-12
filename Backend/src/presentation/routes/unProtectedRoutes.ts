@@ -45,6 +45,9 @@ router.post("/upload-chat-image",(req:Request,res:Response)=>{
   
 MessageController.chatImageUpload(req,res)
 })
+router.get("/courses/:domainId",(req:Request,res:Response)=>{
+  CourseController.domainSpecificCourses(req,res)
+})
 
 // Stripe requires the raw body to validate the signature
 

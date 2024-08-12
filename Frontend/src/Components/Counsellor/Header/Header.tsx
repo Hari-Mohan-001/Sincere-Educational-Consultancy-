@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useEffect } from "react";
 import { Button } from "@mui/material";
+import NotificationComponent from "../../Layout/NotificationComponent";
 
 
 
@@ -44,9 +45,10 @@ const Header = () => {
             <h1 className="font-bold">SeC</h1>
             <ul className="flex gap-4">
               {/* <li className="cursor-pointer" onClick={handleSignout}>SignOut</li> */}
-    
+              {/* <NotificationComponent/> */}
+              <h1 className="rounded-full text-white mt-2">{counsellor?.name}</h1>
               <img
-                className="w-7 h-7 rounded-full object-cover"
+                className="w-7 h-7 mt-2 rounded-full object-cover"
                 src={counsellor && counsellor.image ? counsellor.image: undefined}
                 alt="image"   
               />

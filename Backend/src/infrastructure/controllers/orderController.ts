@@ -6,6 +6,8 @@ import { createOrder } from "../../application/use-cases/Order/createOrder";
 import { updateEnrollStatus } from "../../application/use-cases/User/updateEnrollStatus";
 import { mongoUserRepository } from "../persistance/mongoUserRepository";
 import { getAllOrders } from "../../application/use-cases/Order/getOrders";
+import { getTotalvalue } from "../../application/use-cases/Order/getTotalValue";
+import { timeFrameorders } from "../../application/use-cases/Order/getTimeFrameOrders";
 const orderRepository = new mongoOrderRepository();
 const userRepository = new mongoUserRepository();
 
@@ -51,9 +53,39 @@ const orderController = () => {
       } 
     }
   };
+
+  const getTotalOrdervalue = async (req: Request, res: Response)=>{
+    const timeFrame = req.params.timeFrame
+    console.log(timeFrame);
+    
+    try {
+      const totalValue = await getTotalvalue(orderRepository).execute(timeFrame)
+        res.status(200).json({message:'success', data:totalValue})
+
+    } catch (error) {
+      if (error instanceof Error) { 
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      } 
+    }
+  }
+
+  const getAllTimeframeOrders = async (req: Request, res: Response)=>{
+    const timeFrame = req.params.timeFrame
+    try {
+      const orders = await timeFrameorders(orderRepository).execute(timeFrame)
+      res.status(200).json({message:'success', data:orders})
+    } catch (error) {
+      console.log(error);
+      
+    }
+  }
   return {
     CheckPaymentAndCreateOrder,
     getEnrolledOrders,
+    getTotalOrdervalue,
+    getAllTimeframeOrders
   };
 };
 

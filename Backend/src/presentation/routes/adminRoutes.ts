@@ -7,6 +7,7 @@ import { universityController } from "../../infrastructure/controllers/universit
 import enrollmentContoller from "../../infrastructure/controllers/enrollmentController";
 import { verifyAdminToken } from "../../infrastructure/middleware/verifyAdminToken";
 import courseController from "../../infrastructure/controllers/courseController";
+import orderController from "../../infrastructure/controllers/orderController";
 
 const adminRouter = express.Router();
 const AdminController = adminController();
@@ -15,6 +16,7 @@ const UserController = userController()
 const UniversityController = universityController()
 const EnrollmentController = enrollmentContoller()
 const CourseController = courseController()
+const OrderController = orderController()
 
 adminRouter.post("/signin", (req: Request, res: Response) =>
   AdminController.adminLogin(req, res)
@@ -58,7 +60,7 @@ adminRouter.patch("/university/:universityId",(req: Request, res: Response)=>{
 UniversityController.adminApproveUniversity(req,res)
 })
 
-adminRouter.post("/enrollment",(req: Request, res: Response)=>{
+adminRouter.post("/enrollment",(req: Request, res: Response)=>{ 
 EnrollmentController.createEnrollment(req,res)
 })
 
@@ -68,6 +70,14 @@ adminRouter.get("/enrollment",(req: Request, res: Response)=>{
 
 adminRouter.get("/courses",(req: Request, res: Response)=>{
 CourseController.getAllCoursesForAdmin(req,res)
+})
+
+adminRouter.get("/total-revenue/:timeFrame",(req: Request, res: Response)=>{  
+OrderController.getTotalOrdervalue(req,res)
+})
+
+adminRouter.get("/total-orders/:timeFrame",(req: Request, res: Response)=>{
+  OrderController.getAllTimeframeOrders(req,res)
 })
 
 export default adminRouter;

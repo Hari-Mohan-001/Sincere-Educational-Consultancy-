@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
+
 const EnrollCard = () => {
 const navigate = useNavigate()
   const handleClick = ()=>{
@@ -35,6 +36,7 @@ const navigate = useNavigate()
         </div>
       </div>
     </div>
+   
     </section>
   )
 }

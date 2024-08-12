@@ -18,6 +18,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../../../Interface/User/UserInterface";
 import axios from "axios";
 import { BASE_URL } from "../../../Constants/Constants";
+import NotificationComponent from "../../Layout/NotificationComponent";
 
 const pages = ["Home","Courses", "Universities", "Events"];
 const pageRoutes: Record<string, string> = {
@@ -26,7 +27,15 @@ const pageRoutes: Record<string, string> = {
   Universities: "/universities",
   Events: "/events",
 }; // Define routes for each page
-const settings = ["Profile", "Account", "Dashboard", "Logout"]; 
+// const settings = ["Profile", "Account", "Dashboard", "Logout"]; 
+
+// Define routes for each user menu setting
+const settings = [
+  { name: "Profile", path: "/profile" },
+  { name: "Account", path: "/account" },
+  { name: "Dashboard", path: "/dashboard" },
+  { name: "Logout", path: "/logout" },
+];
 
 function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -125,7 +134,9 @@ function Header() {
           >
             SeC
           </Typography>
-
+          <div className="float-left">
+        
+          </div>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -167,7 +178,7 @@ function Header() {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            // href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: "flex", md: "none" },
@@ -218,7 +229,7 @@ function Header() {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar src="../../../Images/userAvatar" />
+                  <Avatar src={user.image} />
                 </IconButton>
               </Tooltip>
               <Menu
@@ -239,17 +250,23 @@ function Header() {
               >
                 {settings.map((setting) => (
                   <MenuItem
-                    key={setting}
-                    onClick={
-                      setting === "Logout" ? handleLogout : handleCloseUserMenu
+                  key={setting.name}
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    if (setting.name === "Logout") {
+                      handleLogout();
+                    } else {
+                      navigate(setting.path); // Navigate to the specific route
                     }
+                  }}
                   >
-                    <Typography textAlign="center">{setting}</Typography>
+                    <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
             </Box>
           )}
+           <NotificationComponent/>
         </Toolbar>
       </Container>
     </AppBar>

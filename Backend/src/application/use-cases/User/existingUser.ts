@@ -13,7 +13,6 @@ export class checkUserExist {
     public async execute(userDto:userDTO):Promise<void>{
         
        const userExist = await this.userRepository.doesEmailExist(userDto.email)
-       console.log('check user',userExist);
        if(userExist) throw new Error("This email already exist");
        
     }

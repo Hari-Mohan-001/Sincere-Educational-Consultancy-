@@ -4,6 +4,7 @@ import { List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@m
 import PeopleIcon from '@mui/icons-material/People';
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import PieChartIcon from '@mui/icons-material/PieChart';
 import PublicIcon from '@mui/icons-material/Public';
 
 const SideNavBar = () => {
@@ -13,6 +14,12 @@ const SideNavBar = () => {
         <Typography variant="h5">Dashboard List</Typography>
       </div>
       <List>
+        <ListItemButton component={Link} to="/admin/dashboard" className="my-2 hover:text-blue-700 text-white">
+          <ListItemIcon className="text-white">
+            <PieChartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Dashboard" />
+        </ListItemButton>
         <ListItemButton component={Link} to="/admin/students" className="my-2 hover:text-blue-700 text-white">
           <ListItemIcon className="text-white">
             <PeopleIcon />

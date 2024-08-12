@@ -53,3 +53,13 @@ export const validateConfirmPasswordAndCompare =(Password:string ,confirmPasswor
    }
    return null
 }
+
+const allowedFormats = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+  export const validateUserImage =(image:File|undefined):string|null=>{
+    if(!image){
+        return "Country is required"
+    }else if(!allowedFormats.includes(image.type)){
+ return "Please choose image file"
+    }
+    return null
+    }
