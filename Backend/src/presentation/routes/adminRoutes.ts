@@ -72,6 +72,10 @@ adminRouter.get("/courses",(req: Request, res: Response)=>{
 CourseController.getAllCoursesForAdmin(req,res)
 })
 
+adminRouter.get("/orders",(req: Request, res: Response)=>{
+  OrderController.getAllOrdersForAdmin(req,res)
+})
+
 adminRouter.get("/total-revenue/:timeFrame",(req: Request, res: Response)=>{  
 OrderController.getTotalOrdervalue(req,res)
 })

@@ -13,10 +13,12 @@ import EnrolledStudentsPage from '../Pages/Counsellor/EnrolledStudentsPage/Enrol
 import CounsellorChatPage from '../Pages/Counsellor/CounsellorChatPage/CounsellorChatPage'
 import CounsellorVideoCallPage from '../Pages/Counsellor/CounsellorVideoCallPage/CounsellorVideoCallPage'
 import CounsellorNotFoundPage from '../Pages/Counsellor/CounsellorNotFoundPage/CounsellorNotFoundPage'
+import { NavProvider } from '../Context/SideNavbarContext'
 
 
 const CounsellorRoute = () => {
   return (
+    <NavProvider>
    <Routes>
     <Route path='signup' element={<CounsellorSignUpPage/>}/>
     <Route path='signin' element={<CounsellorSignInPage/>}/>
@@ -33,6 +35,7 @@ const CounsellorRoute = () => {
     </Route>
     <Route path='*' element={<CounsellorNotFoundPage/>}/>
    </Routes>
+   </NavProvider>
   )
 }  
 

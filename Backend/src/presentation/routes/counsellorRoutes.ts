@@ -65,7 +65,6 @@ counsellorRouter.post("/event", (req: Request, res: Response) => {
 });
 
 counsellorRouter.get("/messages",(req: Request, res: Response)=>{
-  console.log('thisrote'); 
 MessageController.getMessagesForCounsellor(req,res)
 })
 

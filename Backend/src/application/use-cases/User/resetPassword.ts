@@ -3,7 +3,8 @@ import bcrypt from "bcrypt"
 import { IUserRepository } from "../../../domain/repositories/IUserRepositary"
 
 const resetTokenStorage :Map<string, {token:string, tokenExpiry:number }> = new Map()
-export const storeResetToken =(userId:string,token:string,tokenExpiry:number)=>{
+export const 
+storeResetToken =(userId:string,token:string,tokenExpiry:number)=>{
 resetTokenStorage.set(userId,{token,tokenExpiry})
 }
 

@@ -9,21 +9,32 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpUser } from "../../../Redux/User/UserSlice";
 import { AppDispatch } from "../../../Redux/Store";
-import { ResponseData, RootState, UserData } from "../../../Interface/User/UserInterface";
-import { ValidateEmail, validateMobile, validateName, validateQualification,validatePassword, validateConfirmPasswordAndCompare } from "../../../Utils/Validation/UserSignUpValidation";
+import {
+  ResponseData,
+  RootState,
+  UserData,
+} from "../../../Interface/User/UserInterface";
+import {
+  ValidateEmail,
+  validateMobile,
+  validateName,
+  validateQualification,
+  validatePassword,
+  validateConfirmPasswordAndCompare,
+} from "../../../Utils/Validation/UserSignUpValidation";
 import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SignUpForm = () => {
-  const {user} = useSelector((state:RootState)=>state.user)
-  const navigate = useNavigate()
+  const { user } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(user){
+  useEffect(() => {
+    if (user) {
       console.log(user);
-      
-      navigate("/home")
+
+      navigate("/home");
     }
-  },[user, navigate])
+  }, [user, navigate]);
 
   const [formData, setFormData] = useState<UserData>({
     name: "",
@@ -38,7 +49,6 @@ const SignUpForm = () => {
 
   const dispatch = useDispatch<AppDispatch>();
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     setErrors({ ...errors, [e.target.id]: "" });
@@ -51,18 +61,23 @@ const SignUpForm = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setErrors({signUpError:""})
+    setErrors({ signUpError: "" });
 
     const newErrors: { [key: string]: string } = {};
 
-     newErrors.name = validateName(formData.name) || "";
-     newErrors.email = ValidateEmail(formData.email) || "";
-     newErrors.mobile = validateMobile(formData.mobile)||"";
-     newErrors.qualification = validateQualification(formData.qualification)||"";
-     newErrors.password = validatePassword(formData.password)||"";
-     newErrors.confirmPassword = validateConfirmPasswordAndCompare(formData.password, formData.confirmPassword)||"";
-     
-     Object.keys(newErrors).forEach(key => {
+    newErrors.name = validateName(formData.name) || "";
+    newErrors.email = ValidateEmail(formData.email) || "";
+    newErrors.mobile = validateMobile(formData.mobile) || "";
+    newErrors.qualification =
+      validateQualification(formData.qualification) || "";
+    newErrors.password = validatePassword(formData.password) || "";
+    newErrors.confirmPassword =
+      validateConfirmPasswordAndCompare(
+        formData.password as string,
+        formData.confirmPassword as string
+      ) || "";
+
+    Object.keys(newErrors).forEach((key) => {
       if (newErrors[key] === "") delete newErrors[key];
     });
     if (Object.keys(newErrors).length > 0) {
@@ -177,14 +192,13 @@ const SignUpForm = () => {
             />
           </Box>
           <Box display="flex" justifyContent="center">
-            <Button type="submit" variant="contained">
+            <Button sx={{width:'200px'}} type="submit" variant="contained">
               Register
             </Button>
             <Divider>Or</Divider>
-            <GoogleAuth/>
+            <GoogleAuth />
           </Box>
         </Box>
-        
       </form>
       {errors.signUpError && (
         <p className="text-red-700">{errors.signUpError}</p>

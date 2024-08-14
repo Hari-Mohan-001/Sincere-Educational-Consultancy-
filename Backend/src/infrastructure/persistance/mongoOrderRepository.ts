@@ -134,4 +134,71 @@ export class mongoOrderRepository implements IOrderRepository {
       throw error
     }
   }
+  public async getAllOrdersForAdmin(): Promise<Order[]> {
+    try {
+      const orders = await orderModel.aggregate([
+        {
+          $lookup:{
+            from:'users',
+            localField:'user',
+            foreignField:'_id',
+            as:'userDetails'
+          },
+        },
+        {
+          $lookup:{
+            from:'enrollments',
+            localField:'enrollment',
+            foreignField:'_id',
+            as:'enrollDetails',
+          },
+        },
+        {
+          $lookup:{
+            from:'countries',
+            localField:'country',
+            foreignField:'_id',
+            as:'countryDetails'
+          },
+        },
+        {
+          $unwind:'$userDetails'
+        },
+        {
+          $unwind:'$enrollDetails',
+        },
+        {
+          $unwind:'$countryDetails'
+        },
+        {
+          $project:{
+            _id:1,
+            userName: '$userDetails.name',
+            userEmail: '$userDetails.email',
+            enrollType: '$enrollDetails.name',
+            enrollImage: '$enrollDetails.image',
+            country:'$countryDetails.name',
+            totalAmount:1
+          }
+        },
+        {
+          $group: {
+            _id: null, // Grouping all documents together
+            orders: { $push: "$$ROOT" }, // Push all documents into an array
+            grandTotalAmount:{$sum: { $toDouble: "$totalAmount" }} // Sum of totalAmount for all orders
+          }
+        },
+        {
+          $project: {
+            _id: 0, // Exclude the _id field
+            orders: 1,
+            grandTotalAmount: 1
+          }
+        }
+      ])
+      return orders[0]
+    } catch (error) {
+      throw error
+    }
+  }
 }

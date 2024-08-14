@@ -2,7 +2,6 @@ import { Route, Routes } from "react-router-dom";
 import AdminRoute from "./Routes/AdminRoute";
 import CounsellorRoute from "./Routes/CounsellorRoute";
 import UserRoute from "./Routes/UserRoute";
-import NotfoundPage from "./Pages/NotFound/NotfoundPage";
 import { useSocket } from "./Components/Layout/GlobalSocket";
 
 function App() {

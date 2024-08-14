@@ -24,7 +24,7 @@ const AdminSignInForm = () => {
 
   useEffect(() => {
     if (admin) {
-      navigate("/admin/students");
+      navigate("/admin/dashboard");
     }
   }, [admin, navigate]);
 

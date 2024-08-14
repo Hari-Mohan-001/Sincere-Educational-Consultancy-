@@ -11,10 +11,13 @@ import AdminCourseListPage from "../Pages/Admin/AdminCourseListPage/AdminCourseL
 import NotApprovedUniversitiesPage from "../Pages/Admin/NotApprovedUniversitiesPage/NotApprovedUniversitiesPage";
 import AdminNotFoundPage from "../Pages/Admin/AdminNotFoundPage/AdminNotFoundPage";
 import AdminDashboardPage from "../Pages/Admin/Dashboard/AdminDashboardPage";
+import { NavProvider } from "../Context/SideNavbarContext";
+import AdminOrderPage from "../Pages/Admin/AdminOrderPage/AdminOrderPage";
 
 
 const AdminRoute = () => {
   return (
+    <NavProvider>
     <Routes>
       <Route path="signin" element={<AdminSignInPage />} />
       <Route element={<AdminPrivateRoute/>}>
@@ -27,9 +30,11 @@ const AdminRoute = () => {
       <Route path="add-enrollment" element={<AddEnrollmentPage/>}/>
       <Route path="courses" element={<AdminCourseListPage/>}/>
       <Route path="not-approved-universities" element={<NotApprovedUniversitiesPage/>}/>
+      <Route path="orders" element={<AdminOrderPage/>}/>
       </Route>
       <Route path="*" element={<AdminNotFoundPage />} />
     </Routes>
+    </NavProvider>
   );
 };
 
