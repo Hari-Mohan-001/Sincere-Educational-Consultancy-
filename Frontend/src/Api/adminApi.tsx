@@ -1,4 +1,5 @@
 import { ADMIN_ENDPOINT } from "../Constants/Constants";
+import { MonthlyOrder, MonthlyRevenue } from "../Interface/Order/IOrder";
 import axiosInstance from "./axiosInstance";
 
 export const adminApi = {
@@ -18,7 +19,7 @@ export const adminApi = {
     }
   },
   //fetching total revenue
-  getTotalRevenue : async(timeframe:string)=>{
+  getTotalRevenue : async(timeframe:string | MonthlyRevenue[])=>{
     try {
         const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/total-revenue/${timeframe}`)
         if(response.status===200){
@@ -34,11 +35,15 @@ export const adminApi = {
   },
 
   //fetching total order count
-  getTotalOrders :async(timeframe:string)=>{
+  getTotalOrders :async(timeframe:string |MonthlyOrder[])=>{
           try {
             const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/total-orders/${timeframe}`)
+            console.log(timeframe);
+            
             if(response.status ===200){
               const orders = response.data.data
+              console.log(orders);
+              
               return orders
             }
           } catch (error) {

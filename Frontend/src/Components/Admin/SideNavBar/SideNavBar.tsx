@@ -1,5 +1,4 @@
-
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import SchoolIcon from '@mui/icons-material/School';
@@ -39,7 +38,7 @@ const SideNavBar = () => {
           <ListItemIcon className="text-white">
             <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="Student List" />
+          <ListItemText primary="Student List" />        
         </ListItemButton>
         <ListItemButton 
         className={`my-2 ${activeButton === 3 ? '!text-black !font-bold !bg-sky-400 !rounded-lg !shadow-lg' : 'hover:text-blue-700 text-white'}`}

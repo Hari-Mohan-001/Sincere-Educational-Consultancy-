@@ -97,42 +97,126 @@ export class mongoOrderRepository implements IOrderRepository {
     }
   }
 
-  public async getTotalOrderValue(timeframe: string): Promise<number> {
-    const matchStage = getMatchStage(timeframe)
-
-    try {
-      
-      const result = await orderModel.aggregate([
-        matchStage,
-        {
-          $group: {
-            _id: null,
-            totalValue: {
-              $sum: { $toDouble: "$totalAmount" },
+  public async getTotalOrderValue(timeframe: string): Promise<number | any[]> {
+    if (timeframe === "yearly") {
+      const year = new Date().getFullYear();
+      try {
+        const result = await orderModel.aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gte: new Date(year, 0, 1),
+                $lt: new Date(year + 1, 0, 1),
+              },
             },
           },
-        },
-      ]);
-      console.log(result.length);
-      
-      return result.length > 0 ? result[0].totalValue : 0;
-    } catch (error) {
-      throw error;
+          {
+            $group: {
+              _id: { $month: "$createdAt" },
+              revenue: {
+                $sum: { $toDouble: "$totalAmount" },
+              }
+            }
+          },
+          {
+            $sort: { _id: 1 }
+          },
+          {
+            $project: {
+              _id: 0,
+              month: {
+                $arrayElemAt: [
+                  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                  { $subtract: ["$_id", 1] }
+                ]
+              },
+              revenue: 1
+            }
+          }
+        ]);
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      const matchStage = getMatchStage(timeframe)
+      try {
+        const result = await orderModel.aggregate([
+          matchStage,
+          {
+            $group: {
+              _id: null,
+              totalValue: {
+                $sum: { $toDouble: "$totalAmount" },
+              },
+            },
+          },
+        ]);
+        console.log(result.length);
+        
+        return result.length > 0 ? result[0].totalValue : 0;
+      } catch (error) {
+        throw error;
+      }
     }
   }
-   public async getTimeFrameOrders(timeframe: string): Promise<number> {
-    const matchStage = getMatchStage(timeframe)
-    try {
-      const result = await orderModel.aggregate([
-        matchStage,
-        {
-        $count:'orderCount'
-        },
-      ])
-      return result.length>0 ? result[0].orderCount :0
-    } catch (error) {
-      throw error
+
+   public async getTimeFrameOrders(timeframe: string): Promise<number|any[]> {
+    
+    if (timeframe === "yearly") {
+      const year = new Date().getFullYear();
+      try {
+        const result = await orderModel.aggregate([
+          {
+            $match: {
+              createdAt: {
+                $gte: new Date(year, 0, 1),
+                $lt: new Date(year + 1, 0, 1),
+              },
+            },
+          },
+          {
+            $group: {
+              _id: { $month: "$createdAt" },
+              orderCount: { $sum: 1 }
+            }
+          },
+          {
+            $sort: { _id: 1 }
+          },
+          {
+            $project: {
+              _id: 0,
+              month: {
+                $arrayElemAt: [
+                  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                  { $subtract: ["$_id", 1] }
+                ]
+              },
+              orders: "$orderCount"
+            }
+          }
+        ]);
+        
+        return result;
+      } catch (error) {
+        throw error;
+      }
+    } else {
+      const matchStage = getMatchStage(timeframe);
+      try {
+        const result = await orderModel.aggregate([
+          matchStage,
+          {
+            $count: 'orderCount'
+          },
+        ]);
+        return result.length > 0 ? result[0].orderCount : 0;
+      } catch (error) {
+        throw error;
+      }
     }
+  
   }
   public async getAllOrdersForAdmin(): Promise<Order[]> {
     try {
