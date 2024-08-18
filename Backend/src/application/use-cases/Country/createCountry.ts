@@ -8,8 +8,6 @@ export const addNewCountry = (countryRepository:ICountryRepository)=>{
             image
         }
         const saveCountry = await countryRepository.createCountry(countryObj)
-        console.log('kiir',saveCountry);
-        
             if(!saveCountry){
                 return false
             }

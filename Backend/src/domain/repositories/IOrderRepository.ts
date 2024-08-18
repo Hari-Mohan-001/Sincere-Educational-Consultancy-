@@ -9,5 +9,5 @@ export interface IOrderRepository{
     updateOrder(orderId:string,date:string,time:string):Promise<boolean>
     getTotalOrderValue(timeframe:string):Promise<number|any[]>
     getTimeFrameOrders(timeframe:string):Promise<number|any[]>
-    getAllOrdersForAdmin():Promise<Order[]>
+    getAllOrdersForAdmin(startDate?:string, endDate?:string):Promise<Order[]>
 }

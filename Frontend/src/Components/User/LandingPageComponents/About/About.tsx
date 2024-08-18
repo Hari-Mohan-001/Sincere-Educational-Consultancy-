@@ -1,6 +1,11 @@
+import { useNavigate } from "react-router-dom"
 
 
 const About = () => {
+const navigate = useNavigate()
+  const handleClick =()=>{
+navigate("/enrollment")
+  }
   return (
     <div className='flex flex-col mt-14'>
         <div className='flex justify-center'>
@@ -26,7 +31,7 @@ const About = () => {
             <img className='rounded-s-3xl w-80 h-52' src="https://mir-s3-cdn-cf.behance.net/projects/404/b2a698115941301.Y3JvcCwxMDY4LDgzNiw5Miww.jpg" alt="" />
             </div>
             <div>
-            <button className='rounded-3xl text-white bg-black w-40 h-10 mt-24 ml-6'>Enroll Now</button>
+            <button className='rounded-3xl text-white bg-black w-40 h-10 mt-24 ml-6' onClick={handleClick}>Enroll Now</button>
             </div>
         </div>
          

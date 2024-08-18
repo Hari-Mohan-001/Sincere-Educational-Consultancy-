@@ -4,5 +4,6 @@ import { Enrollment } from "../entities/enrollment";
 
 export interface IEnrollmentRepository{
     createEnrollment(enrollment:enrollmentDTO) : Promise<Enrollment>
-     getAllEnrollments():Promise<Enrollment[]>  
+     getAllEnrollments():Promise<Enrollment[]> 
+     updateEnrollment(enrollId:string,enrollAmount:string):Promise<boolean> 
 }

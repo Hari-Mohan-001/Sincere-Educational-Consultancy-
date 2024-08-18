@@ -4,6 +4,7 @@ import { enrollmentDTO } from "../../application/dtos/enrollmentDto"
 import { mongoEnrollmentRepository } from "../persistance/mongoEnrollmentRepository"
 import { addNewEnrollment } from "../../application/use-cases/Enrollment/AddNewEnrollment"
 import { getAllEnrollments } from "../../application/use-cases/Enrollment/getAllEnrollments"
+import { enrollmentUpdate } from "../../application/use-cases/Enrollment/updateEnrollment"
 
 const enrollmentRepository = new mongoEnrollmentRepository()
 
@@ -43,9 +44,26 @@ const enrollmentContoller = ()=>{
               }
         }
     }
+    const updateEnrollment = async(req:Request,res:Response)=>{
+        try {
+            console.log(req.body.enrollData);
+            const{enrollId, enrollAmount} = req.body.enrollData
+            const update = await enrollmentUpdate(enrollmentRepository).execute(enrollId, enrollAmount)
+            if(update){
+                res.status(200).json({message:'success'})
+            }   
+        } catch (error) {
+            if (error instanceof Error) { 
+                res.status(400).json({ message: error.message });
+              } else {
+                res.status(400).json({ message: "An unknown error occurred" });
+              } 
+        }
+    }
     return{
         createEnrollment,
-        getEnrollments
+        getEnrollments,
+        updateEnrollment
     }
 }
 

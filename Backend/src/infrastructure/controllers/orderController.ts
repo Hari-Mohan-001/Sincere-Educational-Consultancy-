@@ -89,12 +89,22 @@ const orderController = () => {
 
   const getAllOrdersForAdmin = async(req: Request, res: Response)=>{
     try {
-      console.log('ordreqadmin');
+      // const{startDate , endDate} = req.query
+      const startDate = req.query.startDate as string | undefined;
+    const endDate = req.query.endDate as string | undefined;
+      console.log(startDate, endDate);
       
-      const orders = await getAdminOrders(orderRepository).execute()
-      console.log('allorde', orders);
+      if(startDate && endDate){
+        const orders = await getAdminOrders(orderRepository).execute(startDate,endDate)
+        res.status(200).json({message:'success', data:orders})
+      }else{
+        const orders = await getAdminOrders(orderRepository).execute()
+        res.status(200).json({message:'success', data:orders})
+      }
       
-      res.status(200).json({message:'success', data:orders})
+      
+      
+      
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });

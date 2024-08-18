@@ -1,9 +1,10 @@
-import { Box, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { URL } from "../../../Constants/Constants";
+
+import { toast } from "react-toastify";
+import { api } from "../../../Api/api";
 
 interface Country {
   id: string;
@@ -15,11 +16,12 @@ const Countries = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get(`${URL}/countries`, {
-          withCredentials: true,
-        });
-
-        setCountries(response.data.data);
+        const allCountries = await api.getAllCountries()
+         if(!allCountries){
+          toast.error('Failed to fetch countries')
+          return
+         }
+        setCountries(allCountries);
       } catch (error) {
         console.error(error);
       }

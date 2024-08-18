@@ -16,9 +16,7 @@ const Features = () => {
         </div>
       </div>
       <div className="flex">
-        <div className="ml-16">
-          <img src="../../../Images/Discussion.png" alt="" />
-        </div>
+        
         <div className="mt-20 ml-32">
           <h1 className="text-indigo-700 text-xl font-bold">One-On-One</h1>
           <h1 className="text-cyan-500 text-xl font-bold">Discussion</h1>
@@ -30,6 +28,9 @@ const Features = () => {
               your eligibility and pursue your dreams.
             </p>
           </div>
+        </div>
+        <div className="mt-5 ml-20">
+          <img src="../../../Images/Discussion.png" alt="" />
         </div>
       </div>
     </div>

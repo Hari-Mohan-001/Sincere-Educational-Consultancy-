@@ -42,5 +42,21 @@ export class mongoEnrollmentRepository implements IEnrollmentRepository{
         throw error
        }
    }
+
+   public async updateEnrollment(enrollId: string, enrollAmount: string): Promise<boolean> {
+       try {
+        const update = await enrollmentModel.findByIdAndUpdate(enrollId,
+            {
+                $set:{
+                    amount:enrollAmount
+                }
+            },
+            {new:true},
+        )
+        return update != null
+       } catch (error) {
+        throw error
+       }
+   }
    
 }

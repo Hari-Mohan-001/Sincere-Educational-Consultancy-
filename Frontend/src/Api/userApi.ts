@@ -13,18 +13,14 @@ export const userApi = {
 
     updateUser : async(userData:UserData, userId:string)=>{
         try {
-            console.log(userData,'updata');
-            
             const response = await axiosInstance.put(`/${USER_ENDPOINT}/${userId}`,{userData})
                 if(response.status==200){
                     return true 
                 }else{
                     return false
-                }
-               
+                }     
         } catch (error) {
-            console.log(error);
-            
+            console.log(error);    
         }
     },
 

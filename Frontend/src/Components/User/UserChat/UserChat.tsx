@@ -17,7 +17,7 @@ const UserChat = () => {
   }
 
   useEffect(() => {
-    dispatch(clearNotifications());
+    dispatch(clearNotifications(userId));
   }, [dispatch]);
   return (
     <div>

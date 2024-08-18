@@ -68,6 +68,10 @@ adminRouter.get("/enrollment",(req: Request, res: Response)=>{
   EnrollmentController.getEnrollments(req,res)
 })
 
+adminRouter.put("/enrollment",(req: Request, res: Response)=>{
+EnrollmentController.updateEnrollment(req,res)
+})
+
 adminRouter.get("/courses",(req: Request, res: Response)=>{
 CourseController.getAllCoursesForAdmin(req,res)
 })

@@ -1,0 +1,125 @@
+import { ADMIN_ENDPOINT } from "../Constants/Constants";
+import { CountryData } from "../Interface/Country/ICountry";
+import { AddEnrollmentData, updateEnrollmentData } from "../Interface/Enrollment/IEnrollment";
+import { MonthlyOrder, MonthlyRevenue } from "../Interface/Order/IOrder";
+import axiosInstance from "./axiosInstance";
+
+export const adminApi = {
+
+  //add new country
+  addCountry: async(countryData:CountryData)=>{
+   try {
+    const response = await axiosInstance.post(`/${ADMIN_ENDPOINT}/country`,countryData)
+    if(response.status===200){
+      return true
+    }else{
+      return false
+    }
+   } catch (error) {
+    console.log(error);  
+   }
+  },
+  //fetching all students
+  getAllUsers: async () => {
+    try {
+      const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/users`);
+      if (response.status === 200) {
+        const users = response.data.userData;
+        return users;
+      } else {
+        return "Unexpected response status/ failed to fetch";
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+      // return { data: null, error: error.message || "Something went wrong" };
+    }
+  },
+
+  //adding enrollment
+  addEnrollment: async (enrollmentData:AddEnrollmentData) => {
+    try {
+      const response = await axiosInstance.post(`/${ADMIN_ENDPOINT}/enrollment`,{enrollmentData})
+      if(response.status===200){
+        return true
+      }else{
+        return 'Error occured'
+      }
+    } catch (error) {}
+  },
+
+  //fetch all enrollments
+  getEnrollments: async () => {
+    try {
+      const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/enrollment`);
+      const enrollments = response.data.data;
+      return enrollments;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //update enrollment
+  updateEnrollment: async (enrollData: updateEnrollmentData) => {
+    try {
+      const response = await axiosInstance.put(
+        `/${ADMIN_ENDPOINT}/enrollment`,
+        { enrollData }
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //fetching total revenue
+  getTotalRevenue: async (timeframe: string | MonthlyRevenue[]) => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/total-revenue/${timeframe}`
+      );
+      if (response.status === 200) {
+        const amount = response.data.data;
+        return amount;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //fetching total order count
+  getTotalOrders: async (timeframe: string | MonthlyOrder[]) => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/total-orders/${timeframe}`
+      );
+      if (response.status === 200) {
+        const orders = response.data.data;
+        return orders;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //fetching all orders
+
+  getAllOrders: async (startDate?: string, endDate?: string) => {
+    try {
+      let Url = `/${ADMIN_ENDPOINT}/orders`;
+      if (startDate && endDate) {
+        Url += `?startDate=${startDate}&endDate=${endDate}`;
+      }
+      const response = await axiosInstance.get(Url);
+      if (response.status === 200) {
+        const orders = response.data.data;
+        return orders;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+};

@@ -218,9 +218,22 @@ export class mongoOrderRepository implements IOrderRepository {
     }
   
   }
-  public async getAllOrdersForAdmin(): Promise<Order[]> {
+  public async getAllOrdersForAdmin(startDate?:string, endDate?:string): Promise<Order[]> {
     try {
+      let dateFilter = {};
+      if (startDate && endDate) {
+        dateFilter = {
+          createdAt: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate)
+          }
+        };
+      }
+
       const orders = await orderModel.aggregate([
+        {
+            $match: dateFilter
+        },
         {
           $lookup:{
             from:'users',
@@ -262,7 +275,8 @@ export class mongoOrderRepository implements IOrderRepository {
             enrollType: '$enrollDetails.name',
             enrollImage: '$enrollDetails.image',
             country:'$countryDetails.name',
-            totalAmount:1
+            totalAmount:1,
+            createdAt:1
           }
         },
         {
@@ -280,7 +294,7 @@ export class mongoOrderRepository implements IOrderRepository {
           }
         }
       ])
-      return orders[0]
+      return orders[0] || { orders: [], grandTotalAmount: 0 };
     } catch (error) {
       throw error
     }

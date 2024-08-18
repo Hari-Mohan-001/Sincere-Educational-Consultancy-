@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from 'react-redux';
 import { updateNotifications } from '../../Redux/Notification/NotificationSlice';
 import { AppDispatch } from "../../Redux/Store";
+import { SocketUrL } from "../../Constants/Constants";
 
 interface Data {
   counsellorId: string;
@@ -55,7 +56,7 @@ const ChatComponent = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const newSocket: Socket = io("http://localhost:3001");
+    const newSocket: Socket = io(SocketUrL);
     setSocket(newSocket);
     newSocket.emit("join", isCounsellor ? counsellorId : userId);
     fetchMessages();

@@ -3,9 +3,8 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import {useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ADMIN_BASE_URL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
+import { adminApi } from "../../../Api/adminApi";
 
 const AddEnrollment = () => {
   const [errors, setErrors] = useState("");
@@ -66,24 +65,13 @@ const AddEnrollment = () => {
       console.log(key, value);
     }
     const toastId = toast.loading("Loading....");
+    const enrollmentData = {
+      name: name,
+      amount:amount,
+      image: image,
+    }
     try {
-      const response = await axios.post(
-        `${ADMIN_BASE_URL}/enrollment`, 
-        {
-          name: name,
-          amount:amount,
-          image: image,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials:true
-        },
-        
-      );
-      console.log("success", response.data);
-
+      const response = await adminApi.addEnrollment(enrollmentData)
        // Update the loading toast to success
        toast.update(toastId, {
         render: "Enrollment added successfully",
