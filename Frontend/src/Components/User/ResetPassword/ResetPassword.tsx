@@ -5,10 +5,10 @@ import {
   validatePassword,
 } from "../../../Utils/Validation/UserSignUpValidation";
 import { useLocation, useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
+import { userApi } from "../../../Api/userApi";
 
 const ResetPassword = () => {
   const { user } = useSelector((state: RootState) => state.user);
@@ -27,7 +27,7 @@ const ResetPassword = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
-  const token = queryParams.get("token");
+  // const token = queryParams.get("token");
   const id = queryParams.get("id");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,22 +52,12 @@ const ResetPassword = () => {
       return;
     }
     const password = formData.password;
-    const response = await fetch(
-      `${BASE_URL}/reset-password?token=${token}&id=${id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ password }),
-      }
-    );
-    const data = await response.json();
-    if (response.ok) {
+    const response = await userApi.resetPassword(id, password);
+    if (response) {
       toast.success("Password updated successfully");
       navigate("/signIn");
     } else {
-      toast.error(data.message);
+      toast.error("Updation failed");
     }
   };
 

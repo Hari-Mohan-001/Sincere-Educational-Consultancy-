@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { paymentSuccessResponse } from "../services/stripePaymentSuccess";
 import { OrderDTO } from "../../application/dtos/orderDto";
 import { mongoOrderRepository } from "../persistance/mongoOrderRepository";
@@ -9,6 +9,7 @@ import { getAllOrders } from "../../application/use-cases/Order/getOrders";
 import { getTotalvalue } from "../../application/use-cases/Order/getTotalValue";
 import { timeFrameorders } from "../../application/use-cases/Order/getTimeFrameOrders";
 import { getAdminOrders } from "../../application/use-cases/Order/getOrdersForAdmin";
+import { getUserOrderById } from "../../application/use-cases/Order/getOrdersOfAUser";
 const orderRepository = new mongoOrderRepository();
 const userRepository = new mongoUserRepository();
 
@@ -35,7 +36,7 @@ const orderController = () => {
       const updateUserStatus = await updateEnrollStatus(userRepository).execute(
         sessionObj.userId
       );
-      console.log(createNewOrder, updateUserStatus);
+      
 
       res.status(200).send("Event received");
     } catch (error) {}
@@ -44,7 +45,7 @@ const orderController = () => {
     const countryId = req.params.countryId;
     try {
       const Orders = await getAllOrders(orderRepository).execute(countryId);
-      console.log("creord", Orders);
+      
       res.status(200).json({ message: "success", data: Orders });
     } catch (error) {
       if (error instanceof Error) {
@@ -92,7 +93,6 @@ const orderController = () => {
       // const{startDate , endDate} = req.query
       const startDate = req.query.startDate as string | undefined;
     const endDate = req.query.endDate as string | undefined;
-      console.log(startDate, endDate);
       
       if(startDate && endDate){
         const orders = await getAdminOrders(orderRepository).execute(startDate,endDate)
@@ -102,9 +102,6 @@ const orderController = () => {
         res.status(200).json({message:'success', data:orders})
       }
       
-      
-      
-      
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
@@ -113,12 +110,25 @@ const orderController = () => {
       }
     }
   }
+
+  const getUserOrders =async(req: Request, res: Response,next:NextFunction)=>{
+    try {
+      const userId = req.params.userId
+      const orders = await getUserOrderById(orderRepository).execute(userId)
+      if(orders.length){
+        res.status(200).json({message:'success', data:orders})
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
   return {
     CheckPaymentAndCreateOrder,
     getEnrolledOrders,
     getTotalOrdervalue,
     getAllTimeframeOrders,
-    getAllOrdersForAdmin
+    getAllOrdersForAdmin,
+    getUserOrders
   };
 };
 

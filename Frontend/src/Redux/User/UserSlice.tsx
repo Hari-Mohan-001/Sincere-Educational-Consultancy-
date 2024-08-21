@@ -14,7 +14,7 @@ import {
   UpdateUserData,
 } from "../../Interface/User/UserInterface";
 import { BASE_URL, USER_ENDPOINT } from "../../Constants/Constants";
-import axiosInstance from "../../Api/axiosInstance";
+import axiosInstance, { setRefreshToken } from "../../Api/axiosInstance";
 
 
 interface AsyncThunkConfig {
@@ -33,20 +33,20 @@ const initialState: UserState = {
 export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
   createAsyncThunk("/user/signUp", async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/signUp`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      if (!response.ok) {
-        const data: ResponseData = await response.json();
+      // const response = await fetch(`${BASE_URL}/signUp`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(userData),
+      // });
+      const response = await axiosInstance.post(`${USER_ENDPOINT}/signUp`,userData)
+      if (response.status!= 200 && response.status!= 201) {
+        const data: ResponseData = await response.data;
   
         return rejectWithValue(data);
       }
-      const data: ResponseData = await response.json();
+      const data: ResponseData = await response.data;
       return data;
     } catch (error) {
       return rejectWithValue({ message: "Network Error" });
@@ -56,21 +56,21 @@ export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
 export const verifyOtp: AsyncThunk<ResponseData, string, AsyncThunkConfig> =
   createAsyncThunk("/user/verifyOtp", async (otp, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/verifyOtp`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ otp }),
-        credentials: "include",
-      });
-     
-      if (!response.ok) {
-        const data: ResponseData = await response.json();
+      // const response = await fetch(`${BASE_URL}/verifyOtp`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ otp }),
+      //   credentials: "include",
+      // });
+      const response = await axiosInstance.post(`${USER_ENDPOINT}/verifyOtp`,{otp})
+      if (response.status!= 200 && response.status!= 201) {
+        const data: ResponseData = await response.data;
         console.log(data);
         return rejectWithValue(data);
       }
-      const data: ResponseData = await response.json();
+      const data: ResponseData = await response.data;
       return data;
     } catch (error) {
       return rejectWithValue({ message: "Network Error" });
@@ -80,22 +80,15 @@ export const verifyOtp: AsyncThunk<ResponseData, string, AsyncThunkConfig> =
 export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConfig> =
   createAsyncThunk("/user/signIn", async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/signIn`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-        credentials: "include",
-      });
 
-      if (!response.ok) {
-        const data: ResponseData = await response.json();
+      const response = await axiosInstance.post(`${USER_ENDPOINT}/signIn`,userData)
+      if (response.status!= 200 && response.status!= 201) {
+        const data: ResponseData = response.data;
+        
         return rejectWithValue(data);
       }
-      const data: ResponseData = await response.json();
-      
-      
+      const data: ResponseData = response.data;
+      setRefreshToken(response.data.refreshToken)
       return data;
     } catch (error) {
       return rejectWithValue({ message: "Network Error" });
@@ -105,21 +98,21 @@ export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConf
 export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfig> =
   createAsyncThunk("/user/googleAuth", async (userData, { rejectWithValue }) => {
     try {
-      const response = await fetch(`${BASE_URL}/google-auth`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        const data: ResponseData = await response.json();
+      // const response = await fetch(`${BASE_URL}/google-auth`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(userData),
+      //   credentials: "include",
+      // });
+      const response = await axiosInstance.post(`${USER_ENDPOINT}/google-auth`,userData)
+      if (response.status!= 200 && response.status!= 201) {
+        const data: ResponseData = await response.data;
         console.log(data);
         return rejectWithValue(data);
       }
-      const data: ResponseData = await response.json();
+      const data: ResponseData = await response.data;
       
       
       return data;
@@ -132,12 +125,9 @@ export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfi
   createAsyncThunk("/user/updateUser", async ({ userData, userId }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(`/${USER_ENDPOINT}/${userId}`,{userData});
-      console.log('update goinfg');
       
-      if (response.status === 200) {
-        console.log(response.data.user);
+      if (response.status === 200 || response.status === 201 ) {
         const data: ResponseData = response.data.user
-        console.log(data);
         return response.data; // Assuming the updated user data is returned in response
       } else {
         return rejectWithValue({ message: "Failed to update user" });

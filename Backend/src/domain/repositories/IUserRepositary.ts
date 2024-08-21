@@ -11,4 +11,6 @@ export interface IUserRepository {
       blockOrUnblockUser(userId:string):Promise<boolean>
       updateUserEnrollStatus(userId:string):Promise<boolean>
       updateUser(userId:string, userDto:userUpdateDTO):Promise<User|null>
+      updateUserRefreshToken(refreshToken:string,userId:string):Promise<boolean>
+      deleteUserRefreshToken(userId:string):Promise<boolean>
 }

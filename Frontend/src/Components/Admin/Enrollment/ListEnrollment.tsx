@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 import { Enrollment } from "../../../Interface/Enrollment/IEnrollment";
-import { adminApi } from "../../../Api/adminApi";  
+import { adminApi } from "../../../Api/adminApi";
 
 const ListEnrollment = () => {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);

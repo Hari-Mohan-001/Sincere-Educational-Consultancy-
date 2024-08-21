@@ -12,8 +12,6 @@ const GoogleAuth = () => {
   const navigate = useNavigate();
   const handleClick = async () => {
     try {
-      console.log('go frnt');
-      
       const auth = getAuth(app);
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -27,17 +25,16 @@ const GoogleAuth = () => {
         };
         dispatch(googleAuth(userData)).then((result) => {
           if (googleAuth.fulfilled.match(result)) {
-            toast.success("Login Successfull")
+            toast.success("Login Successfull");
             navigate("/home");
           } else if (googleAuth.rejected.match(result)) {
             const payload = result.payload as ResponseData;
             toast.error(payload.message || "Failed to login");
           }
         });
-      } 
+      }
     } catch (e) {
       console.log(e);
-      
     }
   };
   return (

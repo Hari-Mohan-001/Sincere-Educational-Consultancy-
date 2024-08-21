@@ -1,11 +1,10 @@
 import { Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { ADMIN_BASE_URL } from "../../../Constants/Constants";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { adminApi } from "../../../Api/adminApi";
 
 const mySwal = withReactContent(Swal);
 
@@ -25,36 +24,28 @@ const ListNotApprovedUniversities = () => {
   const [universities, setUniversities] = useState<UniversityData[]>([]);
 
   useEffect(() => {
-    const fetchUniversity = async () => {
+    const fetchUnApprovedUniversities = async () => {
       try {
-        const response = await axios.get(
-          `${ADMIN_BASE_URL}/not-approved-universities`,
-          {
-            withCredentials: true,
-          }
-        );
-        console.log("res", response.data);
-
-        setUniversities(response.data.data);
-        console.log("setubi", universities);
+        const unApprovedUniversities =
+          await adminApi.getUnapprovedUniversities();
+        if (unApprovedUniversities) {
+          setUniversities(unApprovedUniversities);
+        } else {
+          toast.error("unable to fetch universities");
+          return;
+        }
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchUniversity();
+    fetchUnApprovedUniversities();
   }, []);
 
   const approveUniversity = async (id: string, isApproved: Boolean) => {
     try {
-      const response = await axios.patch(
-        `${ADMIN_BASE_URL}/university/${id}`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.status === 200) {
+      const response = await adminApi.approveUniversity(id);
+      if (response) {
         toast.success("University approved Successfully");
         setUniversities((prevUniversity) =>
           prevUniversity.map((university) =>
@@ -63,17 +54,11 @@ const ListNotApprovedUniversities = () => {
               : university
           )
         );
+      } else {
+        toast.error("Failed to approve");
       }
     } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        // Handle axios-specific errors here
-        toast.error(`Error: ${error.response.data.message}`);
-      } else if (error instanceof Error) {
-        // Handle other error types
-        toast.error(error.message);
-      } else {
-        toast.error("An unknown error occurred");
-      }
+      console.log(error);
     }
   };
 

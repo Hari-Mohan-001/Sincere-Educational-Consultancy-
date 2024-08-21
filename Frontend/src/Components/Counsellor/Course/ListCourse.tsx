@@ -1,11 +1,10 @@
-import {  Button } from "@mui/material";
+import { Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { COUNSELLORBASEURL} from "../../../Constants/Constants";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
+import { counsellorApi } from "../../../Api/counsellorApi";
 
 interface CourseData {
   name: string;
@@ -16,7 +15,7 @@ interface CourseData {
   university: string;
   domain: string;
   logo: string;
-  uninversityName:string
+  uninversityName: string;
 }
 
 const ListCourse = () => {
@@ -26,18 +25,11 @@ const ListCourse = () => {
   );
   useEffect(() => {
     const fetchCourses = async () => {
-      
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-          
-          
-
-          const response = await axios.get(`${COUNSELLORBASEURL}/courses/${countryId}`,{
-            withCredentials:true
-          });
-          
-          setCourses(response.data.data);
+          const courses = await counsellorApi.getCoursesByCountryId(countryId);
+          setCourses(courses);
         } else {
           navigate("/counsellor/signin");
         }
@@ -58,7 +50,7 @@ const ListCourse = () => {
     { id: "name", label: "Name", minWidth: 100 },
     { id: "qualification", label: "Qualification", minWidth: 100 },
     { id: "fees", label: "Fees", minWidth: 50 },
-    { id: "description", label: "Description", minWidth: 100},
+    { id: "description", label: "Description", minWidth: 100 },
     {
       id: "logo",
       label: "Logo",
@@ -72,12 +64,12 @@ const ListCourse = () => {
       label: "Duration",
       minWidth: 50,
     },
-    { id: "universityName", label: "University", minWidth: 100},
+    { id: "universityName", label: "University", minWidth: 100 },
   ];
 
   return (
     <>
-      <TableComponent title="Courses" columns={columns} data={courses}/>
+      <TableComponent title="Courses" columns={columns} data={courses} />
       <div className="mt-4 mr-2">
         <Button onClick={handleClick} variant="contained">
           Add

@@ -5,12 +5,21 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { COUNSELLORBASEURL, URL } from "../../../Constants/Constants";
-
 import { toast } from "react-toastify";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
+import { api } from "../../../Api/api";
+import {
+  validateCourseDomain,
+  validateCourseDuration,
+  validateCourseFees,
+  validateCourseLogo,
+  validateCourseName,
+  validateCourseQualification,
+  validateCourseUniversity,
+  validateDescription,
+} from "../../../Utils/Validation/courseValidation";
+import { counsellorApi } from "../../../Api/counsellorApi";
 
 interface DomainData {
   id: string;
@@ -45,14 +54,14 @@ const AddCourseForm = () => {
   );
   const [universities, setUniversities] = useState<UniversityData[]>([]);
   const [domains, setDomains] = useState<DomainData[]>([]);
+
   useEffect(() => {
     const fetchUniversity = async () => {
-
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-          const response = await axios.get(`${URL}/universities/${countryId}`);
-          setUniversities(response.data.getUniversities);
+          const universities = await api.getUniversities(countryId);
+          setUniversities(universities);
         } else {
           navigate("/counsellor/signin");
         }
@@ -66,8 +75,12 @@ const AddCourseForm = () => {
   useEffect(() => {
     const fetchDomains = async () => {
       try {
-          const response = await axios.get(`${URL}/domains`);
-          setDomains(response.data.data);   
+        const domains = await api.getAllDomains();
+        if (!domains) {
+          toast.error("Failed to fetch domains");
+        } else {
+          setDomains(domains);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -76,12 +89,13 @@ const AddCourseForm = () => {
   }, []);
 
   const [formData, setFormData] = useState<CourseData>({
-    qualification:"",
-    universities:[]
+    qualification: "",
+    universities: [],
   });
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [logoError, setLogoError] = useState<string>();
 
   const navigate = useNavigate();
 
@@ -89,6 +103,11 @@ const AddCourseForm = () => {
     const { id, value, files } = e.target;
     if (files) {
       const file = files[0];
+      const logoError = validateCourseLogo(file);
+      if (logoError) {
+        setLogoError(logoError);
+        return;
+      }
       const reader = new FileReader();
       reader.onloadend = () => {
         if (id === "logo") {
@@ -119,19 +138,20 @@ const AddCourseForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({ submitError: "" });
+    const newErrors: { [key: string]: string } = {};
+
+    newErrors.name = validateCourseName(formData?.name) || "";
+    newErrors.qualification =
+      validateCourseQualification(formData?.qualification) || "";
+    newErrors.fees = validateCourseFees(formData?.fees) || "";
+    newErrors.description = validateDescription(formData?.description) || "";
+    newErrors.duration = validateCourseDuration(formData?.duration) || "";
+    newErrors.university =
+      validateCourseUniversity(formData?.universities) || "";
+    newErrors.domain = validateCourseDomain(formData?.domain) || "";
     try {
-      const response = await axios.post(
-        `${COUNSELLORBASEURL}/course`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials:true
-        }
-      );
-      console.log('crse',response.data);
-      navigate("/counsellor/courses")
+      const response = await counsellorApi.addCourse(formData);
+      navigate("/counsellor/courses");
       toast.success("Course added successfully");
     } catch (error) {
       console.log(error);
@@ -196,11 +216,11 @@ const AddCourseForm = () => {
             <TextField
               id="fees"
               label="fees"
-              fullWidth 
+              fullWidth
               variant="outlined"
               size="small"
-              error={Boolean(errors.email)}
-              helperText={errors.email}
+              error={Boolean(errors.fees)}
+              helperText={errors.fees}
               onChange={handleChange}
             />
           </Box>
@@ -212,21 +232,21 @@ const AddCourseForm = () => {
               fullWidth
               variant="outlined"
               size="small"
-              error={Boolean(errors.mobile)}
-              helperText={errors.mobile}
+              error={Boolean(errors.description)}
+              helperText={errors.description}
               onChange={handleChange}
             />
           </Box>
           <Box>
-            <Typography variant="inherit">Enter the Duartion</Typography>
+            <Typography variant="inherit">Enter the Duration</Typography>
             <TextField
               id="duration"
               label="Duration"
               fullWidth
               variant="outlined"
               size="small"
-              error={Boolean(errors.mobile)}
-              helperText={errors.mobile}
+              error={Boolean(errors.duration)}
+              helperText={errors.duration}
               onChange={handleChange}
             />
           </Box>
@@ -246,15 +266,18 @@ const AddCourseForm = () => {
                 multiple
                 value={formData?.universities}
                 onChange={handleUniversitySelectChange}
-                renderValue={(selected) => 
-                  (selected as string[]).map(getUniversityNameById).join(", ")}
+                renderValue={(selected) =>
+                  (selected as string[]).map(getUniversityNameById).join(", ")
+                }
               >
                 <MenuItem value="">
                   <em>None</em>
                 </MenuItem>
                 {universities?.map((university) => {
                   return (
-                    <MenuItem key={university.id} value={university.id}>{university.name}</MenuItem>
+                    <MenuItem key={university.id} value={university.id}>
+                      {university.name}
+                    </MenuItem>
                   );
                 })}
               </Select>
@@ -286,7 +309,9 @@ const AddCourseForm = () => {
                 </MenuItem>
                 {domains?.map((domain) => {
                   return (
-                    <MenuItem key={domain.id} value={domain.id}>{domain.name}</MenuItem>
+                    <MenuItem key={domain.id} value={domain.id}>
+                      {domain.name}
+                    </MenuItem>
                   );
                 })}
               </Select>
@@ -312,11 +337,12 @@ const AddCourseForm = () => {
               type="file"
               variant="outlined"
               size="small"
-              error={Boolean(errors.password)}
-              helperText={errors.password}
+              error={Boolean(errors.logo)}
+              helperText={errors.logo}
               onChange={handleChange}
             />
           </Box>
+          {logoError && <p className="text-red-700">{logoError}</p>}
 
           <Box display="flex" justifyContent="center">
             <Button type="submit" variant="contained">

@@ -11,14 +11,13 @@ const orderController = new mongoOrderRepository()
 
 const eventController = ()=>{ 
     const createEvent = async(req:Request,res:Response)=>{ 
-        console.log('req',req.body);
         
         const {userId, userName, userEmail,enrollType, enrollImage, date, time, selectedDate,orderId, counsellorId} = req.body
          try {
             
             
             const eventDto = new EventDTO(userId,userName,userEmail,enrollType,enrollImage,date,time,selectedDate,counsellorId)
-            console.log('evedto',eventDto);
+           
             const newEvent = await addNewEvent(eventRepository).execute(eventDto)
             const updateOrder = await orderUpdate(orderController).execute(orderId,date,time)
             if(newEvent){
@@ -39,7 +38,7 @@ const eventController = ()=>{
         
         try {
             const events = await getUserEvents(eventRepository).execute(userId)
-            console.log('getent',events);
+           
             
             if(events.length){
                 res.status(200).json({message:'success', data:events})

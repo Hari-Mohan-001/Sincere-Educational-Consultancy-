@@ -10,4 +10,5 @@ export interface IOrderRepository{
     getTotalOrderValue(timeframe:string):Promise<number|any[]>
     getTimeFrameOrders(timeframe:string):Promise<number|any[]>
     getAllOrdersForAdmin(startDate?:string, endDate?:string):Promise<Order[]>
+    getAllOrdersOfAUserById(userId:string):Promise<Order[]>
 }

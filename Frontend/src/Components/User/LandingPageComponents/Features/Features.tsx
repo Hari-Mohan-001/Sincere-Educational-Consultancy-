@@ -16,7 +16,6 @@ const Features = () => {
         </div>
       </div>
       <div className="flex">
-        
         <div className="mt-20 ml-32">
           <h1 className="text-indigo-700 text-xl font-bold">One-On-One</h1>
           <h1 className="text-cyan-500 text-xl font-bold">Discussion</h1>

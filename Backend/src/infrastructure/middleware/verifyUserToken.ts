@@ -1,11 +1,17 @@
 import { Response, Request, NextFunction } from "express";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
-const jwtSecret = process.env.JWT_SECRET || "secretkey";
+const jwtSecret = process.env.JWT_ACCESS_SECRET || "secretkey";
+
+interface UserPayload {
+  userId: string;
+  role: string;
+  // Add any other properties that your user object might have
+}
 
 // Extend the Express Request interface
-interface CustomRequest extends Request {
-  user?: string | JwtPayload; // Adjust this type based on your user type
+ export interface CustomRequest extends Request {
+  user?: UserPayload;
 }
 
 // Type guard to check if the payload is JwtPayload
@@ -20,9 +26,11 @@ export const verifyUserToken = (
   res: Response,
   next: NextFunction
 ): void => {
-  const token = req.cookies.userAuthToken;
+  const token = req.cookies.userAuthToken || req.headers.authorization?.split(" ")[1];
+
 
   if (!token) {
+    console.log('no tok');
     res.status(401).json({ message: "login to continue" });
     return;
   }
@@ -32,12 +40,15 @@ export const verifyUserToken = (
     jwtSecret,
     (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
       if (err || !decoded || !isJwtPayload(decoded)) {
+        console.log('err',err);
         res.status(401).json({ message: "login to continue" });
         return;
       }
 
-      req.user = decoded;
+      req.user = { userId: decoded.userId, role: decoded.role };
       if (decoded.role !== "user") {
+        console.log('otheeerr');
+        
         res
           .status(403)
           .json({ message: "Access denied: insufficient permissions" });

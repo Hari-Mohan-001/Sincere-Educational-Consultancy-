@@ -3,9 +3,15 @@ import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 
 const jwtSecret = process.env.JWT_SECRET || "secretkey";
 
+interface UserPayload {
+  userId: string;
+  role: string;
+  // Add any other properties that your user object might have
+}
+
 // Extend the Express Request interface
-interface CustomRequest extends Request {
-  user?: string | JwtPayload; // Adjust this type based on your user type
+ export interface CustomRequest extends Request {
+  user?: UserPayload;
 }
 
 export const redirectAuthenticatedUser = (
@@ -13,7 +19,9 @@ export const redirectAuthenticatedUser = (
   res: Response,
   next: NextFunction
 ): void => {
-  const token = req.cookies.userAuthToken;
+  console.log('redirect');
+  const token = req.cookies.userAuthToken || req.headers.authorization?.split(" ")[1];;
+
 
   if (token) {
     jwt.verify(

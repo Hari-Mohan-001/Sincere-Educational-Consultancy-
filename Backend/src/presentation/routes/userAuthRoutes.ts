@@ -14,6 +14,7 @@ import checkoutController from "../../infrastructure/controllers/checkoutControl
 import { userController } from "../../infrastructure/controllers/userController";
 import eventController from "../../infrastructure/controllers/eventController";
 import { messageController } from "../../infrastructure/controllers/messageController";
+import orderController from "../../infrastructure/controllers/orderController";
 
 const userAuthRoute = express.Router();
 const userRepository = new mongoUserRepository();
@@ -31,6 +32,7 @@ const CheckoutController = checkoutController()
 const UserController = userController()
 const EventController = eventController()
 const MessageController = messageController()
+const OrderController = orderController()
 
 userAuthRoute.post(
   "/signUp",
@@ -45,24 +47,30 @@ userAuthRoute.post(
 userAuthRoute.post(
   "/signIn",
   redirectAuthenticatedUser,
-  (req: Request, res: Response) => UserAuthController.signInUser(req, res)
+  (req: Request, res: Response) =>  UserAuthController.signInUser(req, res)
 );
-userAuthRoute.post(
+userAuthRoute.post( 
   "/request-password-reset",
   redirectAuthenticatedUser,
   (req: Request, res: Response) =>
-    UserAuthController.passwordResetRequest(req, res)
+    
+      UserAuthController.passwordResetRequest(req, res)
 );
 userAuthRoute.post(
   "/reset-password",
   redirectAuthenticatedUser,
-  (req: Request, res: Response) => UserAuthController.resetPassword(req, res)
+  (req: Request, res: Response) => { 
+   UserAuthController.resetPassword(req, res)}
 );
 userAuthRoute.post(
   "/google-auth",
   redirectAuthenticatedUser,
   (req: Request, res: Response) => UserAuthController.googleAuth(req, res)
 );
+
+userAuthRoute.post('/refresh-token',(req: Request, res: Response,next: NextFunction)=>{
+  UserAuthController.refreshTokenEndPoint(req,res,next)
+})
 
 //token verify middleware
 userAuthRoute.use((req: Request, res: Response, next: NextFunction) => {
@@ -98,6 +106,10 @@ userAuthRoute.get("/messages",(req: Request, res: Response)=>{
 
 userAuthRoute.put("/:userId",(req: Request, res: Response)=>{
 UserController.updateUser(req,res)
+})
+
+userAuthRoute.get("/orders/:userId",(req: Request, res: Response,next:NextFunction)=>{
+  OrderController.getUserOrders(req,res,next)
 })
 
 export default userAuthRoute; 

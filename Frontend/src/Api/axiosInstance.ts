@@ -1,7 +1,13 @@
-import axios from "axios";
-import {URL} from "../Constants/Constants"
+import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import {URL, USER_ENDPOINT} from "../Constants/Constants"
+
 
 const BASE_URL = URL
+
+// Extend the InternalAxiosRequestConfig type
+interface ExtendedAxiosRequestConfig extends InternalAxiosRequestConfig {
+    _retry?: boolean;
+  }
 
 //creating instance of the axios to use globally
 
@@ -22,20 +28,46 @@ axiosInstance.interceptors.request.use((config)=>{
 }
 );
 
+let refreshToken: string | null = null;
+
 //response interceptor
 axiosInstance.interceptors.response.use((response)=>{
     return response
 },
-(error)=>{
+async (error: AxiosError) => {
+    const originalRequest = error.config as ExtendedAxiosRequestConfig;
+console.log(error);
 
-    if (error.response && error.response.status === 401) {
-        // Perform logout or redirect to login
-        console.log(error.response);
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        console.log('retwwww');
+        refreshToken = localStorage.getItem('refreshToken');
+        const response = await axiosInstance.post(`${USER_ENDPOINT}/refresh-token`, { refreshToken });
+        localStorage.setItem('refreshToken', response.data.refreshToken);
+        console.log('retry',refreshToken);
+
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        // Redirect to login or handle authentication failure
+        console.log(refreshError);
         
+        localStorage.removeItem('refreshToken');
+        window.location.href = "/"
+        return Promise.reject(refreshError);
       }
+    }
 
-    return Promise.reject(error)
-}
+    return Promise.reject(error);
+  }
 )
+
+export const setRefreshToken = (token: string) => {
+    localStorage.setItem('refreshToken', token);
+    console.log('fiserst',token);
+    
+  };
 
 export default axiosInstance

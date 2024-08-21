@@ -44,7 +44,7 @@ const courseController = () => {
         courseDto
       );
       if (newCourse) {
-        console.log(newCourse, "newcrs");
+        
 
         res.status(200).json({ message: "Course created", data: newCourse });
       }
@@ -83,7 +83,7 @@ const courseController = () => {
       }
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
+       
 
         res.status(400).json({ message: error.message });
       } else {
@@ -154,7 +154,7 @@ const courseController = () => {
   const domainSpecificCourses = async (req: Request, res: Response)=>{
     const domainId = req.params.domainId
     try {
-      console.log('domaincrs',domainId);
+     
       
       const courses = await getDomainSpecificCourses(courseRepository).execute(domainId)
       console.log(courses);

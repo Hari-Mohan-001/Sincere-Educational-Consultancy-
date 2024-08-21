@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { adminApi } from "../../../Api/adminApi";
 import { ResponseUserData } from "../../../Interface/User/UserInterface";
 import { toast } from "react-toastify";
-import { Bar, Line } from "react-chartjs-2";
+import { Bar} from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   }, []);
 
   useEffect(() => {
-    // Move the logic for counting enrolled users to a separate useEffect
+    // Moved the logic for counting enrolled users to a separate useEffect
     if (users.length > 0) {
       const count = users.filter((user) => user.isEnrolled).length;
       console.log(count);
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     // Fetch revenue data based on the selected timeframe
     const getTotalAmount = async () => {
-        try {
+      try {
         const amount = await adminApi.getTotalRevenue(timeframe);
         if (Array.isArray(amount)) {
           setTotalRevenue(amount);
@@ -79,17 +79,15 @@ const AdminDashboard = () => {
         } else {
           toast.error("Failed to fetch amount");
         }
-    } catch (error) {
-      console.log();
-    }
-  }
+      } catch (error) {
+        console.log();
+      }
+    };
     getTotalAmount();
   }, [timeframe]); // Update when the timeframe changes
 
   useEffect(() => {
     const getTotalOrders = async () => {
-      console.log("useeff", orderTimeframe);
-
       const orders = await adminApi.getTotalOrders(orderTimeframe);
       if (orders || orders == 0) {
         setTotalOrder(orders);
@@ -99,35 +97,6 @@ const AdminDashboard = () => {
     };
     getTotalOrders();
   }, [orderTimeframe]);
-
-  // Chart.js data
-  const data = {
-    labels: ["Total Revenue"],
-    datasets: [
-      {
-        label: `Revenue (${timeframe})`,
-        data: [totalRevenue],
-        backgroundColor: ["rgb(255, 102, 102,0.5)"],
-        borderColor: ["rgba(75, 192, 192, 1)"],
-        fill: true,
-      },
-    ],
-  };
-
-  // Chart.js options
-  //  const options = {
-  //   responsive: true,
-  //   maintainAspectRatio: false,
-  //   plugins: {
-  //     legend: {
-  //       position: "top" as const,
-  //     },
-  //     title: {
-  //       display: true,
-  //       text: "Total Revenue Chart",
-  //     },
-  //   },
-  // };
 
   const revenueData = returnRevenueData({
     labels:

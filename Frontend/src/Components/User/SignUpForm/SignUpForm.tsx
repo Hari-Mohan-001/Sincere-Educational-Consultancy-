@@ -30,8 +30,6 @@ const SignUpForm = () => {
 
   useEffect(() => {
     if (user) {
-      console.log(user);
-
       navigate("/home");
     }
   }, [user, navigate]);
@@ -192,7 +190,7 @@ const SignUpForm = () => {
             />
           </Box>
           <Box display="flex" justifyContent="center">
-            <Button sx={{width:'200px'}} type="submit" variant="contained">
+            <Button sx={{ width: "200px" }} type="submit" variant="contained">
               Register
             </Button>
             <Divider>Or</Divider>

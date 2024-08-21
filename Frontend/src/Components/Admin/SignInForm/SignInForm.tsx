@@ -55,7 +55,7 @@ const AdminSignInForm = () => {
     dispatch(signInAdmin(formData)).then((result) => {
       if (signInAdmin.fulfilled.match(result)) {
         toast.success("Login success");
-        navigate("/admin/students");
+        navigate("/admin/dashboard");
       } else if (signInAdmin.rejected.match(result)) {
         const payload = result.payload as ResponseData;
         setErrors({ signInError: payload?.message || "Failed to login" });

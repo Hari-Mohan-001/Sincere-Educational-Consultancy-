@@ -32,7 +32,7 @@ export const validateRanking = (number: string | undefined):string|null=>{
 const allowedFormats = ["image/jpeg", "image/png", "image/gif", "image/webp"];
   export const validateLogo =(logo:File|undefined):string|null=>{
     if(!logo){
-        return "Country is required"
+        return "Logo is required"
     }else if(!allowedFormats.includes(logo.type)){
  return "Please choose image file"
     }

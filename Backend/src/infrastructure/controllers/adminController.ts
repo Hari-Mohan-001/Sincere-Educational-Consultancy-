@@ -16,7 +16,7 @@ const adminRepository = new mongoAdminRepository()
             if(admin_doc){
                 generateAdminJwtToken(res,admin_doc.id)
              const {password:hashedPassword, ...admin} = admin_doc
-             console.log('admin',admin);
+           
              
                 res.status(200).json({message:"login successfull",admin})
             }

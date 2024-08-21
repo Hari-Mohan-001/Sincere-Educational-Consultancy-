@@ -1,11 +1,16 @@
 
-import { useParams } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import ChatComponent from '../../Layout/ChatComponent'
 
-const CounsellorChat = () => {
+interface LocationState{
+  counsellorId:string;
+  userId:string
+}
 
-  const {counsellorId,userId} = useParams()
-  console.log('coun',counsellorId,'user',userId);
+const CounsellorChat = () => {
+const location = useLocation()
+
+  const {counsellorId,userId} = location.state as LocationState
   
   if (!counsellorId || !userId) {
     return <div>Error: Missing required parameters</div>

@@ -14,7 +14,7 @@ const CourseUniversityController = courseUniversityController()
 const OrderController = orderController()
 const MessageController = messageController()
 const router = express.Router()
-
+ 
 router.get("/countries",(req:Request,res:Response)=>{
 CountryControler.getAllCountries(req,res)
 })
@@ -48,6 +48,8 @@ MessageController.chatImageUpload(req,res)
 router.get("/courses/:domainId",(req:Request,res:Response)=>{
   CourseController.domainSpecificCourses(req,res)
 })
+
+
 
 // Stripe requires the raw body to validate the signature
 

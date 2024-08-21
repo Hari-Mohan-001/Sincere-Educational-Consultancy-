@@ -16,24 +16,23 @@ import { useDispatch, useSelector } from "react-redux";
 import { signOutUser } from "../../../Redux/User/UserSlice";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../../../Interface/User/UserInterface";
-import axios from "axios";
-import { BASE_URL } from "../../../Constants/Constants";
 import NotificationComponent from "../../Layout/NotificationComponent";
+import { userApi } from "../../../Api/userApi";
 
-const pages = ["Home","Courses", "Universities", "Events"];
+const pages = ["Home", "Courses", "Universities", "Events"];
 const pageRoutes: Record<string, string> = {
-  Home:"/home",
+  Home: "/home",
   Courses: "/courses",
   Universities: "/universities",
   Events: "/events",
 }; // Define routes for each page
-// const settings = ["Profile", "Account", "Dashboard", "Logout"]; 
+// const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 // Define routes for each user menu setting
 const settings = [
   { name: "Profile", path: "/profile" },
-  { name: "Account", path: "/account" },
-  { name: "Dashboard", path: "/dashboard" },
+  { name: "Orders", path: "/orders" },
+  // { name: "Dashboard", path: "/dashboard" },
   { name: "Logout", path: "/logout" },
 ];
 
@@ -49,29 +48,20 @@ function Header() {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
 
- React.useEffect(()=>{
-  const userId = user?.id
-  const getUser = async()=>{
-    const response = await axios.get(`${BASE_URL}/user/${userId}`,{
-      withCredentials:true
-    })
-    console.log(response.data);
-    const fetchedUser = response.data.data
+  React.useEffect(() => {
+    const userId = user?.id;
+    const getUser = async () => {
+      const fetchedUser = await userApi.getAUser(userId);
 
-    if(fetchedUser?.isBlocked){
-      console.log('blocked');
-      
-      dispatch(signOutUser());
+      if (fetchedUser?.isBlocked) {
+        dispatch(signOutUser());
         sessionStorage.clear();
+        localStorage.removeItem('refreshToken');
         navigate("/signIn");
-    }
-    
-  }
- 
-  
-   
-    getUser()
-  },[user,navigate])
+      }
+    };
+    getUser();
+  }, [user, navigate]);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -90,12 +80,11 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/signOut`, {
-        withCredentials: true,
-      });
-      if (response.status === 200) {
+      const response = await userApi.signOut();
+      if (response) {
         dispatch(signOutUser());
         sessionStorage.clear();
+        localStorage.removeItem('refreshToken');
         navigate("/signIn");
         handleCloseUserMenu();
       }
@@ -104,12 +93,12 @@ function Header() {
     }
   };
 
-  const handleClick =()=>{
-    navigate("/")
-  }
+  const handleClick = () => {
+    navigate("/");
+  };
 
-    // Conditionally include "Home" in the navigation pages if the user is logged in
-    const userPages = user ? ["Home", ...pages] : pages;
+  // Conditionally include "Home" in the navigation pages if the user is logged in
+  const userPages = user ? ["Home", ...pages] : pages;
 
   return (
     <AppBar className="!bg-cyan-500" position="static">
@@ -120,7 +109,6 @@ function Header() {
             variant="h6"
             noWrap
             component="a"
-           
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -134,9 +122,7 @@ function Header() {
           >
             SeC
           </Typography>
-          <div className="float-left">
-        
-          </div>
+          <div className="float-left"></div>
           <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
@@ -166,8 +152,8 @@ function Header() {
                 display: { xs: "block", md: "none" },
               }}
             >
-              {userPages.map((page,index) => (
-                <MenuItem key={page+index}>
+              {userPages.map((page, index) => (
+                <MenuItem key={page + index}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -226,7 +212,7 @@ function Header() {
               </Link>
             </>
           ) : (
-            <Box sx={{ flexGrow: 0 }}>
+            <Box sx={{ flexGrow: 0, display: "flex" }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                   <Avatar src={user.image} />
@@ -250,23 +236,23 @@ function Header() {
               >
                 {settings.map((setting) => (
                   <MenuItem
-                  key={setting.name}
-                  onClick={() => {
-                    handleCloseUserMenu();
-                    if (setting.name === "Logout") {
-                      handleLogout();
-                    } else {
-                      navigate(setting.path); // Navigate to the specific route
-                    }
-                  }}
+                    key={setting.name}
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      if (setting.name === "Logout") {
+                        handleLogout();
+                      } else {
+                        navigate(setting.path); // Navigate to the specific route
+                      }
+                    }}
                   >
                     <Typography textAlign="center">{setting.name}</Typography>
                   </MenuItem>
                 ))}
               </Menu>
+              <NotificationComponent />
             </Box>
           )}
-           <NotificationComponent/>
         </Toolbar>
       </Container>
     </AppBar>

@@ -11,6 +11,7 @@ export class User {
         public image?:string,
         public isBlocked: boolean= false,
         public isEnrolled: boolean= false,
+        public refreshToken?: string,
         
     ) {}
 

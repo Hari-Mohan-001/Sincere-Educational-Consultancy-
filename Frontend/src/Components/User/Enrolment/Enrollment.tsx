@@ -11,15 +11,16 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { BASE_URL, URL } from "../../../Constants/Constants"; 
-import {loadStripe} from "@stripe/stripe-js"
+import { loadStripe } from "@stripe/stripe-js";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
+import { api } from "../../../Api/api";
+import { userApi } from "../../../Api/userApi";
+import { toast } from "react-toastify";
 
 interface CountryData {
-  id: string;    
+  id: string;
   name: string;
   image: string;
 }
@@ -36,26 +37,24 @@ const Enrollment = () => {
   const [enrollments, setEnrollments] = useState<EnrollmentData[]>([]);
   const [selectedCountry, setSelectedCountry] = useState<string>(""); // State for selected country
   const [selectedEnrollment, setSelectedEnrollment] = useState<string>(""); // State for selected enrollment
-  const {user} = useSelector((state:RootState)=>state.user)
+  const { user } = useSelector((state: RootState) => state.user);
+
   useEffect(() => {
     const fetchCountries = async () => {
-      const response = await axios.get(`${URL}/countries`);
-      if (response.status === 200) {
-        const countries = response.data.data;
+      const countries = await api.getAllCountries();
+      if (countries) {
         setCountries(countries);
       }
     };
 
     const fetchEnrollments = async () => {
-      const response = await axios.get(`${BASE_URL}/enrollments`, {
-        withCredentials: true,
-      });
-
-      console.log(response.data);
-      const enrollmentData = response.data.data;
-      setEnrollments(enrollmentData);
+      const enrollments = await userApi.getAllEnrollments();
+      if (enrollments) {
+        setEnrollments(enrollments);
+      } else {
+        toast.error("failed to fetch enrollments");
+      }
     };
-
     fetchCountries();
     fetchEnrollments();
   }, []);
@@ -73,7 +72,6 @@ const Enrollment = () => {
   const selectedEnrollmentDetails = enrollments.find(
     (enroll) => enroll.id === selectedEnrollment
   );
-
 
   // Calculate tax function
   const calculateTax = (amount: string | undefined): number => {
@@ -94,41 +92,29 @@ const Enrollment = () => {
   };
   const tax = calculateTax(selectedEnrollmentDetails?.amount);
   const totalAmount = selectedEnrollmentDetails
-    ?Math.floor(parseFloat(selectedEnrollmentDetails.amount) + tax)
+    ? Math.floor(parseFloat(selectedEnrollmentDetails.amount) + tax)
     : 0; // Handle undefined amount
 
-    const handlePayment = async()=>{
-        const stripe = await loadStripe("pk_test_51PfgkcEAV82mMSI8Belvs1HZbtQMRdEst21OkbFOcgth5MRQVsQLjpvoIkKtKGrBlteQJbdrBmPH9gy6o28AwKj000T9mE7F4p")
-         const body={
-            enrolldetails:selectedEnrollmentDetails,
-            country:selectedCountry,
-            userId:user?.id,
-            totalAmount:totalAmount
-           }
-           const headers={
-            "Content-Type":"application/json"
-           }
+  const handlePayment = async () => {
+    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+    const body = {
+      enrolldetails: selectedEnrollmentDetails,
+      country: selectedCountry,
+      userId: user?.id,
+      totalAmount: totalAmount,
+    };
+    //creating checkout
+    const sessionId = await userApi.checkOut(body);
+    if (stripe) {
+      const result = await stripe.redirectToCheckout({
+        sessionId: sessionId,
+      });
 
-           const response = await fetch(`${BASE_URL}/create-checkout`,{
-            method:"POST",
-            headers:headers,
-            body:JSON.stringify(body),
-            credentials:"include"
-           })
-           
-           
-           const session = await response.json()
-           if (stripe) {
-            
-            const result = await stripe.redirectToCheckout({
-              sessionId: session.id,
-            });
-      
-            if (result && result.error) {
-              console.log(result.error.message);
-            }
+      if (result && result.error) {
+        console.log(result.error.message);
+      }
     }
-  }
+  };
   return (
     <div className="flex">
       <div className="flex flex-col w-1/3 ml-14 mt-8 bg-slate-200 rounded-lg p-4 shadow-lg">

@@ -2,23 +2,57 @@ import bcrypt from "bcrypt"
 
 import { IUserRepository } from "../../../domain/repositories/IUserRepositary"
 
-const resetTokenStorage :Map<string, {token:string, tokenExpiry:number }> = new Map()
-export const 
-storeResetToken =(userId:string,token:string,tokenExpiry:number)=>{
-resetTokenStorage.set(userId,{token,tokenExpiry})
-}
+interface ResetInfo {
+    userId: string;
+    token: string;
+    tokenExpiry: number;
+  }
 
-export const getResetToken=(id:string,token:string)=>{
-          const data=  resetTokenStorage.get(id)
-          if(!data){
-            throw new Error("Invalid or session expired");
+  const resetTokenStorage: Map<string, ResetInfo> = new Map();
+
+  export const storeResetInfo = (uniqueIdentifier: string, resetInfo: ResetInfo): void => {
+    resetTokenStorage.set(uniqueIdentifier, resetInfo);
+  };
+
+  export const getResetInfo = (uniqueIdentifier: string): ResetInfo | undefined => {
+    return resetTokenStorage.get(uniqueIdentifier);
+  };
+
+  export const verifyResetInfo = (uniqueIdentifier: string): ResetInfo => {
+    const resetInfo = resetTokenStorage.get(uniqueIdentifier);
+    
+    if (!resetInfo) {
+      throw new Error("Invalid or session expired");
+    }
+    
+    if (resetInfo.tokenExpiry < Date.now()) {
+      throw new Error("Session expired");
+    }
+    
+    return resetInfo;
+  };
+
+  export const clearResetInfo = (uniqueIdentifier: string): void => {
+    resetTokenStorage.delete(uniqueIdentifier);
+  };
+
+// const resetTokenStorage :Map<string, {token:string, tokenExpiry:number }> = new Map()
+// export const 
+// storeResetToken =(userId:string,token:string,tokenExpiry:number)=>{
+// resetTokenStorage.set(userId,{token,tokenExpiry})
+// }
+
+// export const getResetToken=(id:string,token:string)=>{
+//           const data=  resetTokenStorage.get(id)
+//           if(!data){
+//             throw new Error("Invalid or session expired");
             
-          }
-          if(data.token!==token && data.tokenExpiry<Date.now()){
-            throw new Error("Ivalid or session expired")
-          }
-          return true
-}
+//           }
+//           if(data.token!==token && data.tokenExpiry<Date.now()){
+//             throw new Error("Ivalid or session expired")
+//           }
+//           return true
+// }
 
 export const resetPasswordUseCase = (userRepository:IUserRepository)=>{
 

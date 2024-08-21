@@ -15,7 +15,7 @@ const enrollmentContoller = ()=>{
                const imageUrl = await cloudinaryUpload(image, "Enrollment")
                const enrollmentDto = new enrollmentDTO(name,amount,imageUrl)
                const newEnrollment = await addNewEnrollment(enrollmentRepository).execute(enrollmentDto)
-               console.log('newenrol', newEnrollment);
+              
                
                if(newEnrollment){
                 res.status(200).json({message:"success"})
@@ -46,7 +46,7 @@ const enrollmentContoller = ()=>{
     }
     const updateEnrollment = async(req:Request,res:Response)=>{
         try {
-            console.log(req.body.enrollData);
+            
             const{enrollId, enrollAmount} = req.body.enrollData
             const update = await enrollmentUpdate(enrollmentRepository).execute(enrollId, enrollAmount)
             if(update){

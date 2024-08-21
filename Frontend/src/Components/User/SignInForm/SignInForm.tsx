@@ -2,36 +2,38 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ResponseData, RootState, signInUserData } from "../../../Interface/User/UserInterface";
+import {
+  ResponseData,
+  RootState,
+  signInUserData,
+} from "../../../Interface/User/UserInterface";
 import { useDispatch, useSelector } from "react-redux";
 import { signInUser } from "../../../Redux/User/UserSlice";
-import { AppDispatch} from "../../../Redux/Store";
+import { AppDispatch } from "../../../Redux/Store";
 import GoogleAuth from "../GoogleAuth/GoogleAuth";
 
 const SignInForm = () => {
   const [formData, setFormData] = useState<signInUserData>({
-    email:"",
-    password:""
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const dispatch = useDispatch<AppDispatch>()
-  const {user} = useSelector((state:RootState)=>state.user)
-  const navigate = useNavigate()
-  
+  const dispatch = useDispatch<AppDispatch>();
+  const { user } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(user){
+  useEffect(() => {
+    if (user) {
       console.log(user);
-      
-      navigate("/home")
+
+      navigate("/home");
     }
-  },[user, navigate])
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
     setErrors({ ...errors, [e.target.id]: "" });
-    console.log(formData.email);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,24 +48,20 @@ const SignInForm = () => {
     const password: string = formData.password;
     if (!password) {
       newErrors.password = "Password is required";
-    } 
+    }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    dispatch(signInUser(formData)).then((result)=>{
-      if(signInUser.fulfilled.match(result)){
-        navigate("/home")
-      }else if(signInUser.rejected.match(result)){
-        
-        
-        const payload = result.payload as ResponseData
-        console.log(payload);
-        
-        setErrors({signInError:payload?.message|| "Failed to login"})
+    dispatch(signInUser(formData)).then((result) => {
+      if (signInUser.fulfilled.match(result)) {
+        navigate("/home");
+      } else if (signInUser.rejected.match(result)) {
+        const payload = result.payload as ResponseData;
+        setErrors({ signInError: payload?.message || "Failed to login" });
       }
-    })
+    });
   };
 
   return (
@@ -106,8 +104,10 @@ const SignInForm = () => {
               Login
             </Button>
           </Box>
-          <GoogleAuth/>
-          {errors.signInError && <p className="text-red-600">{errors.signInError}</p> }
+          <GoogleAuth />
+          {errors.signInError && (
+            <p className="text-red-600">{errors.signInError}</p>
+          )}
         </Box>
       </form>
 

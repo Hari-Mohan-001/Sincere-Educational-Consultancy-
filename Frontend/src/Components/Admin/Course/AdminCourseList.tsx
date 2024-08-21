@@ -1,36 +1,31 @@
-import { Box, Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { ADMIN_BASE_URL} from "../../../Constants/Constants";
-
-
+import { adminApi } from "../../../Api/adminApi";
+import { toast } from "react-toastify";
 
 interface CourseData {
   _id: string;
   name: string;
   qualification: string;
   fees: string;
-  description:string;
+  description: string;
   logo: string;
   duration: string;
   universities: string[];
-  universityName:string;
+  universityName: string;
 }
 
 const AdminCourseList = () => {
-  const navigate = useNavigate();
   useEffect(() => {
     const fetchCourses = async () => {
-      
       try {
-       
-          const response = await axios.get(`${ADMIN_BASE_URL}/courses`,{
-            withCredentials:true
-          });
-          setCourses(response.data.data);
-          console.log('setubi',courses);
+        const courseData = await adminApi.getAllCourses();
+        if (courseData) {
+          setCourses(courseData);
+        } else {
+          toast.error("Unable to fetch courses");
+          return;
+        }
       } catch (error) {
         console.error(error);
       }
@@ -40,15 +35,11 @@ const AdminCourseList = () => {
 
   const [courses, setCourses] = useState<CourseData[]>([]);
 
-  // const handleClick = () => {
-  //   navigate("/counsellor/add-university");
-  // };
-
   const columns = [
     { id: "name", label: "Name", minWidth: 100 },
     { id: "qualification", label: "Qualification", minWidth: 100 },
     { id: "fees", label: "Fees", minWidth: 50 },
-    { id: "description", label: "Description", minWidth: 100},
+    { id: "description", label: "Description", minWidth: 100 },
     {
       id: "logo",
       label: "Logo",
@@ -71,9 +62,8 @@ const AdminCourseList = () => {
 
   return (
     <>
-      <TableComponent title="Courses" columns={columns} data={courses}/>
-      <div className="mt-4 mr-2">
-      </div>
+      <TableComponent title="Courses" columns={columns} data={courses} />
+      <div className="mt-4 mr-2"></div>
     </>
   );
 };

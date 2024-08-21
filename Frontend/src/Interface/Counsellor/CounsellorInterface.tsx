@@ -38,3 +38,8 @@ export interface CounsellorState {
   export interface CounsellorRootState {
     counsellor: CounsellorState;
   }
+
+  export interface callData{
+    userId: string,
+    roomLink: string,
+  }

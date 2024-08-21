@@ -23,31 +23,33 @@ interface TableComponentProps {
   data: any[];
 }
 
-
-
-
 const TableComponent: React.FC<TableComponentProps> = ({
   title,
   columns,
   data,
 }) => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(4);
 
-  const [page, setPage] = useState(0)
-const [rowsPerPage , setRowsPerPage] = useState(4)
+  const paginatedData = data.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
 
-const paginatedData = data.slice(page*rowsPerPage , page*rowsPerPage+rowsPerPage)
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
 
-const handleChangePage =(event: React.MouseEvent<HTMLButtonElement> | null, newPage: number)=>{
-  setPage(newPage)
-}
-
-// Handle rows per page change
-const handleChangeRowsPerPage = (
-  event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-) => {
-  setRowsPerPage(parseInt(event.target.value, 10));
-  setPage(0); // Reset page to first page
-};
+  // Handle rows per page change
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset page to first page
+  };
 
   return (
     <div className="container mx-3 my-0 mt-8">
@@ -56,11 +58,7 @@ const handleChangeRowsPerPage = (
       </Typography>
 
       {columns.length > 0 && data.length > 0 ? (
-        <TableContainer 
-        component={Paper} 
-        className="shadow-lg"
-        style={{}}
-        >
+        <TableContainer component={Paper} className="shadow-lg" style={{}}>
           <Table>
             <TableHead className="bg-gray-800">
               <TableRow>
@@ -77,7 +75,7 @@ const handleChangeRowsPerPage = (
               </TableRow>
             </TableHead>
             <TableBody>
-              {paginatedData.map((row,index) => (
+              {paginatedData.map((row, index) => (
                 <TableRow key={`${row.id}-${index}`}>
                   {columns.map((column) => {
                     const value = row[column.id];

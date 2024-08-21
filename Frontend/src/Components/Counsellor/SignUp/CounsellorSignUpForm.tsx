@@ -16,6 +16,7 @@ import {
   ResponseData,
 } from "../../../Interface/Counsellor/CounsellorInterface";
 import { URL } from "../../../Constants/Constants";
+import { api } from "../../../Api/api";
 
 interface Country {
   id: string;
@@ -43,9 +44,8 @@ const CounsellorSignUpForm = () => {
     }
     const fetchCountries = async () => {
       try {
-        const response = await axios.get(`${URL}/countries`);
-        setCountries(response.data.data);
-        console.log(countries);
+        const countries = await api.getAllCountries();
+        setCountries(countries);
       } catch (error) {
         console.error(error);
       }

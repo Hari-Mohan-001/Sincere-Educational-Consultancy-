@@ -2,32 +2,34 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, StoreRootState} from "../../../Redux/Store";
-import { CounsellorRootState, CounsellorState, ResponseData, signInCounsellorData } from "../../../Interface/Counsellor/CounsellorInterface";
+import { AppDispatch } from "../../../Redux/Store";
+import {
+  CounsellorRootState,
+  ResponseData,
+  signInCounsellorData,
+} from "../../../Interface/Counsellor/CounsellorInterface";
 import { signInCounsellor } from "../../../Redux/Counsellor/CounsellorSlice";
 import { toast } from "react-toastify";
 
-
 const CounsellorSignInForm = () => {
   const [formData, setFormData] = useState<signInCounsellorData>({
-    email:"",
-    password:""
+    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const dispatch = useDispatch<AppDispatch>()
-  const {counsellor} = useSelector((state:CounsellorRootState)=>state.counsellor)
-  const navigate = useNavigate() 
-  console.log('kih',);
-  
+  const dispatch = useDispatch<AppDispatch>();
+  const { counsellor } = useSelector(
+    (state: CounsellorRootState) => state.counsellor
+  );
+  const navigate = useNavigate();
 
-  useEffect(()=>{
-    if(counsellor){  
-      navigate("/counsellor/university")
+  useEffect(() => {
+    if (counsellor) {
+      navigate("/counsellor/university");
     }
-  },[counsellor, navigate])
+  }, [counsellor, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -47,22 +49,22 @@ const CounsellorSignInForm = () => {
     const password: string = formData.password;
     if (!password) {
       newErrors.password = "Password is required";
-    } 
+    }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    dispatch(signInCounsellor(formData)).then((result)=>{
-      if(signInCounsellor.fulfilled.match(result)){
-        toast.success("Login success")
-        navigate("/counsellor/university")
-      }else if(signInCounsellor.rejected.match(result)){
-        const payload = result.payload as ResponseData
-        setErrors({signInError:payload?.message|| "Failed to login"})
-        toast.error("Login failed")
+    dispatch(signInCounsellor(formData)).then((result) => {
+      if (signInCounsellor.fulfilled.match(result)) {
+        toast.success("Login success");
+        navigate("/counsellor/university");
+      } else if (signInCounsellor.rejected.match(result)) {
+        const payload = result.payload as ResponseData;
+        setErrors({ signInError: payload?.message || "Failed to login" });
+        toast.error("Login failed");
       }
-    })
+    });
   };
 
   return (
@@ -105,7 +107,9 @@ const CounsellorSignInForm = () => {
               Login
             </Button>
           </Box>
-          {errors.signInError && <p className="text-red-600">{errors.signInError}</p> }
+          {errors.signInError && (
+            <p className="text-red-600">{errors.signInError}</p>
+          )}
         </Box>
       </form>
 

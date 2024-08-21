@@ -20,6 +20,7 @@ import UserVideoCallPage from "../Pages/User/UserVideoCallPage/UserVideoCallPage
 import LandingPage from "../Pages/User/LandingPage/LandingPage";
 import UserNotFoundPage from "../Pages/User/UserNotFoundPage/UserNotFoundPage";
 import UserProfilePage from "../Pages/User/UserProfilePage/UserProfilePage";
+import UserOrderPage from "../Pages/User/UserOrderPage/UserOrderPage";
 
 const UserRoute = () => {
   return (
@@ -36,14 +37,14 @@ const UserRoute = () => {
       <Route path="suggestedCourses" element={<SuggestedCoursesPage/>}/>
       <Route path="orderSuccess" element={<OrderSuccessPage/>}/>
       <Route path="events" element={<EventPage/>}/>
-      <Route path="chat/:userId/:counsellorId" element={<UserChatPage/>}/>
+      <Route path="chat" element={<UserChatPage/>}/>
       <Route path="join-call/:roomId" element={<UserVideoCallPage/>}/>
       <Route path="profile" element={<UserProfilePage/>}/>
+      <Route path="orders" element={<UserOrderPage/>}/>
       </Route>
-      <Route path="courseDetails/:courseId" element={<CourseDeatailsPage/>}/>
+      <Route path="courseDetails" element={<CourseDeatailsPage/>}/>
       <Route path="courses" element={<CoursePage/>}/>
-      <Route path="courses/:domainId" element={<CoursePage/>}/>
-      
+      <Route path="courses/domain" element={<CoursePage/>}/>
       <Route path="universities" element={<UniversitiesPage/>}/>
       <Route path="universityDetails" element={<UniversityDetailsPage/>}/>
       

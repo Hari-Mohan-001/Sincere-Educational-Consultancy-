@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import io, { Socket } from "socket.io-client";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -6,8 +5,8 @@ import SendIcon from "@mui/icons-material/Send";
 import ClipLoader from "react-spinners/ClipLoader";
 import { chatApi } from "../../Api/chatApi";
 import { toast } from "react-toastify";
-import { useDispatch } from 'react-redux';
-import { updateNotifications } from '../../Redux/Notification/NotificationSlice';
+import { useDispatch } from "react-redux";
+import { updateNotifications } from "../../Redux/Notification/NotificationSlice";
 import { AppDispatch } from "../../Redux/Store";
 import { SocketUrL } from "../../Constants/Constants";
 
@@ -25,12 +24,12 @@ interface Message {
   receiver: {
     _id: string;
     name: string;
-    image:string;
+    image: string;
   };
   sender: {
     _id: string;
     name: string;
-    image:string;
+    image: string;
   };
   image?: string;
   timestamp: string;
@@ -63,13 +62,12 @@ const ChatComponent = ({
     newSocket.on("newMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
       scrollToBottom();
-
     });
 
     return () => {
       newSocket.disconnect();
     };
-  }, [counsellorId, userId, isCounsellor,dispatch]);
+  }, [counsellorId, userId, isCounsellor, dispatch]);
 
   useEffect(() => {
     scrollToBottom();
@@ -77,24 +75,21 @@ const ChatComponent = ({
 
   const fetchMessages = async () => {
     try {
-      const endPoint = isCounsellor ? 'counsellor' : 'user';
-      const params= {
+      const endPoint = isCounsellor ? "counsellor" : "user";
+      const params = {
         counsellorId: counsellorId,
         counsellorModel: counsellorModel,
         userId: userId,
         userModel: userModel,
-      }
-    const messages = await chatApi.fetchAllMessages(endPoint,params)
-    const data = messages;
-    console.log(data);
-    
-    setMessages(data);
-     // Scroll to bottom after messages are set
-     setTimeout(scrollToBottom, 100); // Small delay to ensure DOM update
+      };
+      const messages = await chatApi.fetchAllMessages(endPoint, params);
+      const data = messages;
+      setMessages(data);
+      // Scroll to bottom after messages are set
+      setTimeout(scrollToBottom, 100); // Small delay to ensure DOM update
     } catch (error) {
       toast.error("Failed to fetch messages.");
     }
-    
   };
 
   const previewFile = (file: File) => {
@@ -105,7 +100,7 @@ const ChatComponent = ({
       if (typeof reader.result === "string") {
         setImage(reader.result);
       } else {
-       toast.error('failed to load')
+        toast.error("failed to load");
       }
     };
   };
@@ -129,10 +124,10 @@ const ChatComponent = ({
         try {
           const response = await chatApi.uploadChatImage(image);
           imageUrl = response;
-          toast.success('Image send successfully')
+          toast.success("Image send successfully");
         } catch (error) {
           console.log(error);
-          toast.error("Failed to upload image"); 
+          toast.error("Failed to upload image");
         } finally {
           setIsLoading(false);
         }
@@ -153,8 +148,8 @@ const ChatComponent = ({
       setImage(null); // Clear the image preview
       setIsModalOpen(false); // Close the modal
 
-        // Scroll to bottom after sending
-    setTimeout(scrollToBottom, 100);
+      // Scroll to bottom after sending
+      setTimeout(scrollToBottom, 100);
     }
   };
 
@@ -173,21 +168,28 @@ const ChatComponent = ({
       <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg overflow-hidden">
         {/* Header */}
         <div className="bg-indigo-600 text-white px-4 py-3">
-        <h2 className="text-lg font-semibold">
-  {messages.length > 0 && (
-    isCounsellor ? (
-      <>
-        <img src={messages[0].receiver.image} alt={messages[0].receiver.name} className="inline-block h-8 w-8 rounded-full mr-2" />
-        {`Chat with ${messages[0].receiver.name}`}
-      </>
-    ) : (
-      <>
-        <img src={messages[0].sender.image} alt={messages[0].sender.name} className="inline-block h-8 w-8 rounded-full mr-2" />
-        {`Chat with ${messages[0].sender.name}`}
-      </>
-    )
-  )}
-</h2>
+          <h2 className="text-lg font-semibold">
+            {messages.length > 0 &&
+              (isCounsellor ? (
+                <>
+                  <img
+                    src={messages[0].receiver.image}
+                    alt={messages[0].receiver.name}
+                    className="inline-block h-8 w-8 rounded-full mr-2"
+                  />
+                  {`Chat with ${messages[0].receiver.name}`}
+                </>
+              ) : (
+                <>
+                  <img
+                    src={messages[0].sender.image}
+                    alt={messages[0].sender.name}
+                    className="inline-block h-8 w-8 rounded-full mr-2"
+                  />
+                  {`Chat with ${messages[0].sender.name}`}
+                </>
+              ))}
+          </h2>
         </div>
 
         {/* Messages Area */}
@@ -241,7 +243,7 @@ const ChatComponent = ({
               </div>
             );
           })}
-           <div ref={messagesEndRef} />
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input Area */}
@@ -284,7 +286,7 @@ const ChatComponent = ({
               alt="Preview"
               className="max-w-md max-h-96 object-contain mb-4"
             />
-               
+
             {isLoading && (
               <div className="flex justify-center items-center mb-4">
                 <ClipLoader color="#4A90E2" loading={isLoading} size={30} />{" "}

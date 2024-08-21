@@ -1,5 +1,3 @@
-import axios from "axios";
-import { ADMIN_BASE_URL } from "../../../Constants/Constants";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -7,6 +5,7 @@ import { AdminRootState } from "../../../Interface/Admin/AdminInterface";
 import { useEffect } from "react";
 import { signOutAdmin } from "../../../Redux/Admin/AdminSlice";
 import { Button } from "@mui/material";
+import { adminApi } from "../../../Api/adminApi";
 
 const Header = () => {
   const { admin } = useSelector((state: AdminRootState) => state.admin);
@@ -20,11 +19,7 @@ const Header = () => {
   }, [admin, navigate]);
 
   const handleSignout = async () => {
-    const response = await axios.get(`${ADMIN_BASE_URL}/signout`, {
-      withCredentials: true,
-    });
-    console.log(response.data);
-
+    const response = await adminApi.signOut();
     dispatch(signOutAdmin());
     navigate("/admin/signin");
     toast.success("Signout Successfully");

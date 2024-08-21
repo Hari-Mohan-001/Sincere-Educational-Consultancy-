@@ -1,30 +1,34 @@
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import VideoCallComponent from "../../Layout/VideoCallComponent";
 import { useEffect } from "react";
-import axios from "axios";
-import { COUNSELLORBASEURL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
+import { counsellorApi } from "../../../Api/counsellorApi";
+
+interface LocationState {
+  counsellorId: string;
+  userId: string;
+}
 
 const CounsellorVideoCall = () => {
-  const { counsellorId, userId } = useParams();
+  const location = useLocation();
+  const { counsellorId, userId } = location.state as LocationState;
+
   if (!userId || !counsellorId) {
     return <div>Error: Missing required parameters</div>;
   }
 
-  const roomId =`${counsellorId}-${userId}-${Date.now()}`;
+  const roomId = `${counsellorId}-${userId}-${Date.now()}`;
+
   useEffect(() => {
     const roomLink = `${window.location.origin}/join-call/${roomId}`;
+    const data = {
+      userId: userId,
+      roomLink: roomLink,
+    };
     const sendMeetLink = async () => {
-      const response = await axios.post(
-        `${COUNSELLORBASEURL}/send-meet-link`,
-        {
-          userId: userId,
-          roomLink: roomLink,
-        },
-        { withCredentials: true }
-      );
-      if(response.status===200){
-        toast.success("Link send successfully")
+      const response = await counsellorApi.sendVideoCallLink(data);
+      if (response) {
+        toast.success("Link send successfully");
       }
     };
     sendMeetLink();
@@ -32,7 +36,11 @@ const CounsellorVideoCall = () => {
   return (
     <div>
       <h1 className="text-center text-xl">Counsellor Call</h1>
-      <VideoCallComponent isCounsellor={true} userId={counsellorId} roomId={roomId} />
+      <VideoCallComponent
+        isCounsellor={true}
+        userId={counsellorId}
+        roomId={roomId}
+      />
     </div>
   );
 };

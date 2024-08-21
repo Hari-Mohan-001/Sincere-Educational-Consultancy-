@@ -30,8 +30,8 @@ const CounsellorRoute = () => {
     <Route path='domain' element={<DomainListPage/>}/>
     <Route path='courses' element={<ListCounsellorCoursePage/>}/>
     <Route path='students' element={<EnrolledStudentsPage/>}/>
-    <Route path='chat/:counsellorId/:userId' element={<CounsellorChatPage/>}/>
-    <Route path='video-call/:counsellorId/:userId' element={<CounsellorVideoCallPage/>}/>
+    <Route path='chat' element={<CounsellorChatPage/>}/>
+    <Route path='video-call' element={<CounsellorVideoCallPage/>}/>
     </Route>
     <Route path='*' element={<CounsellorNotFoundPage/>}/>
    </Routes>

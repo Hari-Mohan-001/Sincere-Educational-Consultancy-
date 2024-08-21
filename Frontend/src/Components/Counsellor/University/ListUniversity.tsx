@@ -1,11 +1,10 @@
-import {Button } from "@mui/material";
+import { Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { URL } from "../../../Constants/Constants";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
+import { api } from "../../../Api/api";
 
 interface Country {
   _id: string;
@@ -17,11 +16,11 @@ interface UniversityData {
   name: string;
   address: string;
   ranking: string;
-  country:  Country;
+  country: Country;
   logo: string;
   images: string[];
   isApproved: boolean;
-}         
+}
 
 const ListUniversity = () => {
   const navigate = useNavigate();
@@ -30,15 +29,13 @@ const ListUniversity = () => {
   );
   useEffect(() => {
     const fetchUniversity = async () => {
-      
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-          const response = await axios.get(`${URL}/universities/${countryId}`);
-          console.log('res',response.data);
-
-          setUniversities(response.data.getUniversities);
-          console.log('setubi',universities);
+          const universities = await api.getUniversities(countryId);
+          if (universities) {
+            setUniversities(universities);
+          }
         } else {
           navigate("/counsellor/signin");
         }
@@ -59,7 +56,12 @@ const ListUniversity = () => {
     { id: "name", label: "Name", minWidth: 100 },
     { id: "address", label: "Address", minWidth: 100 },
     { id: "ranking", label: "Ranking", minWidth: 50 },
-    { id: "country", label: "Country", minWidth: 100,render: (row: UniversityData) =>row.country.name},
+    {
+      id: "country",
+      label: "Country",
+      minWidth: 100,
+      render: (row: UniversityData) => row.country.name,
+    },
     {
       id: "logo",
       label: "Logo",
@@ -78,7 +80,11 @@ const ListUniversity = () => {
 
   return (
     <>
-      <TableComponent title="Universities" columns={columns} data={universities}/>
+      <TableComponent
+        title="Universities"
+        columns={columns}
+        data={universities}
+      />
       <div className="mt-4 mr-2">
         <Button onClick={handleClick} variant="contained">
           Add

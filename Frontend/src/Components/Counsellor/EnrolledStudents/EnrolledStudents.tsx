@@ -1,26 +1,25 @@
-import {  Button, Modal, Typography } from "@mui/material";
+import { Button, Modal, Typography } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { COUNSELLORBASEURL} from "../../../Constants/Constants";
+import { SocketUrL } from "../../../Constants/Constants";
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
-import { useSelector } from "react-redux";          
+import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import io, { Socket } from 'socket.io-client';
+import io, { Socket } from "socket.io-client";
+import { counsellorApi } from "../../../Api/counsellorApi";
 
-
-interface OrderData{
-_id:string,
-userId:string,
-userName:string,
-userEmail:string,
-enrollType:string,
-enrollImage:string
-meetingSchedule?: { date: string; time: string };
+interface OrderData {
+  _id: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  enrollType: string;
+  enrollImage: string;
+  meetingSchedule?: { date: string; time: string };
 }
 
 const EnrolledStudents = () => {
@@ -29,24 +28,31 @@ const EnrolledStudents = () => {
     (state: CounsellorRootState) => state.counsellor
   );
   const [socket, setSocket] = useState<Socket | null>(null);
+  const [students, setStudents] = useState<OrderData[]>([]);
+  const [open, setOpen] = useState<boolean>(false);
+  const [selectedStudent, setSelectedStudent] = useState<OrderData | null>(
+    null
+  );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
   useEffect(() => {
     const fetchEnrolledStudents = async () => {
       try {
         if (counsellor) {
           const countryId = counsellor.country;
-          const response = await axios.get(`${COUNSELLORBASEURL}/orders/${countryId}`,{
-            withCredentials:true
-          });
-          setStudents(response.data.data);
+          const enrolledOrders = await counsellorApi.getErrolledOrders(
+            countryId
+          );
+          setStudents(enrolledOrders);
         } else {
-          navigate("/counsellor/signin")
+          navigate("/counsellor/signin");
         }
       } catch (error) {
         console.error(error);
       }
     };
 
-    const newSocket:Socket = io('http://localhost:3001');
+    const newSocket: Socket = io(SocketUrL);
     setSocket(newSocket);
     fetchEnrolledStudents();
     return () => {
@@ -54,17 +60,21 @@ const EnrolledStudents = () => {
     };
   }, []);
 
-  const [students, setStudents] = useState<OrderData[]>([]);
-  const[open,setOpen] = useState<boolean>(false)
-  const[selectedStudent, setSelectedStudent] = useState<OrderData |null>(null)
-  const[selectedDate, setSelectedDate] = useState<Date |null>(new Date())
-  
-
-
+   // Update the students array whenever the selectedStudent object changes
+   useEffect(() => {
+    if (selectedStudent) {
+      setStudents((prevStudents) =>
+        prevStudents.map((student) =>
+          student.userId === selectedStudent.userId
+            ? { ...student, meetingSchedule: selectedStudent.meetingSchedule }
+            : student
+        )
+      );
+    }
+  }, [selectedStudent]);
 
   const handleScheduleClick = (student: OrderData) => {
     setSelectedStudent(student);
-    
     setOpen(true);
   };
 
@@ -73,50 +83,41 @@ const EnrolledStudents = () => {
     setSelectedDate(date);
   };
 
-   // Handle schedule meeting
-   const handleScheduleMeeting = async () => {
+  // Handle schedule meeting
+  const handleScheduleMeeting = async () => {
     if (!selectedStudent || !selectedDate) return;
 
-    console.log(selectedDate , selectedStudent);
-    
     try {
-      //create event for the meeting as per the details entered 
-      const dateObject = new Date(selectedDate)
-      const date = format(dateObject,'dd-MM-yyyy')
-      const time = format(dateObject,'HH:mm:ss')
-      const orderId = selectedStudent._id
-      
+      //create event for the meeting as per the details entered
+      const dateObject = new Date(selectedDate);
+      const date = format(dateObject, "dd-MM-yyyy");
+      const time = format(dateObject, "HH:mm:ss");
+      const orderId = selectedStudent._id;
+
       const details = {
         date: date,
-        time:time,
-        userId:selectedStudent.userId,
-        userName:selectedStudent.userName,
-        userEmail:selectedStudent.userEmail,
-        enrollType:selectedStudent.enrollType,
-        enrollImage:selectedStudent.enrollImage,
+        time: time,
+        userId: selectedStudent.userId,
+        userName: selectedStudent.userName,
+        userEmail: selectedStudent.userEmail,
+        enrollType: selectedStudent.enrollType,
+        enrollImage: selectedStudent.enrollImage,
         selectedDate,
-        counsellorId:counsellor?.id,
-        orderId:orderId
-      }
-      const response = await axios.post(
-        `${COUNSELLORBASEURL}/event`,
-        details,
-       {
-          withCredentials:true
-        }
+        counsellorId: counsellor?.id,
+        orderId: orderId,
+      };
+      const response = await counsellorApi.createEventWithMeetingDetails(
+        details
       );
-      if(response.status===200){
-         // Update the student with the scheduled meeting details
-         setStudents((prevStudents) =>
-          prevStudents.map((student) =>
-            student.userId === selectedStudent.userId
-              ? { ...student, scheduledMeeting: { date, time } }
-              : student
-          )
-        );
-        toast.success("Meeting scheduled successfully")
+      if (response) {
+        // Update the student with the scheduled meeting details
+        // Update the selectedStudent object with the scheduled meeting details
+        setSelectedStudent({
+          ...selectedStudent,
+          meetingSchedule: { date, time },
+        });
+        toast.success("Meeting scheduled successfully");
       }
-      console.log("Meeting scheduled:", response.data);
       // Optionally update the UI or notify the user
     } catch (error) {
       console.error("Error scheduling meeting:", error);
@@ -126,18 +127,24 @@ const EnrolledStudents = () => {
   };
 
   const handleChatClick = (student: OrderData) => {
-    navigate(`/counsellor/chat/${counsellor?.id}/${student.userId}`)
+    // navigate(`/counsellor/chat/${counsellor?.id}/${student.userId}`)
+
+    //using the react router state feature to hide the id from urls
+    navigate(`/counsellor/chat`, {
+      state: { counsellorId: counsellor?.id, userId: student.userId },
+    });
     setSelectedStudent(student);
   };
 
-
-  const handleVideoCallClick =(studentId:string)=>{
-    if(socket){
-      socket.emit('startCall', { to: studentId });
-      navigate(`/counsellor/video-call/${counsellor?.id}/${studentId}`)
+  const handleVideoCallClick = (studentId: string) => {
+    if (socket) {
+      socket.emit("startCall", { to: studentId });
+      // navigate(`/counsellor/video-call/${counsellor?.id}/${studentId}`);
+      navigate(`/counsellor/video-call`, {
+        state: { counsellorId: counsellor?.id, userId: studentId },
+      });
     }
-   
-  }
+  };
 
   const columns = [
     { id: "userName", label: "Name", minWidth: 100 },
@@ -148,16 +155,24 @@ const EnrolledStudents = () => {
       label: "Logo",
       minWidth: 100,
       render: (row: OrderData) => (
-        <img src={row.enrollImage} alt={row.enrollType} style={{ width: 80, height: 80 }} />
+        <img
+          src={row.enrollImage}
+          alt={row.enrollType}
+          style={{ width: 80, height: 80 }}
+        />
       ),
     },
     {
       id: "meeting",
       label: "Meeting",
       minWidth: 100,
-      render: (row:OrderData) => (
-        row.meetingSchedule?.date==="" && row.meetingSchedule.time==="" ? (
-
+      render: (row: OrderData) =>
+        row.meetingSchedule?.date && row.meetingSchedule.time ? (
+          <div>
+            <div>Date: {row.meetingSchedule.date}</div>
+            <div>Time: {row.meetingSchedule.time}</div>
+          </div>
+        ) : (
           <Button
             variant="contained"
             color="success"
@@ -165,30 +180,31 @@ const EnrolledStudents = () => {
           >
             Schedule
           </Button>
-         
-        ) : (
-          <div>
-          <div>Date: {row.meetingSchedule?.date}</div>
-          <div>Time: {row.meetingSchedule?.time}</div>
-        </div>
-        )
-      ),
+        ),
     },
     {
       id: "chat",
       label: "Chat/Call",
       minWidth: 100,
-      render: (row: OrderData) => (
-        row.enrollType==='Chat'?
-        <Button variant="contained" onClick={() => handleChatClick(row)}>Chat</Button> :
-        <Button variant="contained" onClick={() => handleVideoCallClick(row.userId)} >Video Call</Button>
-      ),
+      render: (row: OrderData) =>
+        row.enrollType === "Chat" ? (
+          <Button variant="contained" onClick={() => handleChatClick(row)}>
+            Chat
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            onClick={() => handleVideoCallClick(row.userId)}
+          >
+            Video Call
+          </Button>
+        ),
     },
   ];
 
   return (
     <>
-      <TableComponent title="Students" columns={columns} data={students}/>
+      <TableComponent title="Students" columns={columns} data={students} />
       <Modal open={open} onClose={() => setOpen(false)}>
         <div
           style={{

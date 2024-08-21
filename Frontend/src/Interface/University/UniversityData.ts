@@ -8,3 +8,13 @@ export interface UniversityData {
     images: string[];
     isApproved: boolean;
   }
+
+
+  export interface CreateUniversityData{
+    name?: string;
+    address?: string;
+    ranking?: string;
+    country?: string;
+    logo?: string;
+    images?: string[];
+  }

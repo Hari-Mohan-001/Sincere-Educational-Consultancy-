@@ -6,7 +6,7 @@ const checkoutController = () => {
     try {
       const { enrolldetails, country,userId,totalAmount} = req.body;
       const sessionId = await createCheckoutSession(enrolldetails,country,userId,totalAmount);
-      res.json({ id: sessionId})
+      res.status(200).json({message:'success', data: sessionId})
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });

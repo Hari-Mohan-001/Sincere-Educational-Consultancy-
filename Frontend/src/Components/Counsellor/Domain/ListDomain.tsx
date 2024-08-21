@@ -2,8 +2,7 @@ import { Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { URL } from "../../../Constants/Constants";
+import { api } from "../../../Api/api";
 
 interface Domain {
   id: string;
@@ -12,22 +11,18 @@ interface Domain {
 }
 const DomainList = () => {
   const [domains, setDomains] = useState<Domain[]>([]);
+
   useEffect(() => {
     const fetchDomains = async () => {
       try {
-        const response = await axios.get(`${URL}/domains`,{
-          withCredentials:true
-        });
-        console.log("res", response.data);
-
-        setDomains(response.data.data);
-        console.log("setubi", domains);
+        const domains = await api.getAllDomains();
+        setDomains(domains);
       } catch (error) {
         console.error(error);
       }
     };
     fetchDomains();
-  },[]);
+  }, []);
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -42,7 +37,11 @@ const DomainList = () => {
       label: "Image",
       minWidth: 100,
       render: (row: any) => (
-        <img src={row.image} alt={row.name} style={{ width: 100, height: 70 }} />
+        <img
+          src={row.image}
+          alt={row.name}
+          style={{ width: 100, height: 70 }}
+        />
       ),
     },
   ];

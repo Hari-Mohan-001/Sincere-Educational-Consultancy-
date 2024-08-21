@@ -27,7 +27,7 @@ const counsellorController = () => {
           password,
           country
         );
-        console.log("sign2");
+      
 
         const newCounsellor = await CounsellorSignUp(
           cousellorRepository
@@ -47,13 +47,13 @@ const counsellorController = () => {
   };
 
   const signIn = async (req: Request, res: Response) => {
-    console.log("sign");
+   
     const { email, password } = req.body;
     try {
       const counsellor_doc = await counsellorSignIn(
         cousellorRepository
       ).execute(email, password);
-      console.log("sign1/2", counsellor_doc);
+     
       if (counsellor_doc) {
         generateCounsellorJwtToken(res, counsellor_doc.id);
         const { password: hashedPassword, ...counsellor } = counsellor_doc;
@@ -70,7 +70,7 @@ const counsellorController = () => {
 
   const signout = async (req: Request, res: Response) => {
     try {
-      console.log("out");
+     
     
       const Counsellorsignout = await SignOut(res);
       res.status(200).json({ message: "signout success" });

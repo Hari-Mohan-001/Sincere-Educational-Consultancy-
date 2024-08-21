@@ -2,15 +2,7 @@ import { Badge, Button } from "@mui/material";
 import TableComponent from "../../Layout/Table";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { ADMIN_BASE_URL} from "../../../Constants/Constants";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
-import { toast } from "react-toastify";
-
-const mySwal = withReactContent(Swal);
-
-
+import { adminApi } from "../../../Api/adminApi";
 
 interface UniversityData {
   _id: string;
@@ -21,60 +13,54 @@ interface UniversityData {
   logo: string;
   images: string[];
   isApproved: boolean;
-  countryName:string;
+  countryName: string;
 }
 
 const AdminListUniversity = () => {
   const navigate = useNavigate();
   const [universities, setUniversities] = useState<UniversityData[]>([]);
-  const [filteredUniversities, setFilteredUniversities] = useState<UniversityData[]>([]);
+  const [filteredUniversities, setFilteredUniversities] = useState<
+    UniversityData[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [count, setCount] =useState()
+  const [count, setCount] = useState();
   useEffect(() => {
     const fetchUniversity = async () => {
       try {
-        const response = await axios.get(`${ADMIN_BASE_URL}/approved-universities`,{
-          withCredentials:true
-        });
-        setUniversities(response.data.data);
+        const universities = await adminApi.getAllApprovedUniversities();
+        setUniversities(universities);
       } catch (error) {
         console.error(error);
       }
     };
 
-    const getNotApprovedUniversitiesCount = async()=>{
-      const response = await axios.get(`${ADMIN_BASE_URL}/not-approved-universities-count`,{
-        withCredentials:true
-      })
-      const count = response.data.data
-      console.log('count',count);
-      
-      setCount(count)
-    }
-    getNotApprovedUniversitiesCount()
+    const getNotApprovedUniversitiesCount = async () => {
+      const count = await adminApi.getUnapprovedUniversitiesCount();
+      setCount(count);
+    };
+    getNotApprovedUniversitiesCount();
     fetchUniversity();
-    
   }, []);
 
-  useEffect(()=>{
-    const filtered = universities.filter((university)=>{
-      const lowerCaseQuery = searchQuery.toLowerCase()
-      return(
-        university.name.toLowerCase().includes(lowerCaseQuery)||
-        university.address.toLowerCase().includes(lowerCaseQuery)||
-        university.ranking.toLowerCase().includes(lowerCaseQuery)||
-        university.countryName.toLowerCase().includes(lowerCaseQuery)||
-        (university.isApproved ? "approved" : "not approved").includes(lowerCaseQuery)
-      )
-    })
-    setFilteredUniversities(filtered)
-  },[searchQuery,universities])
+  useEffect(() => {
+    const filtered = universities.filter((university) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        university.name.toLowerCase().includes(lowerCaseQuery) ||
+        university.address.toLowerCase().includes(lowerCaseQuery) ||
+        university.ranking.toLowerCase().includes(lowerCaseQuery) ||
+        university.countryName.toLowerCase().includes(lowerCaseQuery) ||
+        (university.isApproved ? "approved" : "not approved").includes(
+          lowerCaseQuery
+        )
+      );
+    });
+    setFilteredUniversities(filtered);
+  }, [searchQuery, universities]);
 
-
-
-  const handleApproval = ()=>{
-      navigate("/admin/not-approved-universities")
-  }
+  const handleApproval = () => {
+    navigate("/admin/not-approved-universities");
+  };
 
   const columns = [
     { id: "name", label: "Name", minWidth: 100 },
@@ -104,36 +90,39 @@ const AdminListUniversity = () => {
             Approved
           </Button>
         ) : (
-          <Button
-            variant="contained"
-            color="error"
-          >
+          <Button variant="contained" color="error">
             Approve
           </Button>
         ),
     },
   ];
 
-  const handleSearchChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
-    setSearchQuery(e.target.value)
-  }
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <div className="flex flex-col">
       <div className="flex justify-end mt-3 gap-2">
         <div>
-      <input
-          type="text"
-          placeholder="Search university"
-          onChange={handleSearchChange}
-          value={searchQuery}
-          className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
-        />
+          <input
+            type="text"
+            placeholder="Search university"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
+          />
         </div>
         <div>
-        <Badge badgeContent={count} color="primary">
-        <Button onClick={handleApproval} variant="contained" color="secondary">Pending Approvals</Button>
-        </Badge>
+          <Badge badgeContent={count} color="primary">
+            <Button
+              onClick={handleApproval}
+              variant="contained"
+              color="secondary"
+            >
+              Pending Approvals
+            </Button>
+          </Badge>
         </div>
       </div>
       <div>

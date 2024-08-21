@@ -15,7 +15,7 @@ export class mongoCourseRepository implements ICourseRepository {
       const existCourse = await courseModel.findOne({ name: course.name });
       if (existCourse) {
         // Merge existing university IDs with new IDs and remove duplicates
-        console.log('exixt');
+        
         
         const updatedUniversityIds = [
           ...new Set([...existCourse.universities, ...universityIds]),
@@ -82,7 +82,7 @@ export class mongoCourseRepository implements ICourseRepository {
         newCourse.domain.toString()
       );
     } catch (error) {
-      console.error("Error creating the course:", error);
+    
       throw error; // Rethrow the original error
     }
   }
@@ -169,7 +169,7 @@ export class mongoCourseRepository implements ICourseRepository {
 
       return courses;
     } catch (error) {
-      console.log(error);
+    
 
       throw error;
     }

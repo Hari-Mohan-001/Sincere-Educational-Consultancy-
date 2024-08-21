@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { URL } from "../../../../Constants/Constants";
+import { api } from "../../../../Api/api";
 
 interface Country {
   id: string;
@@ -9,19 +8,14 @@ interface Country {
 }
 const Country = () => {
   const [countries, setCountries] = useState<Country[]>();
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const getCountries = async () => {
       try {
-        const response = await axios.get(`${URL}/countries`);
-        const data = response.data;
-        console.log("lj", data);
-
-        setCountries(data.data);
+        const countries = await api.getAllCountries();
+        setCountries(countries);
       } catch (error) {
         console.log(error);
-        // setError(error)
       }
     };
     getCountries();
@@ -37,7 +31,11 @@ const Country = () => {
             <div key={country.id} className="flex ">
               <div className="flex flex-col">
                 <div className="shadow-2xl">
-                  <img className="w-52 h-32 shadow-2xl" src={country.image} alt="" />
+                  <img
+                    className="w-52 h-32 shadow-2xl"
+                    src={country.image}
+                    alt=""
+                  />
                 </div>
 
                 <div className="flex justify-center ">

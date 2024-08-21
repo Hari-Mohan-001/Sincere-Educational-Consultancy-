@@ -1,19 +1,18 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import {COUNSELLORBASEURL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
+import { counsellorApi } from "../../../Api/counsellorApi";
 
 const AddDomain = () => {
   const [errors, setErrors] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const previewFile = (file: File) => {
-    const reader = new FileReader(); 
+    const reader = new FileReader();
     reader.readAsDataURL(file);
 
     reader.onloadend = () => {
@@ -26,7 +25,7 @@ const AddDomain = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrors('')
+    setErrors("");
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setFile(file);
@@ -35,12 +34,16 @@ const AddDomain = () => {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrors('')
+    setErrors("");
     setName(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!name) {
+      setErrors("Enter a name");
+      return;
+    }
     if (!file) {
       setErrors("Select a file");
       return;
@@ -49,29 +52,17 @@ const AddDomain = () => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("file", file);
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
     const toastId = toast.loading("Loading....");
     try {
-      const response = await axios.post(
-        `${COUNSELLORBASEURL}/domain`,
-        {
-          name: name,
-          image: image,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log("success", response.data);
-
-       // Update the loading toast to success
-       toast.update(toastId, {
+      const data = {
+        name: name,
+        image: image,
+      };
+      const response = await counsellorApi.addDomain(data);
+      // Update the loading toast to success
+      toast.update(toastId, {
         render: "Domain added successfully",
-        type: 'success',
+        type: "success",
         isLoading: false,
         autoClose: 5000,
       });
@@ -81,14 +72,14 @@ const AddDomain = () => {
       setImage(null);
       setName("");
       setErrors("");
-      navigate("/counsellor/domain")
-    } catch (error:unknown) {
+      navigate("/counsellor/domain");
+    } catch (error: unknown) {
       console.log("Error:", error);
 
       // Update the loading toast to error
       toast.update(toastId, {
         render: "Failed to add country/check the file type",
-        type:'error',
+        type: "error",
         isLoading: false,
         autoClose: 5000,
       });
@@ -124,10 +115,6 @@ const AddDomain = () => {
               variant="outlined"
               size="small"
               onChange={handleChange}
-              // value={formData.password}
-              // error={Boolean(errors.password)}
-              // helperText={errors.password}
-              // onChange={handleChange}
             />
           </Box>
 

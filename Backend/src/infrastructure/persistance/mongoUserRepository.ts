@@ -62,7 +62,8 @@ export class mongoUserRepository implements IUserRepository{
             user.qualification,
             user.image,
             user.isBlocked,
-            user.isEnrolled)
+            user.isEnrolled,
+            user.refreshToken)
     }
 
     public async resetPassword(id:string ,hashedPassword: string): Promise<boolean> {
@@ -138,6 +139,38 @@ export class mongoUserRepository implements IUserRepository{
             return updateUser != null
         } catch (error) {
             throw error   
+        }
+    }
+
+    public async updateUserRefreshToken(refreshToken: string, userId: string): Promise<boolean> {
+        try {
+            const updateUser = await userModel.findByIdAndUpdate(userId,
+                {
+                    $set:{
+                        refreshToken:refreshToken
+                    }
+                },
+             {new:true}
+            )
+            return updateUser != null
+        } catch (error) {
+            throw error  
+        }
+    }
+
+    public async deleteUserRefreshToken(userId: string): Promise<boolean> {
+        try {
+            const updateUser = await userModel.findByIdAndUpdate(userId,
+                {
+                    $set:{
+                        refreshToken:""
+                    }
+                },
+             {new:true}
+            )
+            return updateUser != null
+        } catch (error) {
+            throw error 
         }
     }
 

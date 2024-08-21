@@ -1,8 +1,6 @@
-
-
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { adminApi } from "../../../Api/adminApi";
 
@@ -12,7 +10,7 @@ const AddEnrollment = () => {
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
   const [amount, setAmount] = useState<number>();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const previewFile = (file: File) => {
     const reader = new FileReader();
@@ -28,7 +26,7 @@ const AddEnrollment = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrors('')
+    setErrors("");
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setFile(file);
@@ -37,11 +35,11 @@ const AddEnrollment = () => {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrors('')
+    setErrors("");
     setName(e.target.value);
   };
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setErrors('')
+    setErrors("");
     const value = parseFloat(e.target.value);
     setAmount(isNaN(value) ? undefined : value);
   };
@@ -52,30 +50,27 @@ const AddEnrollment = () => {
       setErrors("All feilds are mandatory");
       return;
     }
-    if(amount<1){
-        setErrors("Amount must be greater than 0")
-        return
+    if (amount < 1) {
+      setErrors("Amount must be greater than 0");
+      return;
     }
 
     const formData = new FormData();
     formData.append("name", name);
     formData.append("amount", amount.toString());
     formData.append("file", file);
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
     const toastId = toast.loading("Loading....");
     const enrollmentData = {
       name: name,
-      amount:amount,
+      amount: amount,
       image: image,
-    }
+    };
     try {
-      const response = await adminApi.addEnrollment(enrollmentData)
-       // Update the loading toast to success
-       toast.update(toastId, {
+      const response = await adminApi.addEnrollment(enrollmentData);
+      // Update the loading toast to success
+      toast.update(toastId, {
         render: "Enrollment added successfully",
-        type: 'success',
+        type: "success",
         isLoading: false,
         autoClose: 5000,
       });
@@ -85,14 +80,14 @@ const AddEnrollment = () => {
       setImage(null);
       setName("");
       setErrors("");
-      navigate("/admin/enrollment")
-    } catch (error:unknown) {
+      navigate("/admin/enrollment");
+    } catch (error: unknown) {
       console.log("Error:", error);
 
       // Update the loading toast to error
       toast.update(toastId, {
         render: "Failed to add country/check the file type",
-        type:'error',
+        type: "error",
         isLoading: false,
         autoClose: 5000,
       });

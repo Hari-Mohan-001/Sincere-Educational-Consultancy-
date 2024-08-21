@@ -82,7 +82,7 @@ export const universityController = () => {
   };
   const adminApproveUniversity = async (req: Request, res: Response) => {
     const universityId = req.params.universityId;
-    console.log('uni', universityId);
+    
     
     try {
       const approveUniversity = await universityApproval(
@@ -103,7 +103,7 @@ export const universityController = () => {
   const getApprovedUniversitiesForAdmin = async (req: Request, res: Response)=>{
     try {
             const universities = await adminGetApprovedUniversities(universityRepository).execute()
-            console.log('admin',universities);
+            
             
             res.status(200).json({message:'success', data:universities})
     } catch (error) {
@@ -118,7 +118,7 @@ export const universityController = () => {
   const getUniversityById = async (req: Request, res: Response)=>{
       try {
          const universityId = req.params.universityId
-         console.log(universityId);
+         
          
          const university = await getUniversity(universityRepository).execute(universityId)
          if(university){
@@ -139,7 +139,7 @@ export const universityController = () => {
         if(!universities.length){
           throw new Error("universities not found");  
         }
-        console.log('not app', universities);
+       
         
         res.status(200).json({message:'success', data:universities})
       } catch (error) {
@@ -156,7 +156,7 @@ export const universityController = () => {
               const universities = await getUniversitiesNotApproved(universityRepository).execute()
 
               const count = universities.length
-                console.log(count);
+               
                 
               res.status(200).json({message:'success', data:count})
             } catch (error) {

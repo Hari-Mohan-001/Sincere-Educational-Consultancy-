@@ -1,23 +1,44 @@
 import { ADMIN_ENDPOINT } from "../Constants/Constants";
 import { CountryData } from "../Interface/Country/ICountry";
-import { AddEnrollmentData, updateEnrollmentData } from "../Interface/Enrollment/IEnrollment";
+import {
+  AddEnrollmentData,
+  updateEnrollmentData,
+} from "../Interface/Enrollment/IEnrollment";
 import { MonthlyOrder, MonthlyRevenue } from "../Interface/Order/IOrder";
 import axiosInstance from "./axiosInstance";
 
 export const adminApi = {
-
   //add new country
-  addCountry: async(countryData:CountryData)=>{
-   try {
-    const response = await axiosInstance.post(`/${ADMIN_ENDPOINT}/country`,countryData)
-    if(response.status===200){
-      return true
-    }else{
-      return false
+  addCountry: async (countryData: CountryData) => {
+    try {
+      const response = await axiosInstance.post(
+        `/${ADMIN_ENDPOINT}/country`,
+        countryData
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
     }
-   } catch (error) {
-    console.log(error);  
-   }
+  },
+
+  //fetch all courses
+  getAllCourses: async () => {
+    try {
+      const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/courses`);
+      if (response.status === 200) {
+        const courses = response.data.data;
+        return courses;
+        return;
+      } else {
+        return "Unable to fetch courses";
+      }
+    } catch (error) {
+      console.log(error);
+    }
   },
   //fetching all students
   getAllUsers: async () => {
@@ -31,18 +52,35 @@ export const adminApi = {
       }
     } catch (error) {
       console.error("API Error:", error);
-      // return { data: null, error: error.message || "Something went wrong" };
+    }
+  },
+
+  blockUser: async (userId: string) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/${ADMIN_ENDPOINT}/user/${userId}`
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
     }
   },
 
   //adding enrollment
-  addEnrollment: async (enrollmentData:AddEnrollmentData) => {
+  addEnrollment: async (enrollmentData: AddEnrollmentData) => {
     try {
-      const response = await axiosInstance.post(`/${ADMIN_ENDPOINT}/enrollment`,{enrollmentData})
-      if(response.status===200){
-        return true
-      }else{
-        return 'Error occured'
+      const response = await axiosInstance.post(
+        `/${ADMIN_ENDPOINT}/enrollment`,
+        { enrollmentData }
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return "Error occured";
       }
     } catch (error) {}
   },
@@ -69,6 +107,66 @@ export const adminApi = {
         return true;
       } else {
         return false;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //fetch unApproved universities
+  getUnapprovedUniversities: async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/not-approved-universities`
+      );
+      if (response.status === 200) {
+        const universities = response.data.data;
+        return universities;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //approve a University
+  approveUniversity: async (universityId: string) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/${ADMIN_ENDPOINT}/university/${universityId}`
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  getUnapprovedUniversitiesCount: async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/not-approved-universities-count`
+      );
+      if (response.status === 200) {
+        const count = response.data.data;
+        return count;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  //fetch approved universities
+  getAllApprovedUniversities: async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/approved-universities`
+      );
+      if (response.status === 200) {
+        const universities = response.data.data;
+        return universities;
       }
     } catch (error) {
       console.log(error);
@@ -118,6 +216,15 @@ export const adminApi = {
         const orders = response.data.data;
         return orders;
       }
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  signOut: async () => {
+    try {
+      const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/signout`);
+      return response;
     } catch (error) {
       console.log(error);
     }

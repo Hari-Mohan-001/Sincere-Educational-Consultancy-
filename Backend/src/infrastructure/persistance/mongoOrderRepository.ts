@@ -16,7 +16,7 @@ export class mongoOrderRepository implements IOrderRepository {
         orderStatus: "Complete",
       });
       const saveNewOrder = await newOrder.save();
-      console.log("order", saveNewOrder);
+      
 
       if (saveNewOrder) {
         return true;
@@ -222,10 +222,14 @@ export class mongoOrderRepository implements IOrderRepository {
     try {
       let dateFilter = {};
       if (startDate && endDate) {
+         // Extend endDate to include the entire day
+      const end = new Date(endDate);
+      end.setUTCHours(23, 59, 59, 999);
+        
         dateFilter = {
           createdAt: {
             $gte: new Date(startDate),
-            $lte: new Date(endDate)
+            $lte: end
           }
         };
       }
@@ -295,6 +299,66 @@ export class mongoOrderRepository implements IOrderRepository {
         }
       ])
       return orders[0] || { orders: [], grandTotalAmount: 0 };
+    } catch (error) {
+      throw error
+    }
+  }
+
+  public async getAllOrdersOfAUserById(userId: string): Promise<Order[]> {
+    try {
+      const orders = await orderModel.aggregate([
+        {
+          $match: {
+            user: new mongoose.Types.ObjectId(userId),
+          },
+        },
+        {
+          $lookup:{
+            from:'users',
+            localField:'user',
+            foreignField:'_id',
+            as:'userDetails'
+          },
+        },
+        {
+          $lookup:{
+            from:'enrollments',
+            localField:'enrollment',
+            foreignField:'_id',
+            as:'enrollDetails',
+          },
+        },
+        {
+          $lookup:{
+            from:'countries',
+            localField:'country',
+            foreignField:'_id',
+            as:'countryDetails'
+          },
+        },
+        {
+          $unwind:'$userDetails'
+        },
+        {
+          $unwind:'$enrollDetails',
+        },
+        {
+          $unwind:'$countryDetails'
+        },
+        {
+          $project:{
+            _id:1,
+            userName: '$userDetails.name',
+            userEmail: '$userDetails.email',
+            enrollType: '$enrollDetails.name',
+            enrollImage: '$enrollDetails.image',
+            country:'$countryDetails.name',
+            totalAmount:1,
+            createdAt:1
+          }
+        },
+      ])
+      return orders
     } catch (error) {
       throw error
     }

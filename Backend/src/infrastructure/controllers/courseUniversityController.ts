@@ -8,11 +8,11 @@ const courseUniversityController = ()=>{
 
     const getAllUniversity = async(req:Request,res:Response)=>{
         const courseId = req.params.courseId
-        console.log('geta corse', courseId);
+        
         
             try {
                 const universities = await getAllUniversitiesForACourse(courseUniversityRepository).execute(courseId)
-                console.log('fetched',universities);
+               
                 
                 if(universities.length){
                     res.status(200).json({message:'success', data:universities})

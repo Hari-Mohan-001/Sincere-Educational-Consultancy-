@@ -14,7 +14,7 @@ const VideoCallComponent = ({ isCounsellor,userId,roomId }:Data) => {
 
   const myMeeting = async (element:any) => {
     const appID = 1531440418;
-    const serverSecret = "204fb99ea6b66e6f4f14257cb4fb05d2";
+    const serverSecret = import.meta.env.VITE_ZEGO_SERVERSECRET;
     const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
       appID,
       serverSecret,

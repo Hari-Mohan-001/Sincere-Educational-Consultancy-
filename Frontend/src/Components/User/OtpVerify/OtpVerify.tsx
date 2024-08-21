@@ -8,43 +8,39 @@ import { ResponseData, RootState } from "../../../Interface/User/UserInterface";
 import { toast } from "react-toastify";
 
 const OtpVerify = () => {
+  const navigate = useNavigate();
+  const { user } = useSelector((state: RootState) => state.user);
 
-  const navigate = useNavigate()
-  const {user} = useSelector((state:RootState)=>state.user)
-
-  useEffect(()=>{
-    if(user){
-      console.log(user);
-      
-      navigate("/home")
+  useEffect(() => {
+    if (user) {
+      navigate("/home");
     }
-  },[user, navigate])
-  
+  }, [user, navigate]);
+
   const [otp, setOtp] = useState("");
   const [error, setError] = useState<string>("");
 
   const dispatch = useDispatch<AppDispatch>();
 
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOtp(e.target.value);
     setError("");
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     if (!otp) {
       setError("Enter the otp to proceed");
-      return
+      return;
     }
     dispatch(verifyOtp(otp)).then((result) => {
       if (verifyOtp.fulfilled.match(result)) {
-        toast.success("User created Successfully")
+        toast.success("User created Successfully");
         navigate("/signIn");
       } else if (verifyOtp.rejected.match(result)) {
         const payload = result.payload as ResponseData;
-        toast.error("Failed to create")
+        toast.error("Failed to create");
         setError(payload?.message || "Otp verification failed");
       }
     });

@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { ADMIN_BASE_URL } from "../../../Constants/Constants";
 import { ResponseUserData } from "../../../Interface/User/UserInterface";
-import axios from "axios";
 import TableComponent from "../../Layout/Table";
 import { Button } from "@mui/material";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
+import { adminApi } from "../../../Api/adminApi";
 
 const mySwal = withReactContent(Swal);
 
@@ -16,13 +15,8 @@ const StudentList = () => {
   useEffect(() => {
     const getAllUser = async () => {
       try {
-        const response = await axios.get(`${ADMIN_BASE_URL}/users`, {
-          withCredentials: true,
-        });
-        const data = response.data;
-
-        setUsers(data.userData);
-        console.log(users);
+        const usersData = await adminApi.getAllUsers();
+        setUsers(usersData);
       } catch (error) {
         console.log(error);
       }
@@ -32,20 +26,16 @@ const StudentList = () => {
 
   const blockUser = async (id: string, isBlocked: Boolean) => {
     try {
-      const response = await axios.patch(
-        `${ADMIN_BASE_URL}/user/${id}`,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-      if (response.status == 200) {
+      const response = await adminApi.blockUser(id);
+      if (response) {
         toast.success("User blocked Successfully");
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
             user.id === id ? { ...user, isBlocked: !isBlocked } : user
           )
         );
+      } else {
+        toast.error("Error while blocking");
       }
     } catch (error: unknown) {
       if (error instanceof Error) {

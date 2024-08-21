@@ -5,8 +5,6 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
-import { COUNSELLORBASEURL, URL } from "../../../Constants/Constants";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { toast } from "react-toastify";
 import {
@@ -16,6 +14,8 @@ import {
   validateName,
   validateRanking,
 } from "../../../Utils/Validation/universityValidation";
+import { api } from "../../../Api/api";
+import { counsellorApi } from "../../../Api/counsellorApi";
 
 interface Country {
   id: string;
@@ -36,11 +36,8 @@ const AddUniversityForm = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get(`${URL}/countries`);
-        console.log(response.data);
-
-        setCountries(response.data.data);
-        console.log(countries);
+        const countries = await api.getAllCountries();
+        setCountries(countries);
       } catch (error) {
         console.error(error);
       }
@@ -50,7 +47,7 @@ const AddUniversityForm = () => {
 
   const [countries, setCountries] = useState<Country[]>([]);
   const [formData, setFormData] = useState<UniversityData>({
-    country:""
+    country: "",
   });
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -58,6 +55,7 @@ const AddUniversityForm = () => {
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [logoError, setLogoerror] = useState<string>();
+  
 
   const navigate = useNavigate();
 
@@ -129,6 +127,10 @@ const AddUniversityForm = () => {
     newErrors.address = validateAddress(formData?.address) || "";
     newErrors.ranking = validateRanking(formData?.ranking) || "";
     newErrors.country = validateCountry(formData?.country) || "";
+    if (!formData.logo || !formData.images) {
+      setLogoerror("Select logo and image file");
+      return;
+    }
 
     Object.keys(newErrors).forEach((key) => {
       if (newErrors[key] === "") delete newErrors[key];
@@ -137,39 +139,25 @@ const AddUniversityForm = () => {
       setErrors(newErrors);
       return;
     }
-    toast.promise(
-      axios.post(
-        `${COUNSELLORBASEURL}/university`,
-        formData, 
-        {
-          withCredentials:true,
-          headers: {
-            "Content-Type": "application/json",
-          },
+    toast.promise(counsellorApi.addUniversity(formData), {
+      pending: "Please wait",
+      success: {
+        render({ data }) {
+          // Perform any success logic here
+          navigate("/counsellor/university");
+          return "University added successfully";
         },
-        
-      ),
-      {
-        pending: "Please wait",
-        success: {
-          render({ data }) {
-            const response = data as AxiosResponse;
-            // Perform any success logic here
-            navigate("/counsellor/university");
-            return "University added successfully";
+      },
+      error: {
+        render({ data }) {
+          if (data instanceof Error) {
+            // Handle the error and return the error message
+            return `Error: ${data.message}`;
           }
+          return "An unknown error occurred";
         },
-        error: {
-          render({ data }) {
-            if (data instanceof Error) {
-              // Handle the error and return the error message
-              return `Error: ${data.message}`;
-            }
-            return "An unknown error occurred";
-          }
-        }
-      }
-    );
+      },
+    });
   };
 
   return (
@@ -231,7 +219,11 @@ const AddUniversityForm = () => {
                   <em>None</em>
                 </MenuItem>
                 {countries?.map((country) => {
-                  return <MenuItem key={country.id} value={country.id}>{country.name}</MenuItem>;
+                  return (
+                    <MenuItem key={country.id} value={country.id}>
+                      {country.name}
+                    </MenuItem>
+                  );
                 })}
               </Select>
               {errors.country && (
@@ -261,7 +253,7 @@ const AddUniversityForm = () => {
               onChange={handleChange}
             />
           </Box>
-          {logoError && <p className="text-red-700">{logoError}</p>}
+
           <Box
             display="grid"
             gridTemplateColumns="repeat(3, 1fr)"
@@ -313,6 +305,7 @@ const AddUniversityForm = () => {
             </Button>
           </Box>
         </Box>
+        {logoError && <p className="text-red-700">{logoError}</p>}
       </form>
       {errors.signUpError && (
         <p className="text-red-700">{errors.signUpError}</p>
