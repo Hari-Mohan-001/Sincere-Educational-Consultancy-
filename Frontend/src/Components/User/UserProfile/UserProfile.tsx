@@ -18,7 +18,7 @@ interface User {
 const UserProfile = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [userData, setUserData] = useState<User>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -55,6 +55,8 @@ const UserProfile = () => {
       }
       setFile(file);
       ImagePreview(file);
+      console.log(files);
+      
     }
   };
 

@@ -6,7 +6,7 @@ import FormControl from "@mui/material/FormControl";
 import Divider from "@mui/material/Divider";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { useDispatch, useSelector } from "react-redux";
 import { signUpCounsellor } from "../../../Redux/Counsellor/CounsellorSlice";
 import { AppDispatch } from "../../../Redux/Store";
@@ -15,7 +15,7 @@ import {
   CounsellorRootState,
   ResponseData,
 } from "../../../Interface/Counsellor/CounsellorInterface";
-import { URL } from "../../../Constants/Constants";
+
 import { api } from "../../../Api/api";
 
 interface Country {

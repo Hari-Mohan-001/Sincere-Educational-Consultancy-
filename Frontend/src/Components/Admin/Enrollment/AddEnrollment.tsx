@@ -66,7 +66,7 @@ const AddEnrollment = () => {
       image: image,
     };
     try {
-      const response = await adminApi.addEnrollment(enrollmentData);
+       await adminApi.addEnrollment(enrollmentData);
       // Update the loading toast to success
       toast.update(toastId, {
         render: "Enrollment added successfully",

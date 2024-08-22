@@ -1,8 +1,6 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import {  useNavigate } from "react-router-dom";
-import axios from "axios";
-import { ADMIN_BASE_URL } from "../../../Constants/Constants";
 import { toast } from "react-toastify";
 import { adminApi } from "../../../Api/adminApi";
 
@@ -59,7 +57,7 @@ const AddCountry = () => {
         name: name,
         image: image,
       }
-      const response = await adminApi.addCountry(countryData)
+       await adminApi.addCountry(countryData)
 
        // Update the loading toast to success
        toast.update(toastId, {

@@ -19,7 +19,7 @@ const Header = () => {
   }, [admin, navigate]);
 
   const handleSignout = async () => {
-    const response = await adminApi.signOut();
+    await adminApi.signOut();
     dispatch(signOutAdmin());
     navigate("/admin/signin");
     toast.success("Signout Successfully");

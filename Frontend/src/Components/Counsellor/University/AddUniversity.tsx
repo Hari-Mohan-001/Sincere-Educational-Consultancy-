@@ -75,7 +75,7 @@ const AddUniversityForm = () => {
           setLogoPreview(reader.result as string);
           setFormData({ ...formData, [id]: reader.result as string });
         } else if (id === "images") {
-          const images = Array.from(files).map((file) => {
+          Array.from(files).map((file) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onloadend = () => {
@@ -144,6 +144,7 @@ const AddUniversityForm = () => {
       success: {
         render({ data }) {
           // Perform any success logic here
+          console.log(data);
           navigate("/counsellor/university");
           return "University added successfully";
         },

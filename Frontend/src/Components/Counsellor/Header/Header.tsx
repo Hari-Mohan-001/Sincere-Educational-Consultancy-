@@ -20,7 +20,7 @@ const Header = () => {
   }, [counsellor, navigate]);
 
   const handleSignout = async () => {
-    const response = await counsellorApi.signout();
+     await counsellorApi.signout();
     dispatch(signOutCounsellor());
     navigate("/counsellor/signin");
     toast.success("Signout Successfully");

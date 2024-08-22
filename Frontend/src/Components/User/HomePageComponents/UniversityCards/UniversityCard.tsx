@@ -15,7 +15,7 @@ interface UniversityData {
 
 const UniversityCard = () => {
   const [universities, setUniversities] = useState<UniversityData[]>([]);
-  const [loading, setLoading] = useState(true);
+ 
 
   useEffect(() => {
     const fetchUniversities = async () => {
@@ -25,9 +25,7 @@ const UniversityCard = () => {
         setUniversities(universities.slice(0, 4));
       } catch (error) {
         console.error("Error fetching country data:", error);
-      } finally {
-        setLoading(false);
-      }
+      } 
     };
 
     fetchUniversities();

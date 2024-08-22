@@ -19,7 +19,7 @@ interface CourseData {
 
 const AllCourses = () => {
   const [courses, setCourses] = useState<CourseData[]>([]);
-  const [err, setErr] = useState<string>("");
+
   const [currentPage, setCurrentPage] = useState<number>(1);
   const coursesPerPage = 6;
   const navigate = useNavigate();
@@ -47,9 +47,9 @@ const AllCourses = () => {
         if (error instanceof AxiosError) {
           if (error.response && error.response.data) {
             toast.error(error.response.data.message);
-            setErr(error.response.data.message); // Assuming the backend sends the error message in 'message'
+           
           } else {
-            setErr(error.message);
+            console.log(error.message);
           }
         } else {
           console.log(error);
@@ -68,7 +68,7 @@ const AllCourses = () => {
   const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
 
   const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+    _: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setCurrentPage(value);

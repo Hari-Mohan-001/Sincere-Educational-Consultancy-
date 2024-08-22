@@ -50,7 +50,7 @@ const ListEvents = () => {
   const [events, setEvents] = useState<EventData[]>([]);
 
   const handleChatClick = (CounsellorId: string) => {
-    const userId = user?.id;
+    
     const counsellorId = CounsellorId;
     //navigate(`/chat/${userId}/${counsellorId}`)
     navigate(`/chat`, {

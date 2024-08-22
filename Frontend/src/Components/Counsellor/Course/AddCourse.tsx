@@ -150,7 +150,7 @@ const AddCourseForm = () => {
       validateCourseUniversity(formData?.universities) || "";
     newErrors.domain = validateCourseDomain(formData?.domain) || "";
     try {
-      const response = await counsellorApi.addCourse(formData);
+       await counsellorApi.addCourse(formData);
       navigate("/counsellor/courses");
       toast.success("Course added successfully");
     } catch (error) {

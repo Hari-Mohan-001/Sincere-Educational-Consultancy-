@@ -13,7 +13,7 @@ import {
   googleAuthData,
   UpdateUserData,
 } from "../../Interface/User/UserInterface";
-import { BASE_URL, USER_ENDPOINT } from "../../Constants/Constants";
+import { USER_ENDPOINT } from "../../Constants/Constants";
 import axiosInstance, { setRefreshToken } from "../../Api/axiosInstance";
 
 
@@ -128,6 +128,7 @@ export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfi
       
       if (response.status === 200 || response.status === 201 ) {
         const data: ResponseData = response.data.user
+        console.log(data);
         return response.data; // Assuming the updated user data is returned in response
       } else {
         return rejectWithValue({ message: "Failed to update user" });

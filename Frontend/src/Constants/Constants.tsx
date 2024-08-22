@@ -1,6 +1,6 @@
 
-export const URL = 'http://localhost:3001/api'
-export const SocketUrL = 'http://localhost:3001'
+export const URL = 'http://server-sincereedu.sincereedu.ltd/api'
+export const SocketUrL = 'http://server-sincereedu.sincereedu.ltd'
 
 export const USER_ENDPOINT ="user"
 export const ADMIN_ENDPOINT ="admin"

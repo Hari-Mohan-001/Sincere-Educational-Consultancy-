@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import ChatComponent from "../../Layout/ChatComponent";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../../Interface/User/UserInterface";
+import { useDispatch } from "react-redux";
+
 import { useEffect } from "react";
 import { AppDispatch } from "../../../Redux/Store";
 import { clearNotifications } from "../../../Redux/Notification/NotificationSlice";
@@ -11,7 +11,7 @@ interface LocationState {
   userId: string;
 }
 const UserChat = () => {
-  const { user } = useSelector((state: RootState) => state.user);
+
   const dispatch = useDispatch<AppDispatch>();
   const location = useLocation();
   const { userId,counsellorId } = location.state as LocationState;

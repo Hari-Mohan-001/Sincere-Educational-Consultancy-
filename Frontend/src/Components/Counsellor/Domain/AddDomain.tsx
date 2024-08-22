@@ -58,7 +58,7 @@ const AddDomain = () => {
         name: name,
         image: image,
       };
-      const response = await counsellorApi.addDomain(data);
+       await counsellorApi.addDomain(data);
       // Update the loading toast to success
       toast.update(toastId, {
         render: "Domain added successfully",

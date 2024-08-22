@@ -36,8 +36,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
     page * rowsPerPage + rowsPerPage
   );
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
+  const handleChangePage = (_: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
   ) => {
     setPage(newPage);

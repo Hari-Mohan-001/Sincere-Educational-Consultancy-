@@ -21,7 +21,6 @@ interface CourseData {
 const SuggestedCourse = () => {
   const { user } = useSelector((state: RootState) => state.user);
   const [suggestedCourses, setSuggestedCourses] = useState<CourseData[]>([]);
-  const [err, setErr] = useState<string>("");
   const navigate = useNavigate();
   useEffect(() => {
     const getSuggestedCourses = async () => {
@@ -34,9 +33,9 @@ const SuggestedCourse = () => {
       } catch (error) {
         if (error instanceof AxiosError) {
           if (error.response && error.response.data) {
-            setErr(error.response.data.message); // Assuming the backend sends the error message in 'message'
+           
           } else {
-            setErr(error.message);
+            console.log(error.message);
           }
         } else {
           console.log(error);

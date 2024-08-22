@@ -6,7 +6,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { chatApi } from "../../Api/chatApi";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { updateNotifications } from "../../Redux/Notification/NotificationSlice";
+
 import { AppDispatch } from "../../Redux/Store";
 import { SocketUrL } from "../../Constants/Constants";
 

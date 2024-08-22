@@ -18,7 +18,7 @@ interface UniversityData {
 
 const AllUniversities = () => {
   const [universities, setUniversities] = useState<UniversityData[]>([]);
-  const [err, setErr] = useState<string>("");
+  
   const [currentPage, setCurrentPage] = useState<number>(1);
   const universitiesPerPage = 6; // Number of universities to display per page
   const navigate = useNavigate();
@@ -36,9 +36,10 @@ const AllUniversities = () => {
         if (error instanceof AxiosError) {
           if (error.response && error.response.data) {
             toast.error(error.response.data.message);
-            setErr(error.response.data.message); // Assuming the backend sends the error message in 'message'
+             // Assuming the backend sends the error message in 'message'
           } else {
-            setErr(error.message);
+            console.log
+            (error.message);
           }
         } else {
           console.log(error);
@@ -59,8 +60,7 @@ const AllUniversities = () => {
     indexOfLastUniversity
   );
 
-  const handlePageChange = (
-    event: React.ChangeEvent<unknown>,
+  const handlePageChange = (_: React.ChangeEvent<unknown>,
     value: number
   ) => {
     setCurrentPage(value);
