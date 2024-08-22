@@ -22,31 +22,26 @@ const Country = () => {
   }, []);
   return (
     <div className="flex flex-col mt-10">
-      <div className="mb-4 flex justify-center">
-        <h1 className="text-2xl mb-5 font-semibold">Countries we Operate</h1>
-      </div>
-      <div className="flex justify-around   shadow-inner p-5">
-        {countries?.map((country) => {
-          return (
-            <div key={country.id} className="flex ">
-              <div className="flex flex-col">
-                <div className="shadow-2xl">
-                  <img
-                    className="w-52 h-32 shadow-2xl"
-                    src={country.image}
-                    alt=""
-                  />
-                </div>
-
-                <div className="flex justify-center ">
-                  <h1 className="text-lg">{country.name}</h1>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+    <div className="mb-4 flex justify-center">
+      <h1 className="text-2xl mb-5 font-semibold">Countries we Operate</h1>
     </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-5">
+      {countries?.map((country) => (
+        <div key={country.id} className="flex flex-col items-center">
+          <div className="shadow-2xl rounded-lg overflow-hidden">
+            <img
+              className="w-full h-32 object-cover"
+              src={country.image}
+              alt={country.name}
+            />
+          </div>
+          <div className="mt-2">
+            <h1 className="text-lg text-center">{country.name}</h1>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
   );
 };
 

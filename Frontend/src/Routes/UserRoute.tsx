@@ -6,7 +6,6 @@ import ForgetPasswordPage from "../Pages/User/ForgetPasswordPage/ForgetPasswordP
 import ResetPasswordPage from "../Pages/User/ResetPasswordPage/ResetPasswordPage";
 import HomePage from "../Pages/User/HomePage/HomePage";
 import UserPrivateRoute from "./PrivateRoute";
-// import CoursesPage from "../Pages/User/suggestedCoursesPage/SuggestedCoursesPage";
 import CourseDeatailsPage from "../Pages/User/CourseDetailsPage/CourseDeatailsPage";
 import UniversityDetailsPage from "../Pages/User/UniversityDetailsPage/UniversityDetailsPage";
 import EnrollmentPage from "../Pages/User/EnrollmentPage/EnrollmentPage";

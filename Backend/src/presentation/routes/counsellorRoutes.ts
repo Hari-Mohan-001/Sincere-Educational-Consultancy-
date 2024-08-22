@@ -17,8 +17,8 @@ const CourseController = courseController();
 const DomainController = domainController();
 const OrderController = orderController();
 const EventController = eventController();
-const MessageController = messageController()
-const UserController = userController()
+const MessageController = messageController();
+const UserController = userController();
 
 counsellorRouter.post("/signup", (req: Request, res: Response) =>
   CounsellorController.signUp(req, res)
@@ -39,10 +39,8 @@ counsellorRouter.post("/course", (req: Request, res: Response) => {
   CourseController.addCourse(req, res);
 });
 
-counsellorRouter.get(
-  "/signout",
-  (req: Request, res: Response) =>
-    CounsellorController.signout(req, res)
+counsellorRouter.get("/signout", (req: Request, res: Response) =>
+  CounsellorController.signout(req, res)
 );
 
 counsellorRouter.post("/domain", (req: Request, res: Response) => {
@@ -53,22 +51,19 @@ counsellorRouter.get("/courses/:countryId", (req: Request, res: Response) => {
   CourseController.counsellorCourse(req, res);
 });
 
-counsellorRouter.get(
-  "/orders/:countryId",
-  (req: Request, res: Response) => {
-    OrderController.getEnrolledOrders(req, res);
-  }
-);
+counsellorRouter.get("/orders/:countryId", (req: Request, res: Response) => {
+  OrderController.getEnrolledOrders(req, res);
+});
 
 counsellorRouter.post("/event", (req: Request, res: Response) => {
   EventController.createEvent(req, res);
 });
 
-counsellorRouter.get("/messages",(req: Request, res: Response)=>{
-MessageController.getMessagesForCounsellor(req,res)
-})
+counsellorRouter.get("/messages", (req: Request, res: Response) => {
+  MessageController.getMessagesForCounsellor(req, res);
+});
 
-counsellorRouter.post("/send-meet-link",(req: Request, res: Response)=>{
-UserController.sendlink(req,res)
-})
+counsellorRouter.post("/send-meet-link", (req: Request, res: Response) => {
+  UserController.sendlink(req, res);
+});
 export default counsellorRouter;

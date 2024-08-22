@@ -52,7 +52,6 @@ export const universityController = () => {
         universityRepository
       ).execute(countryId);
       if (getUniversities) {
-
         res.status(200).json({ message: "success", getUniversities });
       }
     } catch (error) {
@@ -64,13 +63,12 @@ export const universityController = () => {
     }
   };
   const getAllApprovedUniversities = async (req: Request, res: Response) => {
-
     try {
       const getAllUniversities = await AllUniversities(
         universityRepository
       ).execute();
       if (getAllUniversities) {
-        res.status(200).json({ message: "success", getAllUniversities });  
+        res.status(200).json({ message: "success", getAllUniversities });
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -82,8 +80,7 @@ export const universityController = () => {
   };
   const adminApproveUniversity = async (req: Request, res: Response) => {
     const universityId = req.params.universityId;
-    
-    
+
     try {
       const approveUniversity = await universityApproval(
         universityRepository
@@ -100,12 +97,16 @@ export const universityController = () => {
     }
   };
 
-  const getApprovedUniversitiesForAdmin = async (req: Request, res: Response)=>{
+  const getApprovedUniversitiesForAdmin = async (
+    req: Request,
+    res: Response
+  ) => {
     try {
-            const universities = await adminGetApprovedUniversities(universityRepository).execute()
-            
-            
-            res.status(200).json({message:'success', data:universities})
+      const universities = await adminGetApprovedUniversities(
+        universityRepository
+      ).execute();
+
+      res.status(200).json({ message: "success", data: universities });
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
@@ -113,60 +114,66 @@ export const universityController = () => {
         res.status(400).json({ message: "An unknown error occurred" });
       }
     }
-  }
+  };
 
-  const getUniversityById = async (req: Request, res: Response)=>{
-      try {
-         const universityId = req.params.universityId
-         
-         
-         const university = await getUniversity(universityRepository).execute(universityId)
-         if(university){
-          res.status(200).json({message:'Success',data:university})
-         }
-      } catch (error) {
-        if (error instanceof Error) {
-          res.status(400).json({ message: error.message });
-        } else {
-          res.status(400).json({ message: "An unknown error occurred" });
-        }
+  const getUniversityById = async (req: Request, res: Response) => {
+    try {
+      const universityId = req.params.universityId;
+
+      const university = await getUniversity(universityRepository).execute(
+        universityId
+      );
+      if (university) {
+        res.status(200).json({ message: "Success", data: university });
       }
-  }
-
-  const getNotApprovedUniversities = async(req: Request, res: Response)=>{
-      try {
-        const universities = await getUniversitiesNotApproved(universityRepository).execute()
-        if(!universities.length){
-          throw new Error("universities not found");  
-        }
-       
-        
-        res.status(200).json({message:'success', data:universities})
-      } catch (error) {
-        if (error instanceof Error) {
-          res.status(400).json({ message: error.message });
-        } else {
-          res.status(400).json({ message: "An unknown error occurred" });
-        }
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
       }
-  }
+    }
+  };
 
-  const getNotApprovedUniversitiesCount= async(req: Request, res: Response)=>{
-            try {
-              const universities = await getUniversitiesNotApproved(universityRepository).execute()
+  const getNotApprovedUniversities = async (req: Request, res: Response) => {
+    try {
+      const universities = await getUniversitiesNotApproved(
+        universityRepository
+      ).execute();
+      if (!universities.length) {
+        throw new Error("universities not found");
+      }
 
-              const count = universities.length
-               
-                
-              res.status(200).json({message:'success', data:count})
-            } catch (error) {
-              if (error instanceof Error) {
-                res.status(400).json({ message: error.message });
-              } else {
-                res.status(400).json({ message: "An unknown error occurred" });
-              }
-            }
-  }
+      res.status(200).json({ message: "success", data: universities });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  };
+
+  const getNotApprovedUniversitiesCount = async (
+    req: Request,
+    res: Response
+  ) => {
+    try {
+      const universities = await getUniversitiesNotApproved(
+        universityRepository
+      ).execute();
+
+      const count = universities.length;
+
+      res.status(200).json({ message: "success", data: count });
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      } else {
+        res.status(400).json({ message: "An unknown error occurred" });
+      }
+    }
+  };
   return {
     addUniversity,
     getAllUniversity,
@@ -174,7 +181,7 @@ export const universityController = () => {
     adminApproveUniversity,
     getApprovedUniversitiesForAdmin,
     getUniversityById,
-    getNotApprovedUniversities ,
-    getNotApprovedUniversitiesCount
+    getNotApprovedUniversities,
+    getNotApprovedUniversitiesCount,
   };
 };

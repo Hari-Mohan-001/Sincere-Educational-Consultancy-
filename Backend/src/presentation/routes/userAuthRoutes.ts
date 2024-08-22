@@ -26,13 +26,13 @@ const UserAuthController = userAuthController(
   checkUser,
   signInUseCase
 );
-const CourseController = courseController()
-const EnrollmentController = enrollmentContoller()
-const CheckoutController = checkoutController()
-const UserController = userController()
-const EventController = eventController()
-const MessageController = messageController()
-const OrderController = orderController()
+const CourseController = courseController();
+const EnrollmentController = enrollmentContoller();
+const CheckoutController = checkoutController();
+const UserController = userController();
+const EventController = eventController();
+const MessageController = messageController();
+const OrderController = orderController();
 
 userAuthRoute.post(
   "/signUp",
@@ -47,20 +47,20 @@ userAuthRoute.post(
 userAuthRoute.post(
   "/signIn",
   redirectAuthenticatedUser,
-  (req: Request, res: Response) =>  UserAuthController.signInUser(req, res)
+  (req: Request, res: Response) => UserAuthController.signInUser(req, res)
 );
-userAuthRoute.post( 
+userAuthRoute.post(
   "/request-password-reset",
   redirectAuthenticatedUser,
   (req: Request, res: Response) =>
-    
-      UserAuthController.passwordResetRequest(req, res)
+    UserAuthController.passwordResetRequest(req, res)
 );
 userAuthRoute.post(
   "/reset-password",
   redirectAuthenticatedUser,
-  (req: Request, res: Response) => { 
-   UserAuthController.resetPassword(req, res)}
+  (req: Request, res: Response) => {
+    UserAuthController.resetPassword(req, res);
+  }
 );
 userAuthRoute.post(
   "/google-auth",
@@ -68,48 +68,58 @@ userAuthRoute.post(
   (req: Request, res: Response) => UserAuthController.googleAuth(req, res)
 );
 
-userAuthRoute.post('/refresh-token',(req: Request, res: Response,next: NextFunction)=>{
-  UserAuthController.refreshTokenEndPoint(req,res,next)
-})
+userAuthRoute.post(
+  "/refresh-token",
+  (req: Request, res: Response, next: NextFunction) => {
+    UserAuthController.refreshTokenEndPoint(req, res, next);
+  }
+);
 
 //token verify middleware
 userAuthRoute.use((req: Request, res: Response, next: NextFunction) => {
   verifyUserToken(req, res, next);
 });
 
-userAuthRoute.get("/user/:userId",(req: Request, res: Response)=>{
-  UserController.getUser(req,res)
-})
+userAuthRoute.get("/user/:userId", (req: Request, res: Response) => {
+  UserController.getUser(req, res);
+});
 userAuthRoute.get("/signOut", (req: Request, res: Response) =>
   UserAuthController.signOutUser(req, res)
 );
 
-userAuthRoute.get("/courses/:qualification", isUserBlocked, (req: Request, res: Response)=>{
-CourseController.getSuggestedCourse(req,res)
-})
+userAuthRoute.get(
+  "/courses/:qualification",
+  isUserBlocked,
+  (req: Request, res: Response) => {
+    CourseController.getSuggestedCourse(req, res);
+  }
+);
 
-userAuthRoute.get("/enrollments", (req: Request, res: Response)=>{  
-EnrollmentController.getEnrollments(req,res)
-})
+userAuthRoute.get("/enrollments", (req: Request, res: Response) => {
+  EnrollmentController.getEnrollments(req, res);
+});
 
-userAuthRoute.post("/create-checkout",(req: Request, res: Response)=>{
-  CheckoutController.createCheckout(req,res)
-})
+userAuthRoute.post("/create-checkout", (req: Request, res: Response) => {
+  CheckoutController.createCheckout(req, res);
+});
 
-userAuthRoute.get("/events/:userId", (req: Request, res: Response)=>{
- EventController.getEvents(req,res)
-})
+userAuthRoute.get("/events/:userId", (req: Request, res: Response) => {
+  EventController.getEvents(req, res);
+});
 
-userAuthRoute.get("/messages",(req: Request, res: Response)=>{
-  MessageController.getMessagesForCounsellor(req,res)
-})
+userAuthRoute.get("/messages", (req: Request, res: Response) => {
+  MessageController.getMessagesForCounsellor(req, res);
+});
 
-userAuthRoute.put("/:userId",(req: Request, res: Response)=>{
-UserController.updateUser(req,res)
-})
+userAuthRoute.put("/:userId", (req: Request, res: Response) => {
+  UserController.updateUser(req, res);
+});
 
-userAuthRoute.get("/orders/:userId",(req: Request, res: Response,next:NextFunction)=>{
-  OrderController.getUserOrders(req,res,next)
-})
+userAuthRoute.get(
+  "/orders/:userId",
+  (req: Request, res: Response, next: NextFunction) => {
+    OrderController.getUserOrders(req, res, next);
+  }
+);
 
-export default userAuthRoute; 
+export default userAuthRoute;

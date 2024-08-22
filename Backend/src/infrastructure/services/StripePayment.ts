@@ -14,7 +14,7 @@ export const createCheckoutSession = async (
   enrolldetails: EnrollDetails,
   country: string,
   userId: string,
-  totalAmount:string
+  totalAmount: string
 ) => {
   try {
     // Construct line items based on the enrolldetails
@@ -37,16 +37,16 @@ export const createCheckoutSession = async (
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: "http://localhost:5173/orderSuccess",
-      // cancel_url: ,
+      success_url: `${process.env.FRONTEND_BASE_URL}/orderSuccess`,
+      cancel_url: `${process.env.FRONTEND_BASE_URL}/home`,
       metadata: {
         enrollDetails: JSON.stringify(enrolldetails),
         country: country,
         userId: userId,
-        totalAmount:totalAmount
+        totalAmount: totalAmount,
       },
     });
-// Respond with the session ID to the client
+    // Respond with the session ID to the client
     return session.id;
   } catch (error) {
     console.log(error);

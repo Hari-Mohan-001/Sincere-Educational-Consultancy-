@@ -23,14 +23,12 @@ export class mongoDomainRepository implements IDomainRepository {
 
   public async getAllDomain(): Promise<Domain[]> {
     try {
-      const domains = await domainModel.find()
-               return domains.map(domain=> new Domain(
-                domain._id.toString(),
-                domain.name,
-                domain.image
-               ))
+      const domains = await domainModel.find();
+      return domains.map(
+        (domain) => new Domain(domain._id.toString(), domain.name, domain.image)
+      );
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }

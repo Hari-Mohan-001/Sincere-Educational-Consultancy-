@@ -6,7 +6,7 @@ import courseModel from "../../presentation/models/courseModel";
 import universityModel from "../../presentation/models/universityModel";
 import courseUniversityModel from "../../presentation/models/CourseUniversityModel";
 
-export class mongoCourseRepository implements ICourseRepository {  
+export class mongoCourseRepository implements ICourseRepository {
   public async createCourse(course: CourseDTO): Promise<Course> {
     // Convert the university field to ObjectId if it's a string
     const universityIds = course.universities;
@@ -15,8 +15,7 @@ export class mongoCourseRepository implements ICourseRepository {
       const existCourse = await courseModel.findOne({ name: course.name });
       if (existCourse) {
         // Merge existing university IDs with new IDs and remove duplicates
-        
-        
+
         const updatedUniversityIds = [
           ...new Set([...existCourse.universities, ...universityIds]),
         ];
@@ -82,7 +81,6 @@ export class mongoCourseRepository implements ICourseRepository {
         newCourse.domain.toString()
       );
     } catch (error) {
-    
       throw error; // Rethrow the original error
     }
   }
@@ -165,12 +163,9 @@ export class mongoCourseRepository implements ICourseRepository {
       if (!courses.length) {
         throw new Error("No courses found");
       }
-      console.log("aggrecrs", courses);
 
       return courses;
     } catch (error) {
-    
-
       throw error;
     }
   }
@@ -194,7 +189,6 @@ export class mongoCourseRepository implements ICourseRepository {
         course.domain.toString()
       );
     } catch (error) {
-      console.log(error);
       throw error;
     }
   }
@@ -229,18 +223,16 @@ export class mongoCourseRepository implements ICourseRepository {
 
       return courses;
     } catch (error) {
-      console.log(error);
-
       throw error;
     }
   }
 
-  public async getDomainCourses(domainId: string): Promise<Course[]|null> {
+  public async getDomainCourses(domainId: string): Promise<Course[] | null> {
     try {
-      const courses = await courseModel.find({domain:domainId})
+      const courses = await courseModel.find({ domain: domainId });
       console.log(courses);
-      
-      if(courses.length){
+
+      if (courses.length) {
         return courses.map(
           (course) =>
             new Course(
@@ -257,11 +249,11 @@ export class mongoCourseRepository implements ICourseRepository {
               course.domain.toString()
             )
         );
-      }else{
-        return null
+      } else {
+        return null;
       }
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }

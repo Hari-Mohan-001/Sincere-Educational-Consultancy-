@@ -110,7 +110,6 @@ const EnrolledStudents = () => {
         details
       );
       if (response) {
-        // Update the student with the scheduled meeting details
         // Update the selectedStudent object with the scheduled meeting details
         setSelectedStudent({
           ...selectedStudent,

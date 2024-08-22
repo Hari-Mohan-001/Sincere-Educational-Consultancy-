@@ -44,8 +44,6 @@ const courseController = () => {
         courseDto
       );
       if (newCourse) {
-        
-
         res.status(200).json({ message: "Course created", data: newCourse });
       }
     } catch (error) {
@@ -83,8 +81,6 @@ const courseController = () => {
       }
     } catch (error) {
       if (error instanceof Error) {
-       
-
         res.status(400).json({ message: error.message });
       } else {
         console.log("elseerr");
@@ -151,15 +147,15 @@ const courseController = () => {
     }
   };
 
-  const domainSpecificCourses = async (req: Request, res: Response)=>{
-    const domainId = req.params.domainId
+  const domainSpecificCourses = async (req: Request, res: Response) => {
+    const domainId = req.params.domainId;
     try {
-     
-      
-      const courses = await getDomainSpecificCourses(courseRepository).execute(domainId)
+      const courses = await getDomainSpecificCourses(courseRepository).execute(
+        domainId
+      );
       console.log(courses);
-      
-      res.status(200).json({message:'success', data:courses})
+
+      res.status(200).json({ message: "success", data: courses });
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
@@ -167,7 +163,7 @@ const courseController = () => {
         res.status(400).json({ message: "An unknown error occurred" });
       }
     }
-  }
+  };
 
   return {
     addCourse,
@@ -176,7 +172,7 @@ const courseController = () => {
     counsellorCourse,
     getACourse,
     getAllCoursesForAdmin,
-    domainSpecificCourses
+    domainSpecificCourses,
   };
 };
 export default courseController;

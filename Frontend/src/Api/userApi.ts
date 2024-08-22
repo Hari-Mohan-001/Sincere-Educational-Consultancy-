@@ -111,7 +111,7 @@ export const userApi = {
   //fetch a user
   getAUser: async (userId?: string) => {
     try {
-      if(userId){
+      if (userId) {
         const response = await axiosInstance.get(
           `/${USER_ENDPOINT}/user/${userId}`
         );
@@ -119,10 +119,9 @@ export const userApi = {
           const user = response.data.data;
           return user;
         }
-      }else{
-        return null
+      } else {
+        return null;
       }
-      
     } catch (error) {
       console.log(error);
     }
@@ -145,19 +144,19 @@ export const userApi = {
     }
   },
 
-
   //fetch orders of a user by user Id
 
-  getUserOrder: async(userId?:string)=>{
+  getUserOrder: async (userId?: string) => {
     try {
-      const response = await axiosInstance.get(`/${USER_ENDPOINT}/orders/${userId}`)
-      if(response.status ==200 || response.status==201){
-        const orders = response.data.data
-        return orders
+      const response = await axiosInstance.get(
+        `/${USER_ENDPOINT}/orders/${userId}`
+      );
+      if (response.status == 200 || response.status == 201) {
+        const orders = response.data.data;
+        return orders;
       }
     } catch (error) {
       console.log(error);
-      
     }
   },
 

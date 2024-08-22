@@ -2,7 +2,7 @@ import { adminDTO } from "../../application/dtos/adminDto";
 import { CounsellorSignUp } from "../../application/use-cases/Counsellor/cousellorSignup";
 import { existingCouncellor } from "../../application/use-cases/Counsellor/existingCounsellor";
 import { mongoAdminRepository } from "../persistance/mongoAdminRepository";
-import { Request, Response,NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { generateCounsellorJwtToken } from "../security/generateCounsellorJwt";
 import { counsellorSignIn } from "../../application/use-cases/Counsellor/counsellorSignin";
 import { SignOut } from "../../application/use-cases/Counsellor/counsellorsignOut";
@@ -27,7 +27,6 @@ const counsellorController = () => {
           password,
           country
         );
-      
 
         const newCounsellor = await CounsellorSignUp(
           cousellorRepository
@@ -47,13 +46,12 @@ const counsellorController = () => {
   };
 
   const signIn = async (req: Request, res: Response) => {
-   
     const { email, password } = req.body;
     try {
       const counsellor_doc = await counsellorSignIn(
         cousellorRepository
       ).execute(email, password);
-     
+
       if (counsellor_doc) {
         generateCounsellorJwtToken(res, counsellor_doc.id);
         const { password: hashedPassword, ...counsellor } = counsellor_doc;
@@ -70,8 +68,6 @@ const counsellorController = () => {
 
   const signout = async (req: Request, res: Response) => {
     try {
-     
-    
       const Counsellorsignout = await SignOut(res);
       res.status(200).json({ message: "signout success" });
     } catch (error) {}

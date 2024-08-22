@@ -15,7 +15,7 @@ const userRepository = new mongoUserRepository();
 
 const orderController = () => {
   const CheckPaymentAndCreateOrder = async (req: Request, res: Response) => {
-    console.log("checpay");
+    console.log("chekpayment");
 
     try {
       const sessionObj = paymentSuccessResponse(req, res);
@@ -36,7 +36,6 @@ const orderController = () => {
       const updateUserStatus = await updateEnrollStatus(userRepository).execute(
         sessionObj.userId
       );
-      
 
       res.status(200).send("Event received");
     } catch (error) {}
@@ -45,7 +44,7 @@ const orderController = () => {
     const countryId = req.params.countryId;
     try {
       const Orders = await getAllOrders(orderRepository).execute(countryId);
-      
+
       res.status(200).json({ message: "success", data: Orders });
     } catch (error) {
       if (error instanceof Error) {
@@ -88,20 +87,22 @@ const orderController = () => {
     }
   };
 
-  const getAllOrdersForAdmin = async(req: Request, res: Response)=>{
+  const getAllOrdersForAdmin = async (req: Request, res: Response) => {
     try {
       // const{startDate , endDate} = req.query
       const startDate = req.query.startDate as string | undefined;
-    const endDate = req.query.endDate as string | undefined;
-      
-      if(startDate && endDate){
-        const orders = await getAdminOrders(orderRepository).execute(startDate,endDate)
-        res.status(200).json({message:'success', data:orders})
-      }else{
-        const orders = await getAdminOrders(orderRepository).execute()
-        res.status(200).json({message:'success', data:orders})
+      const endDate = req.query.endDate as string | undefined;
+
+      if (startDate && endDate) {
+        const orders = await getAdminOrders(orderRepository).execute(
+          startDate,
+          endDate
+        );
+        res.status(200).json({ message: "success", data: orders });
+      } else {
+        const orders = await getAdminOrders(orderRepository).execute();
+        res.status(200).json({ message: "success", data: orders });
       }
-      
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
@@ -109,26 +110,30 @@ const orderController = () => {
         res.status(400).json({ message: "An unknown error occurred" });
       }
     }
-  }
+  };
 
-  const getUserOrders =async(req: Request, res: Response,next:NextFunction)=>{
+  const getUserOrders = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
-      const userId = req.params.userId
-      const orders = await getUserOrderById(orderRepository).execute(userId)
-      if(orders.length){
-        res.status(200).json({message:'success', data:orders})
+      const userId = req.params.userId;
+      const orders = await getUserOrderById(orderRepository).execute(userId);
+      if (orders.length) {
+        res.status(200).json({ message: "success", data: orders });
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  };
   return {
     CheckPaymentAndCreateOrder,
     getEnrolledOrders,
     getTotalOrdervalue,
     getAllTimeframeOrders,
     getAllOrdersForAdmin,
-    getUserOrders
+    getUserOrders,
   };
 };
 

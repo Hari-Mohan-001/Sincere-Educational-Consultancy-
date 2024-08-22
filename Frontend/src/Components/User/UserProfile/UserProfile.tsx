@@ -100,7 +100,7 @@ const UserProfile = () => {
         />
         <img
           className="h-36 w-36 rounded-full object-cover self-center cursor-pointer border"
-          src={image || user?.image}
+          src={ image || user?.image || '../../../Images/UserAvatar.png'}
           alt="profile Image"
           onClick={() => fileRef.current?.click()}
         />

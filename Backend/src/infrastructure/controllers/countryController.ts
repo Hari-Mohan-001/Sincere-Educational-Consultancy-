@@ -10,7 +10,6 @@ const countryControler = () => {
   const addCountry = async (req: Request, res: Response) => {
     const { name, image } = req.body;
 
-
     try {
       const imageUploadUrl = await cloudinaryUpload(image, "Country");
       const saveCountry = await addNewCountry(countryRepository).execute(

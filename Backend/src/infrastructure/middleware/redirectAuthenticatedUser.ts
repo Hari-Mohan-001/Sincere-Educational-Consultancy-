@@ -10,7 +10,7 @@ interface UserPayload {
 }
 
 // Extend the Express Request interface
- export interface CustomRequest extends Request {
+interface CustomRequest extends Request {
   user?: UserPayload;
 }
 
@@ -19,9 +19,8 @@ export const redirectAuthenticatedUser = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log('redirect');
-  const token = req.cookies.userAuthToken || req.headers.authorization?.split(" ")[1];;
-
+  const token =
+    req.cookies.userAuthToken || req.headers.authorization?.split(" ")[1];
 
   if (token) {
     jwt.verify(
@@ -29,7 +28,7 @@ export const redirectAuthenticatedUser = (
       jwtSecret,
       (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
         if (err) {
-          return    
+          return;
         }
       }
     );

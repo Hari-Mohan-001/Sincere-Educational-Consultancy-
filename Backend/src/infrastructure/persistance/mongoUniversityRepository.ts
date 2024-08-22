@@ -1,11 +1,18 @@
 import mongoose, { Types } from "mongoose";
-import { Country, IUniversityDocument, PopulatedUniversity, University } from "../../domain/entities/university";
+import {
+  Country,
+  IUniversityDocument,
+  PopulatedUniversity,
+  University,
+} from "../../domain/entities/university";
 import { IUniversityRepository } from "../../domain/repositories/IUniversityRepository";
 import universityModel from "../../presentation/models/universityModel";
 import { universityDTO } from "../../application/dtos/universityDto";
 
 export class mongoUniversityRepository implements IUniversityRepository {
-  public async createUniversity(university: universityDTO): Promise<University> {
+  public async createUniversity(
+    university: universityDTO
+  ): Promise<University> {
     // Convert the country field to ObjectId if it's a string
     const countryId =
       typeof university.country === "string"
@@ -32,8 +39,12 @@ export class mongoUniversityRepository implements IUniversityRepository {
     );
   }
 
-  public async getAllUniversities(countryId: string): Promise<PopulatedUniversity[]> {
-    const universities = await universityModel.find({ country: countryId ,isApproved:true}).populate('country')
+  public async getAllUniversities(
+    countryId: string
+  ): Promise<PopulatedUniversity[]> {
+    const universities = await universityModel
+      .find({ country: countryId, isApproved: true })
+      .populate("country");
     return universities.map(
       (university) =>
         new PopulatedUniversity(
@@ -43,13 +54,15 @@ export class mongoUniversityRepository implements IUniversityRepository {
           university.ranking,
           university.logo,
           university.images,
-         university.country,
+          university.country,
           university.isApproved
         )
     );
   }
   public async getUniversities(): Promise<PopulatedUniversity[]> {
-    const universities = await universityModel.find({isApproved:true}).populate('country')
+    const universities = await universityModel
+      .find({ isApproved: true })
+      .populate("country");
     return universities.map(
       (university) =>
         new PopulatedUniversity(
@@ -67,23 +80,26 @@ export class mongoUniversityRepository implements IUniversityRepository {
 
   public async approveUniversity(universityId: string): Promise<boolean> {
     try {
-      const university = await universityModel.findById(universityId)
-      if(!university){
-        return false  
+      const university = await universityModel.findById(universityId);
+      if (!university) {
+        return false;
       }
-      const approve = await universityModel.findByIdAndUpdate(universityId, {
-        $set:{
-          isApproved:true
-        }
-      },{new:true})
-      if(approve){
-        return true
-      }else{
-        return false
+      const approve = await universityModel.findByIdAndUpdate(
+        universityId,
+        {
+          $set: {
+            isApproved: true,
+          },
+        },
+        { new: true }
+      );
+      if (approve) {
+        return true;
+      } else {
+        return false;
       }
-
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -91,51 +107,55 @@ export class mongoUniversityRepository implements IUniversityRepository {
     try {
       const universities = await universityModel.aggregate([
         {
-          $match:{
-            isApproved:true
-          }
+          $match: {
+            isApproved: true,
+          },
         },
         {
-          $lookup:{
-            from:'countries',
-            localField:'country',
-            foreignField:'_id',
-            as:'countryDetails'
-          }
+          $lookup: {
+            from: "countries",
+            localField: "country",
+            foreignField: "_id",
+            as: "countryDetails",
+          },
         },
         {
-          $unwind:'$countryDetails'
+          $unwind: "$countryDetails",
         },
         {
-          $addFields:{
-            countryName:'$countryDetails.name'
-          }
+          $addFields: {
+            countryName: "$countryDetails.name",
+          },
         },
         {
-          $project:{
-            _id:1,
-            name:1,
-            address:1,
-            ranking:1,
-            logo:1,
-            images:1,
-            country:1,
-            isApproved:1,
-            countryName:1
-          }
-        }
-      ])
+          $project: {
+            _id: 1,
+            name: 1,
+            address: 1,
+            ranking: 1,
+            logo: 1,
+            images: 1,
+            country: 1,
+            isApproved: 1,
+            countryName: 1,
+          },
+        },
+      ]);
 
       return universities as University[];
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
-  public async getUniversity(universityId: string): Promise<PopulatedUniversity> {
+  public async getUniversity(
+    universityId: string
+  ): Promise<PopulatedUniversity> {
     try {
-      const university = await universityModel.findById(universityId).populate("country")
-      if(!university){
+      const university = await universityModel
+        .findById(universityId)
+        .populate("country");
+      if (!university) {
         throw new Error("University not found");
       }
       return new PopulatedUniversity(
@@ -147,9 +167,9 @@ export class mongoUniversityRepository implements IUniversityRepository {
         university.images,
         university.country,
         university.isApproved
-      )
+      );
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -157,31 +177,31 @@ export class mongoUniversityRepository implements IUniversityRepository {
     try {
       const universities = await universityModel.aggregate([
         {
-          $match:{
-            isApproved:false
-          }
+          $match: {
+            isApproved: false,
+          },
         },
         {
-          $lookup:{
-            from:"countries",
-            localField:'country',
-            foreignField:"_id",
-            as: 'countryDetails'
-          }
+          $lookup: {
+            from: "countries",
+            localField: "country",
+            foreignField: "_id",
+            as: "countryDetails",
+          },
         },
         {
-          $unwind:'$countryDetails'
+          $unwind: "$countryDetails",
         },
         {
-          $addFields:{
-            countryName:"$countryDetails.name"
-          }
-        }
-      ])
+          $addFields: {
+            countryName: "$countryDetails.name",
+          },
+        },
+      ]);
 
       return universities as University[];
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }

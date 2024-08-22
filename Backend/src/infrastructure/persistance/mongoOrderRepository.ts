@@ -16,7 +16,6 @@ export class mongoOrderRepository implements IOrderRepository {
         orderStatus: "Complete",
       });
       const saveNewOrder = await newOrder.save();
-      
 
       if (saveNewOrder) {
         return true;
@@ -115,31 +114,44 @@ export class mongoOrderRepository implements IOrderRepository {
               _id: { $month: "$createdAt" },
               revenue: {
                 $sum: { $toDouble: "$totalAmount" },
-              }
-            }
+              },
+            },
           },
           {
-            $sort: { _id: 1 }
+            $sort: { _id: 1 },
           },
           {
             $project: {
               _id: 0,
               month: {
                 $arrayElemAt: [
-                  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                  { $subtract: ["$_id", 1] }
-                ]
+                  [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                  ],
+                  { $subtract: ["$_id", 1] },
+                ],
               },
-              revenue: 1
-            }
-          }
+              revenue: 1,
+            },
+          },
         ]);
         return result;
       } catch (error) {
         throw error;
       }
     } else {
-      const matchStage = getMatchStage(timeframe)
+      const matchStage = getMatchStage(timeframe);
       try {
         const result = await orderModel.aggregate([
           matchStage,
@@ -153,7 +165,7 @@ export class mongoOrderRepository implements IOrderRepository {
           },
         ]);
         console.log(result.length);
-        
+
         return result.length > 0 ? result[0].totalValue : 0;
       } catch (error) {
         throw error;
@@ -161,8 +173,7 @@ export class mongoOrderRepository implements IOrderRepository {
     }
   }
 
-   public async getTimeFrameOrders(timeframe: string): Promise<number|any[]> {
-    
+  public async getTimeFrameOrders(timeframe: string): Promise<number | any[]> {
     if (timeframe === "yearly") {
       const year = new Date().getFullYear();
       try {
@@ -178,26 +189,39 @@ export class mongoOrderRepository implements IOrderRepository {
           {
             $group: {
               _id: { $month: "$createdAt" },
-              orderCount: { $sum: 1 }
-            }
+              orderCount: { $sum: 1 },
+            },
           },
           {
-            $sort: { _id: 1 }
+            $sort: { _id: 1 },
           },
           {
             $project: {
               _id: 0,
               month: {
                 $arrayElemAt: [
-                  ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-                  { $subtract: ["$_id", 1] }
-                ]
+                  [
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December",
+                  ],
+                  { $subtract: ["$_id", 1] },
+                ],
               },
-              orders: "$orderCount"
-            }
-          }
+              orders: "$orderCount",
+            },
+          },
         ]);
-        
+
         return result;
       } catch (error) {
         throw error;
@@ -208,7 +232,7 @@ export class mongoOrderRepository implements IOrderRepository {
         const result = await orderModel.aggregate([
           matchStage,
           {
-            $count: 'orderCount'
+            $count: "orderCount",
           },
         ]);
         return result.length > 0 ? result[0].orderCount : 0;
@@ -216,91 +240,93 @@ export class mongoOrderRepository implements IOrderRepository {
         throw error;
       }
     }
-  
   }
-  public async getAllOrdersForAdmin(startDate?:string, endDate?:string): Promise<Order[]> {
+  public async getAllOrdersForAdmin(
+    startDate?: string,
+    endDate?: string
+  ): Promise<Order[]> {
     try {
       let dateFilter = {};
       if (startDate && endDate) {
-         // Extend endDate to include the entire day
-      const end = new Date(endDate);
-      end.setUTCHours(23, 59, 59, 999);
-        
+        // Extend endDate to include the entire day
+        const end = new Date(endDate);
+        end.setUTCHours(23, 59, 59, 999);
+
         dateFilter = {
           createdAt: {
             $gte: new Date(startDate),
-            $lte: end
-          }
+            $lte: end,
+          },
         };
       }
 
       const orders = await orderModel.aggregate([
         {
-            $match: dateFilter
+          $match: dateFilter,
         },
         {
-          $lookup:{
-            from:'users',
-            localField:'user',
-            foreignField:'_id',
-            as:'userDetails'
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "userDetails",
           },
         },
         {
-          $lookup:{
-            from:'enrollments',
-            localField:'enrollment',
-            foreignField:'_id',
-            as:'enrollDetails',
+          $lookup: {
+            from: "enrollments",
+            localField: "enrollment",
+            foreignField: "_id",
+            as: "enrollDetails",
           },
         },
         {
-          $lookup:{
-            from:'countries',
-            localField:'country',
-            foreignField:'_id',
-            as:'countryDetails'
+          $lookup: {
+            from: "countries",
+            localField: "country",
+            foreignField: "_id",
+            as: "countryDetails",
           },
         },
         {
-          $unwind:'$userDetails'
+          $unwind: "$userDetails",
         },
         {
-          $unwind:'$enrollDetails',
+          $unwind: "$enrollDetails",
         },
         {
-          $unwind:'$countryDetails'
+          $unwind: "$countryDetails",
         },
         {
-          $project:{
-            _id:1,
-            userName: '$userDetails.name',
-            userEmail: '$userDetails.email',
-            enrollType: '$enrollDetails.name',
-            enrollImage: '$enrollDetails.image',
-            country:'$countryDetails.name',
-            totalAmount:1,
-            createdAt:1
-          }
+          $project: {
+            _id: 1,
+            userName: "$userDetails.name",
+            userEmail: "$userDetails.email",
+            enrollType: "$enrollDetails.name",
+            enrollImage: "$enrollDetails.image",
+            country: "$countryDetails.name",
+            totalAmount: 1,
+            createdAt: 1,
+          },
         },
         {
           $group: {
             _id: null, // Grouping all documents together
             orders: { $push: "$$ROOT" }, // Push all documents into an array
-            grandTotalAmount:{$sum: { $toDouble: "$totalAmount" }} // Sum of totalAmount for all orders
-          }
+            grandTotalAmount: { $sum: { $toDouble: "$totalAmount" } }, // Sum of totalAmount for all orders
+          },
         },
         {
           $project: {
             _id: 0, // Exclude the _id field
             orders: 1,
-            grandTotalAmount: 1
-          }
-        }
-      ])
+            grandTotalAmount: 1,
+          },
+        },
+      ]);
       return orders[0] || { orders: [], grandTotalAmount: 0 };
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
@@ -313,54 +339,54 @@ export class mongoOrderRepository implements IOrderRepository {
           },
         },
         {
-          $lookup:{
-            from:'users',
-            localField:'user',
-            foreignField:'_id',
-            as:'userDetails'
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "userDetails",
           },
         },
         {
-          $lookup:{
-            from:'enrollments',
-            localField:'enrollment',
-            foreignField:'_id',
-            as:'enrollDetails',
+          $lookup: {
+            from: "enrollments",
+            localField: "enrollment",
+            foreignField: "_id",
+            as: "enrollDetails",
           },
         },
         {
-          $lookup:{
-            from:'countries',
-            localField:'country',
-            foreignField:'_id',
-            as:'countryDetails'
+          $lookup: {
+            from: "countries",
+            localField: "country",
+            foreignField: "_id",
+            as: "countryDetails",
           },
         },
         {
-          $unwind:'$userDetails'
+          $unwind: "$userDetails",
         },
         {
-          $unwind:'$enrollDetails',
+          $unwind: "$enrollDetails",
         },
         {
-          $unwind:'$countryDetails'
+          $unwind: "$countryDetails",
         },
         {
-          $project:{
-            _id:1,
-            userName: '$userDetails.name',
-            userEmail: '$userDetails.email',
-            enrollType: '$enrollDetails.name',
-            enrollImage: '$enrollDetails.image',
-            country:'$countryDetails.name',
-            totalAmount:1,
-            createdAt:1
-          }
+          $project: {
+            _id: 1,
+            userName: "$userDetails.name",
+            userEmail: "$userDetails.email",
+            enrollType: "$enrollDetails.name",
+            enrollImage: "$enrollDetails.image",
+            country: "$countryDetails.name",
+            totalAmount: 1,
+            createdAt: 1,
+          },
         },
-      ])
-      return orders
+      ]);
+      return orders;
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 }

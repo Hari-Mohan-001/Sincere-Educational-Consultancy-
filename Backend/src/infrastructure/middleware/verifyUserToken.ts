@@ -10,7 +10,7 @@ interface UserPayload {
 }
 
 // Extend the Express Request interface
- export interface CustomRequest extends Request {
+export interface CustomRequest extends Request {
   user?: UserPayload;
 }
 
@@ -26,11 +26,10 @@ export const verifyUserToken = (
   res: Response,
   next: NextFunction
 ): void => {
-  const token = req.cookies.userAuthToken || req.headers.authorization?.split(" ")[1];
-
+  const token =
+    req.cookies.userAuthToken || req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    console.log('no tok');
     res.status(401).json({ message: "login to continue" });
     return;
   }
@@ -40,15 +39,12 @@ export const verifyUserToken = (
     jwtSecret,
     (err: VerifyErrors | null, decoded: JwtPayload | string | undefined) => {
       if (err || !decoded || !isJwtPayload(decoded)) {
-        console.log('err',err);
         res.status(401).json({ message: "login to continue" });
         return;
       }
 
       req.user = { userId: decoded.userId, role: decoded.role };
       if (decoded.role !== "user") {
-        console.log('otheeerr');
-        
         res
           .status(403)
           .json({ message: "Access denied: insufficient permissions" });

@@ -1,9 +1,12 @@
 import cloudinary from "../config/cloudinaryConfig";
 
-export const cloudinaryUpload = async (image: string, folder:string): Promise<string> => {
+export const cloudinaryUpload = async (
+  image: string,
+  folder: string
+): Promise<string> => {
   try {
     const result = await cloudinary.uploader.upload(image, {
-      folder:folder,
+      folder: folder,
       upload_preset: "Image-Preset",
       allowed_formats: ["jpg", "png", "svg", "webp", "ico"],
     });
@@ -16,17 +19,19 @@ export const cloudinaryUpload = async (image: string, folder:string): Promise<st
       }
       throw new Error(error.message);
     } else {
-      console.log("erort");
-
       throw new Error("An unknown error occurred");
     }
   }
 };
 
-
-export const cloudinaryUploadMultiple = async (images: string[], folder: string): Promise<string[]> => {
+export const cloudinaryUploadMultiple = async (
+  images: string[],
+  folder: string
+): Promise<string[]> => {
   try {
-    const uploadAllImages = images.map(image => cloudinaryUpload(image, folder));
+    const uploadAllImages = images.map((image) =>
+      cloudinaryUpload(image, folder)
+    );
     const result = await Promise.all(uploadAllImages);
     return result;
   } catch (error) {
@@ -34,9 +39,7 @@ export const cloudinaryUploadMultiple = async (images: string[], folder: string)
       console.log("err", error.message);
       throw new Error(error.message);
     } else {
-      console.log("error");
       throw new Error("An unknown error occurred");
     }
   }
 };
-

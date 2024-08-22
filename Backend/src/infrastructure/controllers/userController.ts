@@ -70,7 +70,7 @@ export const userController = () => {
     const { userId, roomLink } = req.body;
     try {
       const user = await getAUser(userRepository).execute(userId);
-      const email = "hari1111mohan@gmail.com";
+      const email = user.email || "harimohanasadanam@gmail.com";
       const resetLink = `Hello ${user.name} Please click <a href=${roomLink}>here</a> to join the meet`;
       await sendMail(email, "Meeting", `${resetLink}`);
       res.status(200).json({ message: "success" });

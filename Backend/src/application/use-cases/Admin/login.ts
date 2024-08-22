@@ -1,15 +1,6 @@
 import {Admin} from "../../../domain/entities/admin"
 import {IAdminRepository} from "../../../domain/repositories/IAdminRepository"
 import bcrypt from "bcrypt"
-// const adminEmail = process.env.ADMIN_EMAIL;
-// const adminPassword = process.env.ADMIN_PASSWORD;
-// export const login = async (email: string, password: string):Promise<boolean> => {
-//   if (email === adminEmail && password === adminPassword) {
-//     return true;
-//   } else {
-//     throw new Error("Invalid credentials");
-//   }
-// };
 
 export const adminLoginUseCase = (adminRepository:IAdminRepository)=>{
 

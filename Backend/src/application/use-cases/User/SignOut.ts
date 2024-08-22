@@ -1,17 +1,5 @@
 import {Request, Response} from "express"
 import { IUserRepository } from "../../../domain/repositories/IUserRepositary";
-// interface UserPayload {
-//     userId: string;
-//     // Add any other properties that your user object might have
-//   }
-
-// //   declare global {
-// //     namespace Express {
-// //       interface Request {
-// //         user?: UserPayload;
-// //       }
-// //     }
-// //   }
 
 export const signOut =(userRepository:IUserRepository)=>{
 

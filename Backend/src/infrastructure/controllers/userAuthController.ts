@@ -92,7 +92,6 @@ const userAuthController = (
         refreshToken,
         user.id
       );
-      console.log(refreshToken, updateUser);
 
       if (!updateUser) {
         return res.status(400).json({ message: "Refersh Token not updated" });
@@ -102,8 +101,6 @@ const userAuthController = (
         refreshToken: token,
         ...userData
       } = user;
-      console.log(userData);
-
       res.status(201).json({
         message: "user Signed succesfully",
         user: userData,
@@ -124,19 +121,15 @@ const userAuthController = (
     next: NextFunction
   ) => {
     try {
-      console.log("ceretenew refreshtok");
-
       const { refreshToken } = req.body;
-      console.log(refreshToken);
 
       // Verify the refresh token
       const decoded = verifyRefreshToken(refreshToken);
-      console.log("decoded", decoded, decoded.userId);
 
       // Find the user in the database
       const user = await getAUser(userRepository).execute(decoded.userId);
       if (!user || user.refreshToken != refreshToken) {
-        console.log("helo failed");
+        console.log("failed");
         return res.status(403).json({ message: "Invalid refresh token" });
       }
       // Generate a new access token
@@ -144,14 +137,12 @@ const userAuthController = (
 
       // Generate a new refresh token
       const newRefreshToken = generateRefershToken(user.id);
-      console.log(refreshToken === newRefreshToken);
 
       // Update the refresh token in the database
       const updateUser = await updateRefreshToken(userRepository).execute(
         newRefreshToken,
         user.id
       );
-      console.log("trueuser", updateUser);
 
       res.json({ refreshToken: newRefreshToken });
     } catch (error) {
@@ -198,7 +189,7 @@ const userAuthController = (
         tokenExpiry,
       });
       // storeResetToken(user.id, resetToken, tokenExpiry);
-      const resetLink = `Hello ${user.name} Please click <a href="http://localhost:5173/reset-password?id=${uniqueIdentifier}">here</a> to reset your password`;
+      const resetLink = `Hello ${user.name} Please click <a href="${process.env.FRONTEND_BASE_URL}/reset-password?id=${uniqueIdentifier}">here</a> to reset your password`;
       await sendMail(email, "Password Reset", `${resetLink}`);
       res.status(200).json({ message: "Password reset link send to mail" });
     } catch (error) {

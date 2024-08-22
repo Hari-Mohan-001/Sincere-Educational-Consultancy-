@@ -25,11 +25,10 @@ const googleAuthCase = (userRepository: IUserRepository) => {
         userDto.isBlocked
       );
       const newUser = await userRepository.createUser(user);
-      if(newUser){
-        return newUser
-      }else{
+      if (newUser) {
+        return newUser;
+      } else {
         throw new Error("User creation failed");
-        
       }
     }
   };

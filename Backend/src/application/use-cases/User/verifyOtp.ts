@@ -14,5 +14,5 @@ export const verifyOtpAndGetUser =(token:string, otp:string):userDTO|null=>{
       throw new Error("Invalid Otp");
       
      }
-     return null
+    
 }

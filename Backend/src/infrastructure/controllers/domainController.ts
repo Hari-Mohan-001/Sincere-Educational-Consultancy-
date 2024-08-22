@@ -26,20 +26,20 @@ const domainController = () => {
     }
   };
 
-  const getDomains = async(req: Request, res: Response)=>{
-          try {
-            const domains = await getAllDomains(domainRepository).execute()
-            if(domains){
-              return res.status(200).json({message:"success", data:domains})
-            }
-          } catch (error) {
-            res.status(400).json({message:"Failed to fetch domains"})
-          }
-  }
- 
+  const getDomains = async (req: Request, res: Response) => {
+    try {
+      const domains = await getAllDomains(domainRepository).execute();
+      if (domains) {
+        return res.status(200).json({ message: "success", data: domains });
+      }
+    } catch (error) {
+      res.status(400).json({ message: "Failed to fetch domains" });
+    }
+  };
+
   return {
     addDomain,
-    getDomains
+    getDomains,
   };
 };
 

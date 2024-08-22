@@ -1,15 +1,14 @@
-import { IUserRepository } from "../../../domain/repositories/IUserRepositary"
+import { IUserRepository } from "../../../domain/repositories/IUserRepositary";
 
-export const getAUser = (userRepository:IUserRepository)=>{
-    const execute = async(userId:string)=>{
-        const user = await userRepository.findUserById(userId)
-        if(!user){
-            throw new Error("User not found");
-            
-        }
-        return user
+export const getAUser = (userRepository: IUserRepository) => {
+  const execute = async (userId: string) => {
+    const user = await userRepository.findUserById(userId);
+    if (!user) {
+      throw new Error("User not found");
     }
-    return{
-        execute
-    }
-}
+    return user;
+  };
+  return {
+    execute,
+  };
+};
