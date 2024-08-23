@@ -7,6 +7,7 @@ import CountryCards from '../../../Components/User/HomePageComponents/CountryCar
 import UniversityCard from '../../../Components/User/HomePageComponents/UniversityCards/UniversityCard'
 import SuggestionButton from '../../../Components/User/HomePageComponents/SuggestionButton/SuggestionButton'
 import CourseCard from '../../../Components/User/HomePageComponents/CourseCards/CourseCard'
+import Footer from '../../../Components/Layout/Footer'
 
 const HomePage = () => {
   return (
@@ -18,6 +19,7 @@ const HomePage = () => {
     <UniversityCard/>
     <CourseCard/>
     <SuggestionButton/>
+    <Footer/>
     </div>
   )
 }

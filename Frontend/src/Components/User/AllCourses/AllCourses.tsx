@@ -77,7 +77,7 @@ const AllCourses = () => {
   return (
     <section>
       {courses && courses.length > 0 ? (
-        <div className="flex flex-col items-center w-full bg-cyan-800 shadow-slate-800">
+        <div className="flex flex-col items-center w-full min-h-screen bg-cyan-800 shadow-slate-800">
           <div className="mb-4">
             <h1 className="text-3xl font-semibold mt-5 underline">
               {domainId ? `Courses` : "All Courses"}
@@ -88,10 +88,16 @@ const AllCourses = () => {
             {currentCourses.map((course) => (
               <div
                 key={course.id}
-                className="flex flex-col items-center  sm:w-1/4 lg:w-1/4 p-2"
+                className={`flex flex-col items-center p-2 ${
+                  currentCourses.length === 1
+                    ? "w-full"
+                    : currentCourses.length === 2
+                    ? "sm:w-1/2 lg:w-1/2"
+                    : "sm:w-1/4 lg:w-1/4"
+                }`}
               >
                 <img
-                  className="w-96 h-60  shadow-2xl border rounded-lg cursor-pointer"
+                  className="w-96 h-60  shadow-2xl border rounded-lg cursor-pointer "
                   src={course.logo}
                   alt={course.name}
                   onClick={() => handleClick(course.id)}

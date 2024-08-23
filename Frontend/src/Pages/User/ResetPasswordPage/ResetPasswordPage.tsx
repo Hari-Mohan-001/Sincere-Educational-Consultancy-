@@ -1,4 +1,5 @@
 
+import Footer from '../../../Components/Layout/Footer'
 import ResetPassword from '../../../Components/User/ResetPassword/ResetPassword'
 
 const ResetPasswordPage = () => {
@@ -15,6 +16,7 @@ const ResetPasswordPage = () => {
     <div className="flex items-center justify-center w-1/2">
       <ResetPassword />
     </div>
+    <Footer/>
   </div>
   )
 }

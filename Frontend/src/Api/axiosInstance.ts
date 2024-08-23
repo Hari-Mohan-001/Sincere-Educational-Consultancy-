@@ -37,31 +37,39 @@ axiosInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as ExtendedAxiosRequestConfig;
-    console.log(error);
+    console.log("log axio", error);
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
         refreshToken = localStorage.getItem("refreshToken");
-        const response = await axiosInstance.post(
-          `${USER_ENDPOINT}/refresh-token`,
-          { refreshToken }
-        );
-        localStorage.setItem("refreshToken", response.data.refreshToken);
+        if (refreshToken) {
+          const response = await axiosInstance.post(
+            `${USER_ENDPOINT}/refresh-token`,
+            { refreshToken }
+          );
+          localStorage.setItem("refreshToken", response.data.refreshToken);
 
-        return axiosInstance(originalRequest);
+          return axiosInstance(originalRequest);
+        } else {
+          return error.response;
+        }
       } catch (refreshError) {
         // Redirect to login or handle authentication failure
         console.log(refreshError);
-
-        // localStorage.removeItem("refreshToken");
         window.location.href = "/";
         return Promise.reject(refreshError);
       }
     }
 
-    return Promise.reject(error);
+    // If the error is due to invalid login credentials (401) and the request was not a retry
+    if (error.response?.status === 401 && originalRequest._retry) {
+      // Don't redirect, just reject the promise with the error
+      return Promise.reject(error);
+    }
+
+    return error.response;
   }
 );
 

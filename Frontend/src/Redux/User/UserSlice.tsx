@@ -30,6 +30,7 @@ const initialState: UserState = {
   error: null,
 };
 
+
 export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
   createAsyncThunk("/user/signUp", async (userData, { rejectWithValue }) => {
     try {
@@ -41,6 +42,8 @@ export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
       //   body: JSON.stringify(userData),
       // });
       const response = await axiosInstance.post(`${USER_ENDPOINT}/signUp`,userData)
+      console.log('sigup',response);
+      
       if (response.status!= 200 && response.status!= 201) {
         const data: ResponseData = await response.data;
   
@@ -80,11 +83,10 @@ export const verifyOtp: AsyncThunk<ResponseData, string, AsyncThunkConfig> =
 export const signInUser: AsyncThunk<ResponseData, signInUserData, AsyncThunkConfig> =
   createAsyncThunk("/user/signIn", async (userData, { rejectWithValue }) => {
     try {
-
       const response = await axiosInstance.post(`${USER_ENDPOINT}/signIn`,userData)
+      
       if (response.status!= 200 && response.status!= 201) {
         const data: ResponseData = response.data;
-        
         return rejectWithValue(data);
       }
       const data: ResponseData = response.data;

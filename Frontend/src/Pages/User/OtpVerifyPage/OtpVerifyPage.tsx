@@ -1,3 +1,4 @@
+import Footer from "../../../Components/Layout/Footer"
 import OtpVerify from "../../../Components/User/OtpVerify/OtpVerify"
 
 
@@ -16,6 +17,7 @@ const OtpVerifyPage = () => {
     <div className="flex items-center justify-center w-1/2">
       <OtpVerify />
     </div>
+    <Footer/>
   </div>
   )
 }

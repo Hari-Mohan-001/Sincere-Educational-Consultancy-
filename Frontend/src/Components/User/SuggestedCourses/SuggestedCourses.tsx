@@ -57,7 +57,13 @@ const SuggestedCourse = () => {
         {suggestedCourses.map((courses) => (
           <div
             key={courses.id}
-            className="flex flex-col items-center  sm:w-1/4 lg:w-1/4 p-2"
+            className={`flex flex-col items-center p-2 ${
+              suggestedCourses.length === 1
+                ? "w-full"
+                : suggestedCourses.length === 2
+                ? "sm:w-1/2 lg:w-1/2"
+                : "sm:w-1/4 lg:w-1/4"
+            }`}
           >
             <img
               className="w-96 h-60  shadow-2xl border rounded-lg"
