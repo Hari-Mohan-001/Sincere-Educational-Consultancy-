@@ -21,6 +21,8 @@ const CounsellorVideoCall = () => {
 
   useEffect(() => {
     const roomLink = `${window.location.origin}/join-call/${roomId}`;
+    console.log('roomlink',roomLink);
+    
     const data = {
       userId: userId,
       roomLink: roomLink,

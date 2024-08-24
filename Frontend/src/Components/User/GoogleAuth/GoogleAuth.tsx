@@ -16,6 +16,7 @@ const GoogleAuth = () => {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       console.log(result);
+      console.log( import.meta.env.VITE_FIREBASE_API_KEY);
       if (result) {
         const userData = {
           name: result.user.displayName ?? "",

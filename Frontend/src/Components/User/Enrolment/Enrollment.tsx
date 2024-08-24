@@ -97,6 +97,8 @@ const Enrollment = () => {
 
   const handlePayment = async () => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+    console.log('strKey',import.meta.env.VITE_STRIPE_KEY);
+    
     const body = {
       enrolldetails: selectedEnrollmentDetails,
       country: selectedCountry,
@@ -104,12 +106,15 @@ const Enrollment = () => {
       totalAmount: totalAmount,
     };
     //creating checkout
+    console.log('stripe....',stripe);
+    
     const sessionId = await userApi.checkOut(body);
     if (stripe) {
       const result = await stripe.redirectToCheckout({
         sessionId: sessionId,
       });
-
+       console.log('striperes',result);
+       
       if (result && result.error) {
         console.log(result.error.message);
       }
