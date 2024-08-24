@@ -96,7 +96,7 @@ const Enrollment = () => {
     : 0; // Handle undefined amount
 
   const handlePayment = async () => {
-    const stripe = await loadStripe(import.meta.env.VITE_STRIPE_KEY);
+    const stripe = await loadStripe('pk_test_51PfgkcEAV82mMSI8Belvs1HZbtQMRdEst21OkbFOcgth5MRQVsQLjpvoIkKtKGrBlteQJbdrBmPH9gy6o28AwKj000T9mE7F4p');
     console.log('strKey',import.meta.env.VITE_STRIPE_KEY);
     
     const body = {
