@@ -119,6 +119,7 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role })
 
   useEffect(() => {
     console.log('connected videi socket',socket?.connected);
+    console.log(localStream,remoteStream,isCallAccepted);
     
     socket?.on("receiveOffer", (offer) => {
       console.log('ofeer got for user',offer);
