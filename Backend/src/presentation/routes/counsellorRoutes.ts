@@ -66,4 +66,8 @@ counsellorRouter.get("/messages", (req: Request, res: Response) => {
 counsellorRouter.post("/send-meet-link", (req: Request, res: Response) => {
   UserController.sendlink(req, res);
 });
+
+counsellorRouter.get("/status/:userId",(req: Request, res: Response, next: NextFunction)=>{
+  UserController.getUserStatus(req,res,next)
+})
 export default counsellorRouter;

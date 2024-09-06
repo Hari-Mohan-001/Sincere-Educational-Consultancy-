@@ -2,6 +2,7 @@ import { IUserRepository } from "../../domain/repositories/IUserRepositary";
 import userModel from "../../presentation/models/UserModel";
 import { User } from "../../domain/entities/User";
 import { userUpdateDTO } from "../../application/dtos/userUpdateDto";
+import { userStatusData } from "../../application/interfaces/userStatusData";
 
 export class mongoUserRepository implements IUserRepository {
   public async createUser(user: User): Promise<User> {
@@ -225,6 +226,26 @@ export class mongoUserRepository implements IUserRepository {
         );
       } else {
         return null;
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async getUserStatus(userId: string): Promise<userStatusData | null> {
+    try {
+      const user = await userModel.findById(userId);
+
+      if (!user) {
+        return null;
+      } else {
+        return new userStatusData(
+          user._id.toString(),
+          user.name,
+          user.image,
+          user.isOnline,
+          user.lastSeen
+        );
       }
     } catch (error) {
       throw error;

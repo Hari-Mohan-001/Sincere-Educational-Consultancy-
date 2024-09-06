@@ -8,7 +8,7 @@ export interface UserData{
     confirmPassword?: string
 }
 
-export interface ResponseUserData{
+export interface  ResponseUserData{
     id:string,
     name:string,
     email:string,

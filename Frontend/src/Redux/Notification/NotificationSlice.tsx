@@ -1,8 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit"
 
 interface Notification {
+  senderId: string;
     text: string;
-    senderId: string;
     timestamp: string;
     // Add more fields if needed
   }
@@ -20,6 +20,8 @@ interface Notification {
     initialState,
     reducers:{
         updateNotifications: (state, action: PayloadAction<Notification>) => {
+          console.log('reduxnoti',action.payload);
+          
             state.notifications.push(action.payload);
           },
           clearNotifications: (state, action: PayloadAction<string>) => {

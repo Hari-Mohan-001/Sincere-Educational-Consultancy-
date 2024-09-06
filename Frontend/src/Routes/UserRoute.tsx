@@ -21,7 +21,10 @@ import UserNotFoundPage from "../Pages/User/UserNotFoundPage/UserNotFoundPage";
 import UserProfilePage from "../Pages/User/UserProfilePage/UserProfilePage";
 import UserOrderPage from "../Pages/User/UserOrderPage/UserOrderPage";
 
+
 const UserRoute = () => {
+  
+
   return (
     <Routes>
        <Route path="" element={<LandingPage/>}/>
@@ -37,7 +40,7 @@ const UserRoute = () => {
       <Route path="orderSuccess" element={<OrderSuccessPage/>}/>
       <Route path="events" element={<EventPage/>}/>
       <Route path="chat" element={<UserChatPage/>}/>
-      <Route path="join-call/:roomId" element={<UserVideoCallPage/>}/>
+      <Route path="video-call" element={<UserVideoCallPage/>}/>
       <Route path="profile" element={<UserProfilePage/>}/>
       <Route path="orders" element={<UserOrderPage/>}/>
       </Route>

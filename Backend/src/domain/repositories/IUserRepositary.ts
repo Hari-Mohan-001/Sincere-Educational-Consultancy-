@@ -1,4 +1,6 @@
 import { userUpdateDTO } from "../../application/dtos/userUpdateDto"
+import { userStatusData } from "../../application/interfaces/userStatusData"
+
 import {User} from "../entities/User"
 
 export interface IUserRepository {
@@ -13,4 +15,5 @@ export interface IUserRepository {
       updateUser(userId:string, userDto:userUpdateDTO):Promise<User|null>
       updateUserRefreshToken(refreshToken:string,userId:string):Promise<boolean>
       deleteUserRefreshToken(userId:string):Promise<boolean>
+      getUserStatus(userId:string):Promise<userStatusData|null>
 }

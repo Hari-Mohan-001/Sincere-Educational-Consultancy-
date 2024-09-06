@@ -4,12 +4,12 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { SocketUrL } from "../../../Constants/Constants";
+
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import { toast } from "react-toastify";
-import io, { Socket } from "socket.io-client";
+
 import { counsellorApi } from "../../../Api/counsellorApi";
 
 interface OrderData {
@@ -27,7 +27,7 @@ const EnrolledStudents = () => {
   const { counsellor } = useSelector(
     (state: CounsellorRootState) => state.counsellor
   );
-  const [socket, setSocket] = useState<Socket | null>(null);
+ 
   const [students, setStudents] = useState<OrderData[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const [selectedStudent, setSelectedStudent] = useState<OrderData | null>(
@@ -52,11 +52,10 @@ const EnrolledStudents = () => {
       }
     };
 
-    const newSocket: Socket = io(SocketUrL);
-    setSocket(newSocket);
+    
     fetchEnrolledStudents();
     return () => {
-      newSocket.disconnect();
+     
     };
   }, []);
 
@@ -136,13 +135,16 @@ const EnrolledStudents = () => {
   };
 
   const handleVideoCallClick = (studentId: string) => {
-    if (socket) {
-      socket.emit("startCall", { to: studentId });
-      // navigate(`/counsellor/video-call/${counsellor?.id}/${studentId}`);
-      navigate(`/counsellor/video-call`, {
-        state: { counsellorId: counsellor?.id, userId: studentId },
-      });
-    }
+    // if (socket) {
+    //   socket.emit("startCall", { to: studentId });
+    //   // navigate(`/counsellor/video-call/${counsellor?.id}/${studentId}`);
+    //   navigate(`/counsellor/video-call`, {
+    //     state: { counsellorId: counsellor?.id, userId: studentId },
+    //   });
+    // }
+    navigate('/counsellor/video-call',{
+      state:{userId: studentId }
+    })
   };
 
   const columns = [

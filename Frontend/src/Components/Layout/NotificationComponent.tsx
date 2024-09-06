@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearNotifications } from "../../Redux/Notification/NotificationSlice";
@@ -8,8 +8,13 @@ import Badge from "@mui/material/Badge";
 import Popover from "@mui/material/Popover";
 import IconButton from "@mui/material/IconButton";
 import { StoreRootState } from "../../Redux/Store";
+import { CounsellorRootState } from "../../Interface/Counsellor/CounsellorInterface";
 
-const NotificationComponent: React.FC = () => {
+interface NotificationProps {
+  role: string;
+}
+
+const NotificationComponent: React.FC<NotificationProps> = ({role}) => {
   const notifications = useSelector(
     (state: StoreRootState) => state.notifications.notifications
   );
@@ -17,14 +22,31 @@ const NotificationComponent: React.FC = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { user } = useSelector((state: RootState) => state.user);
+  const { counsellor } = useSelector(
+    (state: CounsellorRootState) => state.counsellor
+  );
+
+  
+  useEffect(() => {
+    console.log('Current notifications:', notifications);
+  }, [notifications]);
 
   const handleNotificationClick = (senderId: string) => {
     // Assuming the user is always the recipient
     console.log(user, senderId);
     // navigate(`/chat/${user?.id}/${senderId}`);
-    navigate(`/chat`, {
-      state: { userId: user?.id, counsellorId: senderId },
-    });
+    console.log('hiier',role);
+    
+    if(role==='user'){
+      navigate(`/chat`, {
+        state: { userId: user?.id, counsellorId: senderId },
+      });
+    }else{
+      navigate(`/counsellor/chat`, {
+        state: { counsellorId: counsellor?.id,userId: senderId },
+      });
+    }
+    
     dispatch(clearNotifications(senderId));
   };
 

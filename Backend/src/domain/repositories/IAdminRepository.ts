@@ -1,3 +1,4 @@
+import { userStatusData } from "../../application/interfaces/userStatusData"
 import {Admin} from "../entities/admin" 
 
 export interface IAdminRepository{
@@ -5,4 +6,5 @@ export interface IAdminRepository{
       doesEmailExist(email:string):Promise<boolean>
       findAdminByEmail(email:string):Promise<Admin | null>
       findCounsellorByEmail(email:string):Promise<Admin | null>
+      getCounsellorData(id:string):Promise<userStatusData | null>
 }

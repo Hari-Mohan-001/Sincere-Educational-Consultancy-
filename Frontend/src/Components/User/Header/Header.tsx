@@ -18,6 +18,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../../../Interface/User/UserInterface";
 import NotificationComponent from "../../Layout/NotificationComponent";
 import { userApi } from "../../../Api/userApi";
+import { useSocket } from "../../../Context/SocketContext";
+import { store } from "../../../Redux/Store";
+import { setIncomingCall } from "../../../Redux/IncommingVideoCall/IncommingCallSlice";
 
 const pages = ["Home", "Courses", "Universities", "Events"];
 const pageRoutes: Record<string, string> = {
@@ -47,8 +50,11 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
+  const {socket} = useSocket()
 
   React.useEffect(() => {
+    console.log('usefirst');
+    
     const userId = user?.id;
     const getUser = async () => {
       const fetchedUser = await userApi.getAUser(userId);
@@ -62,6 +68,18 @@ function Header() {
     };
     getUser();
   }, [user, navigate]);
+
+  React.useEffect(()=>{
+    console.log('socketconet');
+    
+    if(socket){
+      socket.on('receiveOffer', (offer, callerId, callId) => {
+        console.log('received offer head',offer);
+        
+        store.dispatch(setIncomingCall({ callerId, callId }));
+      });
+    }
+  })
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -82,6 +100,7 @@ function Header() {
     try {
       const response = await userApi.signOut();
       if (response) {
+        socket?.emit('logoutChangeStatus', user?.id, 'user')
         dispatch(signOutUser());
         sessionStorage.clear();
         localStorage.removeItem('refreshToken');
@@ -251,7 +270,7 @@ function Header() {
                   </MenuItem>
                 ))}
               </Menu>
-              <NotificationComponent />
+              <NotificationComponent role='user' />
             </Box>
           )}
         </Toolbar>

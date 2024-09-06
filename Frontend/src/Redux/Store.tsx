@@ -5,12 +5,15 @@ import userReducer from "./User/UserSlice";
 import CounsellorReducer from "./Counsellor/CounsellorSlice";
 import adminReducer from "./Admin/AdminSlice";
 import notificationReducer from "./Notification/NotificationSlice"
+import callReducer from "./IncommingVideoCall/IncommingCallSlice";
+
 
 const rootReducer = combineReducers({
   user: userReducer,
   counsellor: CounsellorReducer,
   admin: adminReducer,
-  notifications: notificationReducer 
+  notifications: notificationReducer,
+  incomingCall:callReducer
 });
 
 const persistConfig = {

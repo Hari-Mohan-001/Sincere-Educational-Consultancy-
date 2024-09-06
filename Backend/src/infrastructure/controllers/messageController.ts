@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { getAllMessages } from "../../application/use-cases/Messages/getAllMessagesForCounsellor";
 import { mongoMessageRepository } from "../persistance/mongoMessageRepository";
 import { MessageFetchingData } from "../../application/interfaces/messageFetchData";
-import { cloudinaryUpload } from "../services/CloudinaryUpload";
+import { cloudinaryAudioUpload, cloudinaryUpload } from "../services/CloudinaryUpload";
 
 const messageRepository = new mongoMessageRepository();
 
@@ -33,8 +33,23 @@ export const messageController = () => {
       console.log(error);
     }
   };
+
+  const chatAudioUpload =async(req: Request, res: Response)=>{
+    try {
+      const{ audio, fileType } = req.body
+      if (!audio || !fileType) {
+        return res.status(400).json({ error: "Audio data or file type missing" });
+      }
+
+      const audioUrl = await cloudinaryAudioUpload(audio,fileType)
+      res.status(200).json({ message: "success", data: audioUrl })
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return {
     getMessagesForCounsellor,
     chatImageUpload,
+    chatAudioUpload 
   };
 };

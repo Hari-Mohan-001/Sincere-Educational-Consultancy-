@@ -15,6 +15,7 @@ import { userController } from "../../infrastructure/controllers/userController"
 import eventController from "../../infrastructure/controllers/eventController";
 import { messageController } from "../../infrastructure/controllers/messageController";
 import orderController from "../../infrastructure/controllers/orderController";
+import counsellorController from "../../infrastructure/controllers/counsellorController";
 
 const userAuthRoute = express.Router();
 const userRepository = new mongoUserRepository();
@@ -33,6 +34,7 @@ const UserController = userController();
 const EventController = eventController();
 const MessageController = messageController();
 const OrderController = orderController();
+const CounsellorController = counsellorController()
 
 userAuthRoute.post(
   "/signUp",
@@ -121,5 +123,9 @@ userAuthRoute.get(
     OrderController.getUserOrders(req, res, next);
   }
 );
+
+userAuthRoute.get("/status/:counsellorId",(req: Request, res: Response, next: NextFunction)=>{
+  CounsellorController.getCounsellorStatus(req,res,next)
+})
 
 export default userAuthRoute;

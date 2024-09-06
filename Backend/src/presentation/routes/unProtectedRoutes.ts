@@ -45,6 +45,10 @@ router.post("/upload-chat-image", (req: Request, res: Response) => {
 
   MessageController.chatImageUpload(req, res);
 });
+
+router.post("/upload-chat-audio",(req: Request, res: Response)=>{
+  MessageController.chatAudioUpload(req,res)
+})
 router.get("/courses/:domainId", (req: Request, res: Response) => {
   CourseController.domainSpecificCourses(req, res);
 });

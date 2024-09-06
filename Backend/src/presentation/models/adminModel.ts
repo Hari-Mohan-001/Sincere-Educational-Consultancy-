@@ -30,6 +30,14 @@ const adminSchema = new mongoose.Schema({
         type:String,
         default:'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ7TKHo1NrGHSRkso1dt1oE04qoPOGEKCiUA&s',
     },
+    isOnline:{
+        type:Boolean,
+        default:false
+    },
+    lastSeen:{
+        type:Date,
+        default:null
+    },
 },{timestamps:true})
 
 const adminModel = mongoose.model("admin", adminSchema)

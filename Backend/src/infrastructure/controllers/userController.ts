@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { mongoUserRepository } from "../../infrastructure/persistance/mongoUserRepository";
 import getAllUsers from "../../application/use-cases/Admin/GetAllStudents";
 import { BlockOrUnblockUser } from "../../application/use-cases/User/blockOrUnblockUser";
@@ -7,6 +7,7 @@ import { sendMail } from "../services/nodeMailer";
 import { cloudinaryUpload } from "../services/CloudinaryUpload";
 import { userUpdateDTO } from "../../application/dtos/userUpdateDto";
 import { updateTheUser } from "../../application/use-cases/User/updateUser";
+import { getTheUserStatus } from "../../application/use-cases/User/getUserStatus";
 
 const userRepository = new mongoUserRepository();
 
@@ -118,11 +119,26 @@ export const userController = () => {
     }
   };
 
+  const getUserStatus = async(req: Request, res: Response,next:NextFunction) =>{
+    try {
+      const userId = req.params.userId
+      console.log(userId);
+      
+      const userStatusData = await getTheUserStatus(userRepository).execute(userId)
+      console.log(userStatusData);
+      
+      res.status(200).json({message:'success', data:userStatusData})
+    } catch (error) {
+      next(error)
+    }
+  }
+
   return {
     getUsers,
     blockOrUnblockUser,
     getUser,
     sendlink,
     updateUser,
+    getUserStatus
   };
 };

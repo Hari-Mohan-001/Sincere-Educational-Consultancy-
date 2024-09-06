@@ -29,6 +29,10 @@ const messageSchema = new mongoose.Schema({
              type:String,
              default:"",
       },
+      audio:{
+             type:String,
+             default:"",
+      },
       timestamp: { type: Date, default: Date.now }
 })
 

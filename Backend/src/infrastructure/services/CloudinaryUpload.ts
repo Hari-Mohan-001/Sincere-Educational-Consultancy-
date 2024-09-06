@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinaryConfig";
+import { v4 as uuidv4 } from "uuid";
 
 export const cloudinaryUpload = async (
   image: string,
@@ -13,7 +14,6 @@ export const cloudinaryUpload = async (
     return result.secure_url;
   } catch (error) {
     if (error instanceof Error) {
-      console.log("err", error.message);
       if (error.message.includes("Invalid format")) {
         throw new Error("Invalid file format. Please upload an image file.");
       }
@@ -43,3 +43,27 @@ export const cloudinaryUploadMultiple = async (
     }
   }
 };
+
+export const cloudinaryAudioUpload = async(audio:string, fileType:string): Promise<string>=>{
+    try {
+      const result = await cloudinary.uploader.upload(
+        audio,
+        {
+          resource_type: "video", // Since Cloudinary treats audio as video
+          public_id: `chat-audio-${uuidv4()}`, // Give a unique public ID
+          format: fileType.split("/")[1], // Use the file extension from MIME type
+        }
+      );
+      return result.secure_url
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log("err", error.message);
+        if (error.message.includes("Invalid format")) {
+          throw new Error("Invalid file format. Please upload an image file.");
+        }
+        throw new Error(error.message);
+      } else {
+        throw new Error("An unknown error occurred");
+      }
+    }
+}

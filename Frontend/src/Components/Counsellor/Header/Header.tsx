@@ -6,6 +6,8 @@ import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInt
 import { useEffect } from "react";
 import { Button } from "@mui/material";
 import { counsellorApi } from "../../../Api/counsellorApi";
+import { useSocket } from "../../../Context/SocketContext";
+import NotificationComponent from "../../Layout/NotificationComponent";
 
 const Header = () => {
   const { counsellor } = useSelector(
@@ -13,6 +15,7 @@ const Header = () => {
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const {socket} = useSocket()
   useEffect(() => {
     if (!counsellor) {
       navigate("/counsellor/signin");
@@ -21,6 +24,7 @@ const Header = () => {
 
   const handleSignout = async () => {
      await counsellorApi.signout();
+     socket?.emit('logoutChangeStatus', counsellor?.id, 'counsellor')
     dispatch(signOutCounsellor());
     navigate("/counsellor/signin");
     toast.success("Signout Successfully");
@@ -31,7 +35,7 @@ const Header = () => {
         <h1 className="font-bold">SeC</h1>
         <ul className="flex gap-4">
           {/* <li className="cursor-pointer" onClick={handleSignout}>SignOut</li> */}
-          {/* <NotificationComponent/> */}
+          {counsellor && <NotificationComponent role="counsellor"/>}
           <h1 className="rounded-full text-white mt-2">{counsellor?.name}</h1>
           <img
             className="w-7 h-7 mt-2 rounded-full object-cover"

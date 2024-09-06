@@ -17,7 +17,6 @@ const location = useLocation()
   }
   return (
     <div>
-      <h1 className='text-center text-xl'>Counsellor Chat</h1>
       <ChatComponent 
         counsellorId={counsellorId} 
         counsellorModel="admin" 

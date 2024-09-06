@@ -1,6 +1,7 @@
 import { IAdminRepository } from "../../domain/repositories/IAdminRepository";
 import adminModel from "../../presentation/models/adminModel";
 import { Admin } from "../../domain/entities/admin";
+import { userStatusData } from "../../application/interfaces/userStatusData";
 
 export class mongoAdminRepository implements IAdminRepository {
   public async createAdmin(user: Admin): Promise<Admin> {
@@ -56,5 +57,22 @@ export class mongoAdminRepository implements IAdminRepository {
       admin.role,
       admin.image
     );
+  }
+
+   public async getCounsellorData(id: string): Promise<userStatusData | null> {
+    try {
+      const counsellor = await adminModel.findById(id)
+      if(!counsellor) return null
+
+      return new userStatusData(
+        counsellor.id,
+        counsellor.name,
+        counsellor.image,
+        counsellor.isOnline,
+        counsellor.lastSeen
+      )
+    } catch (error) {
+      throw error
+    }
   }
 }

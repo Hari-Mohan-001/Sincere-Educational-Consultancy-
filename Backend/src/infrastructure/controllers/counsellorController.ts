@@ -7,6 +7,7 @@ import { generateCounsellorJwtToken } from "../security/generateCounsellorJwt";
 import { counsellorSignIn } from "../../application/use-cases/Counsellor/counsellorSignin";
 import { SignOut } from "../../application/use-cases/Counsellor/counsellorsignOut";
 import { verifyCounsellorToken } from "../middleware/verifyCounsellorToken";
+import { getCounsellorData } from "../../application/use-cases/Counsellor/getCounsellorStatus";
 
 const cousellorRepository = new mongoAdminRepository();
 
@@ -73,10 +74,23 @@ const counsellorController = () => {
     } catch (error) {}
   };
 
+  const getCounsellorStatus = async (req: Request, res: Response, next:NextFunction)=>{
+    try {
+      const counsellorId = req.params.counsellorId
+      const counsellor = await getCounsellorData(cousellorRepository).execute(counsellorId)
+      if(counsellor){
+        res.status(200).json({message:'success', data:counsellor})
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
   return {
     signUp,
     signIn,
     signout,
+    getCounsellorStatus
   };
 };
 

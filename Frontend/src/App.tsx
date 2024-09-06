@@ -2,7 +2,9 @@ import { Route, Routes } from "react-router-dom";
 import AdminRoute from "./Routes/AdminRoute";
 import CounsellorRoute from "./Routes/CounsellorRoute";
 import UserRoute from "./Routes/UserRoute";
-import { useSocket } from "./Components/Layout/GlobalSocket";
+import useNotifications from "./Hooks/Notification";
+
+
 
 function App() {
   // function requestNotificationPermission() {
@@ -10,7 +12,8 @@ function App() {
   //     Notification.requestPermission();
   //   }
   // }
-  useSocket()
+  useNotifications()
+ 
   return (
     <>
   
