@@ -17,6 +17,7 @@ import {
 } from "../../../Interface/Counsellor/CounsellorInterface";
 
 import { api } from "../../../Api/api";
+import { validateConfirmPasswordAndCompare, ValidateEmail, validateMobile, validateName, validatePassword, validateQualification } from "../../../Utils/Validation/UserSignUpValidation";
 
 interface Country {
   id: string;
@@ -78,6 +79,27 @@ const CounsellorSignUpForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({ signUpError: "" });
+    const newErrors: { [key: string]: string } = {}
+    newErrors.name = validateName(formData.name) || "";
+    newErrors.email = ValidateEmail(formData.email) || "";
+    newErrors.mobile = validateMobile(formData.mobile) || "";
+    newErrors.qualification =
+    validateQualification(formData.country) || "";
+  newErrors.password = validatePassword(formData.password) || "";
+  newErrors.confirmPassword =
+    validateConfirmPasswordAndCompare(
+      formData.password as string,
+      formData.confirmPassword as string
+    ) || "";
+
+    Object.keys(newErrors).forEach((key) => {
+      if (newErrors[key] === "") delete newErrors[key];
+    });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     dispatch(signUpCounsellor(formData)).then((result) => {
       if (signUpCounsellor.fulfilled.match(result)) {
         toast.success("signup successfull");

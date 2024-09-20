@@ -19,8 +19,7 @@ import { RootState } from "../../../Interface/User/UserInterface";
 import NotificationComponent from "../../Layout/NotificationComponent";
 import { userApi } from "../../../Api/userApi";
 import { useSocket } from "../../../Context/SocketContext";
-import { store } from "../../../Redux/Store";
-import { setIncomingCall } from "../../../Redux/IncommingVideoCall/IncommingCallSlice";
+
 
 const pages = ["Home", "Courses", "Universities", "Events"];
 const pageRoutes: Record<string, string> = {
@@ -69,17 +68,17 @@ function Header() {
     getUser();
   }, [user, navigate]);
 
-  React.useEffect(()=>{
-    console.log('socketconet');
+  // React.useEffect(()=>{
+  //   console.log('socketconet');
     
-    if(socket){
-      socket.on('receiveOffer', (offer, callerId, callId) => {
-        console.log('received offer head',offer);
+  //   if(socket){
+  //     socket.on('receiveOffer', (offer, callerId, callId) => {
+  //       console.log('received offer head',offer);
         
-        store.dispatch(setIncomingCall({ callerId, callId }));
-      });
-    }
-  })
+  //       store.dispatch(setIncomingCall({ callerId, callId }));
+  //     });
+  //   }
+  // })
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);

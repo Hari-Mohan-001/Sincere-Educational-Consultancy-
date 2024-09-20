@@ -1,10 +1,29 @@
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSocket } from "../../../../Context/SocketContext";
+import { RootState } from "../../../../Interface/User/UserInterface";
+import { useSelector } from "react-redux";
 
 const EnrollCard = () => {
   const navigate = useNavigate();
+  const {socket} = useSocket()
+  const { user } = useSelector((state: RootState) => state.user);
+const hasJoined = useRef(false)
+
   const handleClick = () => {
     navigate("/enrollment");
   };
+
+  useEffect(()=>{
+       if(socket && user && !hasJoined.current){
+        socket.emit("join", user.id , "user")
+        hasJoined.current = true
+       }
+
+       return()=>{
+        socket?.off("join")
+       }
+  })
   return (
     <section className="flex justify-center items-center box-border">
       <div className="flex flex-col lg:flex-row lg:items-center h-auto lg:h-72 mt-16 p-5 sm:w-fit">

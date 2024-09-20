@@ -27,7 +27,7 @@ const SuggestedCourse = () => {
       try {
         const qualification = user?.qualification;
         const courses = await userApi.getEligibleCourses(qualification);
-        console.log(courses);
+       
 
         setSuggestedCourses(courses);
       } catch (error) {

@@ -80,6 +80,14 @@ const SideNavBar = () => {
           </ListItemIcon>
           <ListItemText primary="Orders" />
         </ListItemButton>
+        <ListItemButton
+         className={`my-2 ${activeButton === 8 ? '!text-black !font-bold !bg-sky-400 !rounded-lg !shadow-lg' : 'hover:text-blue-700 text-white'}`}
+         onClick={()=> handleClick(8 , "/admin/counsellors")}>
+          <ListItemIcon className="text-white">
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Counsellor List" />        
+        </ListItemButton>
       </List>
     </div>
   );

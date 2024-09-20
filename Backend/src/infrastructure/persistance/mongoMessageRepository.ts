@@ -29,6 +29,7 @@ export class mongoMessageRepository implements IMessageRepository {
         })
         .populate("sender", "name image")
         .populate("receiver", "name image")
+        .populate('replyTo')
         .sort("timestamp");
 
       return messages;

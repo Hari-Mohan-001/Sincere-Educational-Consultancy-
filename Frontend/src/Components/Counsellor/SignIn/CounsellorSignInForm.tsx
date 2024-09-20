@@ -19,6 +19,7 @@ const CounsellorSignInForm = () => {
     password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+ 
 
   const dispatch = useDispatch<AppDispatch>();
   const { counsellor } = useSelector(
@@ -59,7 +60,7 @@ const CounsellorSignInForm = () => {
     dispatch(signInCounsellor(formData)).then((result) => {
       if (signInCounsellor.fulfilled.match(result)) {
         toast.success("Login success");
-        navigate("/counsellor/university");
+        navigate("/counsellor/students");
       } else if (signInCounsellor.rejected.match(result)) {
         const payload = result.payload as ResponseData;
         setErrors({ signInError: payload?.message || "Failed to login" });

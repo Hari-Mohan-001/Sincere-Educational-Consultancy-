@@ -1,7 +1,7 @@
 import { Server } from "socket.io";
 import messageModel from "../../presentation/models/messageModel";
 import adminModel from "../../presentation/models/adminModel";
-import userModel from "../../presentation/models/UserModel";
+import userModel from "../../presentation/models/UserModel";  
 
 const configureSocket = (server: any) => {
   const io = new Server(server, {
@@ -16,20 +16,23 @@ const configureSocket = (server: any) => {
     if (role === "counsellor") {
       await adminModel.findByIdAndUpdate(userId, { isOnline, lastSeen });
     } else {
-      await userModel.findByIdAndUpdate(userId, { isOnline, lastSeen }); 
-    }
+      await userModel.findByIdAndUpdate(userId, { isOnline, lastSeen });     
+      
+      }
   };
  
-  io.on("connection", (socket) => {
+  io.on("connection", (socket) => {  
     console.log("A user connected:", socket.id);  
 
-    socket.on("join", async(userId:string , role:string) => {
+    socket.on("join", async(userId:string , role:string) => {    
+      console.log(`${role} with Id ${userId} joined`);
+      
       await updateOnlineStatus(userId, role, true);
       socket.join(userId);
       io.emit("userStatusChanged", { userId, isOnline: true });
     });
 
-    // Listen for typing events
+    // Listen for typing events 
   socket.on("typing", ({ senderId, receiverId }) => {
     
     io.to(receiverId).emit("typing", { senderId, isTyping: true });
@@ -41,7 +44,9 @@ const configureSocket = (server: any) => {
 
     socket.on("sendMessage", async (messageData) => {
       try {
-        const { senderId, senderModel, receiverId, receiverModel, content, image,audio } = messageData;
+        console.log(messageData);
+        
+        const { senderId, senderModel, receiverId, receiverModel, content, image,audio,replyTo} = messageData;
         const message = new messageModel({
           sender: senderId,
           senderModel,
@@ -49,7 +54,8 @@ const configureSocket = (server: any) => {
           receiverModel,
           content,
           image,
-          audio
+          audio,
+          replyTo
         });
         const savedMessage = await message.save();
     
@@ -57,14 +63,16 @@ const configureSocket = (server: any) => {
         const populatedMessage = await messageModel
           .findById(savedMessage._id)
           .populate("sender", "name")
-          .populate("receiver", "name");
+          .populate("receiver", "name")
+          .populate("replyTo"); // Ensure replyTo is populated if you want to access its details
 
     // Emit notification event to recipient
     const notification ={ senderId:senderId,
     text: 'New message received',
     timestamp: new Date().toISOString(),
     }
-    io.to(receiverId).emit('receiveNotification',notification)
+    io.to(receiverId).emit('receiveNotification',notification)  
+    console.log('popu',populatedMessage); 
     
         // Emit to the receiver
         io.to(receiverId).emit("newMessage", populatedMessage);
@@ -76,7 +84,7 @@ console.log('sender',senderId,'recever',receiverId);
     
    
     console.log('Notification emitted to:', receiverId);
-      } catch (error) {
+      } catch (error) { 
         console.error("Error handling sendMessage event:", error); 
         socket.emit("error", { message: "Failed to send message" });
       }
@@ -98,7 +106,11 @@ console.log('sender',senderId,'recever',receiverId);
           }
     })
 
-     // Handle receiving offer from counselor and send to user
+    socket.on("initCall",(offer,userId,counselorId,type)=>{
+      io.to(userId).emit("receiveInitCall",userId,counselorId);
+    })
+
+     // Handle receiving offer from counselor and send to user 
      socket.on("offer", (offer, userId,counselorId) => {
       console.log('offer received',offer);
       io.to(userId).emit("receiveOffer", offer,userId,counselorId);
@@ -106,11 +118,18 @@ console.log('sender',senderId,'recever',receiverId);
 
     // Handle receiving answer from user and send to counselor
     socket.on("answer", (answer, counselorId) => {
+      console.log('answer at back', counselorId);
+      
       io.to(counselorId).emit("receiveAnswer", answer);
+      return
+      console.log('emitted to ',counselorId);
+     
     });
 
     // Handle receiving ICE candidates and send to peer
     socket.on("iceCandidate", (candidate, peerId) => {
+      console.log('iceserver',peerId);
+      
       io.to(peerId).emit("receiveIceCandidate", candidate);
     });
 

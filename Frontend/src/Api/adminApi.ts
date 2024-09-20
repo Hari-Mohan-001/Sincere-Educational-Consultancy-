@@ -55,6 +55,19 @@ export const adminApi = {
     }
   },
 
+  //fetch all counsellors
+getAllCounsellors : async()=>{
+  try {
+    const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/counsellors`)
+    if(response.status ===200){
+      const counsellors = response.data.data
+      return counsellors
+    }
+  } catch (error) {
+    console.error("API Error:", error);
+  }
+},
+
   blockUser: async (userId: string) => {
     try {
       const response = await axiosInstance.patch(

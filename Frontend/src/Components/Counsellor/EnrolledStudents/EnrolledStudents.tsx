@@ -3,7 +3,7 @@ import TableComponent from "../../Layout/Table";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { toast } from "react-toastify";
 
 import { counsellorApi } from "../../../Api/counsellorApi";
+import { useSocket } from "../../../Context/SocketContext";
 
 interface OrderData {
   _id: string;
@@ -34,6 +35,19 @@ const EnrolledStudents = () => {
     null
   );
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const {socket} = useSocket()
+  const hasJoined = useRef(false) // Track if the user has joined already
+
+  useEffect(()=>{
+     if(socket && counsellor && !hasJoined.current){
+      socket.emit('join', counsellor.id,'counsellor') 
+      hasJoined.current = true  // Mark as joined to prevent re-joining
+     }
+
+     return()=>{
+      socket?.off('join')
+     }
+  },[socket,counsellor])
 
   useEffect(() => {
     const fetchEnrolledStudents = async () => {
@@ -234,6 +248,7 @@ const EnrolledStudents = () => {
               onChange={handleDateChange}
               minDate={new Date()}
               minTime={new Date()}
+              minDateTime={new Date()}  // Restrict past dates and times
             />
           </LocalizationProvider>
           <Button

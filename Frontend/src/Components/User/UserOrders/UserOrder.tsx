@@ -63,7 +63,7 @@ const UserOrder = () => {
     },
     { id: "country", label: "Country", minWidth: 100 },
     {
-      id: "createdAt",
+      id: "Payment",
       label: "Payment",
       minWidth: 100,
       render: () => (
