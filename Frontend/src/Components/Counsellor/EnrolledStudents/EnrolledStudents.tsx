@@ -80,7 +80,7 @@ const EnrolledStudents = () => {
     if (selectedStudent) {
       setStudents((prevStudents) =>
         prevStudents.map((student) =>
-          student.userId === selectedStudent.userId
+          student._id === selectedStudent._id
             ? { ...student, meetingSchedule: selectedStudent.meetingSchedule ,rescheduleRequest:false}
             : student
         )
@@ -236,12 +236,12 @@ const EnrolledStudents = () => {
       minWidth: 100,
       render: (row: OrderData) =>
         row.enrollType === "Chat" ? (
-          <Button variant="contained" onClick={() => handleChatClick(row)}>
+          <Button variant="contained" color="success" onClick={() => handleChatClick(row)}>
             Chat
           </Button>
         ) : (
           <Button
-            variant="contained"
+            variant="contained" color="success"
             onClick={() => handleVideoCallClick(row.userId)}
           >
             Video Call
