@@ -11,7 +11,8 @@ export class Event{
       public date: string,
       public time: string,
       public selectedDateTime: string,
-      public counsellor: string|ObjectId
+      public counsellor: string|ObjectId,
+      public orderId: string
     ) {}
   }
 export class PopulatedEvent{
@@ -25,7 +26,8 @@ export class PopulatedEvent{
       public date: string,
       public time: string,
       public selectedDateTime: string,
-      public counsellor: {}
+      public counsellor: {},
+      public orderId: string|null|undefined
     ) {}
   }
 

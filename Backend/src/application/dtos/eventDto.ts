@@ -10,6 +10,7 @@ export class EventDTO {
     public date: string,
     public time: string,
     public selectedDateTime: string,
-    public counsellorId: string
+    public counsellorId: string,
+    public orderId: string
   ) {}
 }

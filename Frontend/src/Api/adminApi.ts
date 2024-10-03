@@ -56,17 +56,67 @@ export const adminApi = {
   },
 
   //fetch all counsellors
-getAllCounsellors : async()=>{
-  try {
-    const response = await axiosInstance.get(`/${ADMIN_ENDPOINT}/counsellors`)
-    if(response.status ===200){
-      const counsellors = response.data.data
-      return counsellors
+  getApprovedCounsellors: async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/counsellors`
+      );
+      if (response.status === 200) {
+        const counsellors = response.data.data;
+        console.log(counsellors);
+
+        return counsellors;
+      }
+    } catch (error) {
+      console.error("API Error:", error);
     }
-  } catch (error) {
-    console.error("API Error:", error);
-  }
-},
+  },
+  getUnApprovedCounsellorsCount: async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/unApprovedCounsellorsCount`
+      );
+      if (response.status === 200) {
+        const count = response.data.data;
+        return count;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  },
+
+  getUnApprovedCounsellors: async () => {
+    try {
+      const response = await axiosInstance.get(
+        `/${ADMIN_ENDPOINT}/unApproved-counsellors`
+      );
+      if (response.status === 200) {
+        const counsellors = response.data.data;
+        return counsellors;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  },
+
+  approveCounsellor: async (counsellorId: string) => {
+    try {
+      const response = await axiosInstance.patch(
+        `/${ADMIN_ENDPOINT}/counsellor/${counsellorId}`
+      );
+      if (response.status === 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
   blockUser: async (userId: string) => {
     try {

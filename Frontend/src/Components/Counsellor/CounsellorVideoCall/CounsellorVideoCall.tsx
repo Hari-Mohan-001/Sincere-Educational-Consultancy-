@@ -34,7 +34,6 @@ const CounsellorVideoCall = () => {
   // }, []);
   return (
     <div>
-      <h1 className="text-center text-xl">Counsellor Call</h1>
       <VideoCallComponent
       userId={userId}
       role="counsellor"

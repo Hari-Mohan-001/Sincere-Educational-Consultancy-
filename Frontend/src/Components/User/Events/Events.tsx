@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
 import { userApi } from "../../../Api/userApi";
+import { toast } from "react-toastify";
 
 interface CounsellorData {
   _id: string;
@@ -21,6 +22,7 @@ interface EventData {
   date: string;
   time: string;
   counsellor: CounsellorData;
+  orderId?:string
 }
 
 const ListEvents = () => {
@@ -33,7 +35,11 @@ const ListEvents = () => {
           const userId = user.id;
           const events = await userApi.getEvents(userId)
           if(events){
+          
+            
             setEvents(events)
+            console.log(events);
+            
           }else{
             setEvents([])
           }
@@ -57,6 +63,16 @@ const ListEvents = () => {
       state: { userId: user?.id, counsellorId: counsellorId },
     });
   };
+
+  const handleChangeSchedule = async(orderId?:string)=>{
+     if(orderId){
+      const response = await userApi.rescheduleRequest(orderId)
+        if(response){
+          toast.success("Schedule request send, check the time with in one hour")
+        }
+      
+     }
+  }
 
   const columns = [
     { id: "userName", label: "Name", minWidth: 100 },
@@ -102,7 +118,39 @@ const ListEvents = () => {
           <Button>Video call</Button>
         ),
     },
-  ];
+    {
+      id: "Change Schedule",
+      label: "Schedule",
+      minWidth: 100,
+      render: (row: EventData) => {
+        // Parse event date and time into a single Date object
+        const eventDateTime = new Date(`${row.date} ${row.time}`);
+        const currentDateTime = new Date();
+    
+        // Log the parsed values for debugging
+        console.log("Event DateTime:", eventDateTime);
+        console.log("Current DateTime:", currentDateTime);
+    
+        // Check if the event date and time are in the past
+        if (eventDateTime.getTime() < currentDateTime.getTime()) {
+          return (
+            <Button
+              onClick={() => handleChangeSchedule(row?.orderId)}
+              variant="contained"
+              color="secondary"
+            >
+              Request change schedule
+            </Button>
+          );
+        } else {
+          return <Button variant="text" color="success">Completed</Button>;
+        }
+      },
+    }
+    
+    
+    
+  ]
 
   return (
     <>

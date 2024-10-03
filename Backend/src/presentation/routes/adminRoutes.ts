@@ -8,6 +8,7 @@ import enrollmentContoller from "../../infrastructure/controllers/enrollmentCont
 import { verifyAdminToken } from "../../infrastructure/middleware/verifyAdminToken";
 import courseController from "../../infrastructure/controllers/courseController";
 import orderController from "../../infrastructure/controllers/orderController";
+import counsellorController from "../../infrastructure/controllers/counsellorController";
 
 const adminRouter = express.Router();
 const AdminController = adminController();
@@ -17,6 +18,7 @@ const UniversityController = universityController();
 const EnrollmentController = enrollmentContoller();
 const CourseController = courseController();
 const OrderController = orderController();
+const CounsellorController = counsellorController()
 
 adminRouter.post("/signin", (req: Request, res: Response) =>
   AdminController.adminLogin(req, res)
@@ -92,5 +94,23 @@ adminRouter.get("/total-revenue/:timeFrame", (req: Request, res: Response) => {
 adminRouter.get("/total-orders/:timeFrame", (req: Request, res: Response) => {
   OrderController.getAllTimeframeOrders(req, res);
 });
+
+adminRouter.get("/counsellors",(req:Request, res:Response, next:NextFunction)=>{
+ CounsellorController.getAllApprovedCounsellors(req,res,next)
+});
+
+adminRouter.get("/unApprovedCounsellorsCount",(req:Request, res:Response, next:NextFunction)=>{
+  CounsellorController.getUnApprovedCounsellorCount(req,res,next)
+})
+adminRouter.get("/unApproved-counsellors",(req:Request, res:Response, next:NextFunction)=>{
+  CounsellorController.getUnApprovedCounsellors(req,res,next)
+})
+
+adminRouter.patch(
+  "/counsellor/:counsellorId",
+  (req: Request, res: Response,next:NextFunction) => {
+    CounsellorController.approveCounsellor(req,res,next);
+  }
+);
 
 export default adminRouter;

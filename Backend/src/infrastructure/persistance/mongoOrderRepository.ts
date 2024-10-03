@@ -65,6 +65,7 @@ export class mongoOrderRepository implements IOrderRepository {
             enrollType: "$enrollDetails.name",
             enrollImage: "$enrollDetails.image",
             meetingSchedule: 1,
+            rescheduleRequest:1
           },
         },
       ]);
@@ -87,6 +88,7 @@ export class mongoOrderRepository implements IOrderRepository {
               date: date,
               time: time,
             },
+            rescheduleRequest:false
           },
         }
       );

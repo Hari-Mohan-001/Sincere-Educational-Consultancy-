@@ -40,6 +40,9 @@ const EventSchema = new mongoose.Schema({
         ref:"admin",
         required:true,
     }, 
+    orderId:{
+        type:String
+    }
     
 },{timestamps:true})
 

@@ -2,6 +2,7 @@ import { EventDTO } from "../../application/dtos/eventDto";
 import { Event, PopulatedEvent } from "../../domain/entities/events";
 import { IEventRepository } from "../../domain/repositories/IEventRepository";
 import eventModel from "../../presentation/models/eventModel";
+import orderModel from "../../presentation/models/orderModel";
 
 export class mongoEventRepository implements IEventRepository {
   public async createNewEvent(event: EventDTO): Promise<boolean> {
@@ -16,6 +17,7 @@ export class mongoEventRepository implements IEventRepository {
         time: event.time,
         selectedDateTime: event.selectedDateTime,
         counsellor: event.counsellorId,
+        orderId:event.orderId
       });
       const saveEvent = await newEvent.save();
       return saveEvent != null;
@@ -41,11 +43,51 @@ export class mongoEventRepository implements IEventRepository {
             event.date,
             event.time,
             event.selectedDateTime,
-            event.counsellor
+            event.counsellor,
+            event.orderId
           )
       );
     } catch (error) {
       throw error;
+    }
+  }
+  public async doesEventExist(orderId: string): Promise<string> {
+    try {
+      const event = await eventModel.findOne({orderId:orderId})
+      console.log(event,'mongo');
+      
+      return event?._id?.toString() || "";  // Return the _id as a string or an empty string
+    } catch (error) {
+      throw error
+    }
+  }
+
+  public async updateEvent(eventId: string,date:string,time:string, selectedDateTime:string): Promise<boolean> {
+    try {
+      const update = await eventModel.findByIdAndUpdate(eventId, {
+        $set:{
+          date:date,
+          time:time,
+          selectedDateTime:selectedDateTime
+        },
+      }, {new:true})
+      return update!=null
+    } catch (error) {
+      throw error
+    }
+  }
+
+  public async rescheduleTheEvent(orderId: string): Promise<boolean> {
+    try {
+      const updateOrder = await orderModel.findByIdAndUpdate(orderId,{
+        $set:{
+          rescheduleRequest:true
+        }
+      },{new:true})
+      return updateOrder ? true : false;
+    } catch (error) {
+      console.log(error);
+      return false
     }
   }
 }

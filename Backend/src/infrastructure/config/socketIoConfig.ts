@@ -133,6 +133,13 @@ console.log('sender',senderId,'recever',receiverId);
       io.to(peerId).emit("receiveIceCandidate", candidate);
     });
 
+    socket.on("chatMessage", (message, userId) => {
+      // Broadcast the message to the specific user
+      console.log(message,userId);
+      
+      io.to(userId).emit("receiveChatMessage", message);
+    });
+
     socket.on("disconnect", async () => {
       console.log("A user disconnected:", socket.id);
     });

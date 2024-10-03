@@ -34,8 +34,12 @@ const OrderSchema = new mongoose.Schema({
          time:{
             type:String,
             default:""
-         }
+         }  
     },
+    rescheduleRequest:{
+        type:Boolean,
+        default:false
+    }
     
 },{timestamps:true})
 

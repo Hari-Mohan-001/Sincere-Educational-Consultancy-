@@ -160,6 +160,14 @@ export const userApi = {
     }
   },
 
+  //request Reschedule
+  rescheduleRequest : async(orderId:string)=>{
+  const response = await axiosInstance.put(`/${USER_ENDPOINT}/reschedule/${orderId}`)
+  if(response.status ===200){
+    return true
+  }
+  },
+
   //signOut user
   signOut: async () => {
     try {

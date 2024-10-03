@@ -31,7 +31,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(4);
 
-  const paginatedData = data.slice(
+  const paginatedData = data?.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -56,7 +56,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
         {title}
       </Typography>
 
-      {columns.length > 0 && data.length > 0 ? (
+      {columns?.length > 0 && data?.length > 0 ? (
         <TableContainer component={Paper} className="shadow-lg" style={{}}>
           <Table>
             <TableHead className="bg-gray-800">

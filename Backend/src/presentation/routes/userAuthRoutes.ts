@@ -117,6 +117,10 @@ userAuthRoute.put("/:userId", (req: Request, res: Response) => {
   UserController.updateUser(req, res);
 });
 
+userAuthRoute.put("/reschedule/:orderId",(req: Request, res: Response, next:NextFunction)=>{
+  EventController.rescheduleEvent(req,res,next)
+})
+
 userAuthRoute.get(
   "/orders/:userId",
   (req: Request, res: Response, next: NextFunction) => {

@@ -25,6 +25,7 @@ const SignInForm = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('apikeygog',import.meta.env.VITE_FIREBASE_API_KEY);
     if (user) {
       console.log(user);
 

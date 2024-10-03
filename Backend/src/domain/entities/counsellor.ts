@@ -1,6 +1,11 @@
-import bcrypt from "bcrypt"
+import mongoose from "mongoose";
 
-export class Admin {
+interface Country{
+    id: mongoose.Types.ObjectId,
+    name: string
+}
+
+export class Counsellor {
     constructor(
         public id: string,
         public name: string,
@@ -14,10 +19,4 @@ export class Admin {
 
     ) {}
 
-    public async hashPassword():Promise<void>{
-        const saltRounds = 8
-        this.password = bcrypt.hashSync(this.password , saltRounds)
-        console.log(this.password);
-        
-    }
 }

@@ -13,6 +13,8 @@ import AdminNotFoundPage from "../Pages/Admin/AdminNotFoundPage/AdminNotFoundPag
 import AdminDashboardPage from "../Pages/Admin/Dashboard/AdminDashboardPage";
 import { NavProvider } from "../Context/SideNavbarContext";
 import AdminOrderPage from "../Pages/Admin/AdminOrderPage/AdminOrderPage";
+import CounsellorPage from "../Pages/Admin/CounsellorPage/CounsellorPage";
+import NotApprovedCounsellorsPage from "../Pages/Admin/NotApprovedCounsellorPage/NotApprovedCounsellorsPage";
 
 
 const AdminRoute = () => {
@@ -31,6 +33,8 @@ const AdminRoute = () => {
       <Route path="courses" element={<AdminCourseListPage/>}/>
       <Route path="not-approved-universities" element={<NotApprovedUniversitiesPage/>}/>
       <Route path="orders" element={<AdminOrderPage/>}/>
+      <Route path="counsellors" element={<CounsellorPage/>}/>
+      <Route path="not-approved-counsellors" element={<NotApprovedCounsellorsPage/>}/>
       </Route>
       <Route path="*" element={<AdminNotFoundPage />} />
     </Routes>

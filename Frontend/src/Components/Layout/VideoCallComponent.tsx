@@ -1,6 +1,6 @@
 import { useSocket } from "../../Context/SocketContext";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useSelector } from "react-redux";
 import { CounsellorRootState } from "../../Interface/Counsellor/CounsellorInterface";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,12 @@ interface VideoCallComponentProps {
   userId: string;
   role: string;
   userIncommingOffer?: RTCSessionDescriptionInit;
+}
+
+interface ChatMessage {
+  sender: string;
+  message: string;
+  timestamp: Date;
 }
 
 const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, userIncommingOffer }) => {
@@ -24,6 +30,11 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
   const [isMuted, setIsMuted] = useState(false); // For mute/unmute
   const { counsellor } = useSelector((state: CounsellorRootState) => state.counsellor);
   const navigate = useNavigate()
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [currentMessage, setCurrentMessage] = useState("");
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const screenStreamRef = useRef<MediaStream | null>(null);
   
   
 
@@ -281,6 +292,81 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
     }
   };
 
+  
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      sendChatMessage();
+    }
+  };
+  const sendChatMessage = () => {
+    if (currentMessage.trim() !== "") {
+      const newMessage: ChatMessage = {
+        sender: role,
+        message: currentMessage,
+        timestamp: new Date(),
+      };
+      setChatMessages((prevMessages) => [...prevMessages, newMessage]);
+      socket?.emit("chatMessage", newMessage, userId);
+      setCurrentMessage("");
+    }
+  };
+
+  const handleChatMessage = (message: ChatMessage) => {
+    setChatMessages((prevMessages) => [...prevMessages, message]);
+  };
+
+  const startScreenShare = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      screenStreamRef.current = stream;
+      setIsScreenSharing(true);
+
+      const screenTrack = stream.getVideoTracks()[0];
+      if (peerConnectionRef.current) {
+        const senders = peerConnectionRef.current.getSenders();
+        const sender = senders.find(s => s.track?.kind === 'video');
+        if (sender) {
+          sender.replaceTrack(screenTrack);
+        } else {
+          peerConnectionRef.current.addTrack(screenTrack, stream);
+        }
+      }
+
+      screenTrack.onended = () => {
+        stopScreenShare();
+      };
+
+      if (localVideoRef.current) {
+        localVideoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error("Error starting screen share:", error);
+      toast.error("Failed to start screen sharing");
+    }
+  };
+
+  const stopScreenShare = () => {
+    if (screenStreamRef.current) {
+      screenStreamRef.current.getTracks().forEach(track => track.stop());
+      screenStreamRef.current = null;
+    }
+    setIsScreenSharing(false);
+
+    if (localStream && peerConnectionRef.current) {
+      const videoTrack = localStream.getVideoTracks()[0];
+      const senders = peerConnectionRef.current.getSenders();
+      const sender = senders.find(s => s.track?.kind === 'video');
+      if (sender && videoTrack) {
+        sender.replaceTrack(videoTrack);
+      }
+    }
+
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  };
+
   useEffect(() => {
     console.log("Component mounted, role:", role);
     if (userIncommingOffer) {
@@ -294,10 +380,12 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
 
     socket?.on("receiveAnswer", handleAnswer);
     socket?.on("receiveIceCandidate", handleIceCandidate);
+    socket?.on("receiveChatMessage", handleChatMessage);
 
     return () => {
       socket?.off("receiveAnswer", handleAnswer);
       socket?.off("receiveIceCandidate", handleIceCandidate);
+      socket?.off("receiveChatMessage", handleChatMessage);
       if (peerConnectionRef.current) {
         peerConnectionRef.current.close();
         peerConnectionRef.current = null;
@@ -305,35 +393,122 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
     };
   }, [socket, userIncommingOffer]);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+    
   return (
-    <div className="flex flex-col justify-center items-center bg-gray-900 h-screen">
-  <div className="flex justify-around w-full">
-    <div className="max-w-md border-solid mr-5">
-      <h1 className="text-white">Local Video {localStream ? "yes" : "no"}</h1>
-      <video className="rounded-2xl shadow-lg" ref={localVideoRef} autoPlay playsInline muted />
-    </div>
-    <div className="max-w-md">
-      {remoteStream && <h1 className="text-white">Remote Video {remoteStream ? "yes" : "no"}</h1>}
-      {remoteStream && <video className="rounded-2xl shadow-lg" ref={remoteVideoRef} autoPlay playsInline />}
-      
-    </div>
-  </div>
-  
-  {role === "counsellor" && !isCallStarted && (
-    <div className="flex justify-center mt-5">
-      <Button onClick={startCall}>Start Call</Button>
-    </div>
-  )}
+    <div className="flex h-screen bg-gray-900">
+      {/* Left side: Video streams */}
+      <div className="w-2/3 flex flex-col p-4 h-full">
+        <div className="flex-1 flex space-x-4">
+          <div className="w-1/2 flex flex-col">
+            <h1 className="text-white mb-2">
+              Local Video {localStream ? "(Active)" : "(Inactive)"}
+            </h1>
+            <div className="flex-1 relative">
+              <video
+                className="absolute inset-0 w-full h-full object-cover rounded-2xl shadow-lg"
+                ref={localVideoRef}
+                autoPlay
+                playsInline
+                muted
+              />
+            </div>
+          </div>
+          <div className="w-1/2 flex flex-col">
+            <h1 className="text-white mb-2">
+              Remote Video {remoteStream ? "(Active)" : "(Inactive)"}
+            </h1>
+            <div className="flex-1 relative">
+              {remoteStream && (
+                <video
+                  className="absolute inset-0 w-full h-full object-cover rounded-2xl shadow-lg"
+                  ref={remoteVideoRef}
+                  autoPlay
+                  playsInline
+                />
+              )}
+            </div>
+          </div>
+        </div>
 
-  {isCallStarted && (
-    <div className="flex justify-center mt-5 space-x-4">
-      <Button variant="contained" color="error" onClick={endCall}>End Call</Button>
-      <Button variant="contained" color="warning" onClick={toggleMute}>{isMuted ? "Unmute" : "Mute"}</Button>
+        <div className="mt-4 flex justify-center space-x-4">
+          {role === "counsellor" && !isCallStarted && (
+            <Button variant="contained" color="primary" onClick={startCall}>
+              Start Call
+            </Button>
+          )}
+          {isCallStarted && (
+            <>
+              <Button variant="contained" color="error" onClick={endCall}>
+                End Call
+              </Button>
+              <Button variant="contained" color="warning" onClick={toggleMute}>
+                {isMuted ? "Unmute" : "Mute"}
+              </Button>
+              <Button 
+                variant="contained" 
+                color="info" 
+                onClick={isScreenSharing ? stopScreenShare : startScreenShare}
+              >
+                {isScreenSharing ? "Stop Sharing" : "Share Screen"}
+              </Button>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Right side: Chat */}
+      <div className="w-1/3 flex flex-col bg-gray-800 p-4 h-full">
+        <h2 className="text-white text-xl mb-4">Chat</h2>
+        <div ref={chatContainerRef} className="flex-1 overflow-y-auto mb-4">
+          {chatMessages.map((msg, index) => (
+            <div
+              key={index}
+              className={`mb-2 ${msg.sender === role ? "text-right" : "text-left"}`}
+            >
+              <span
+                className={`inline-block p-2 rounded-lg ${
+                  msg.sender === role
+                    ? "bg-blue-500 text-white"
+                    : "bg-gray-700 text-gray-200"
+                }`}
+              >
+                {msg.message}
+              </span>
+            </div>
+          ))}
+        </div>
+        <div className="flex">
+          <TextField
+            fullWidth
+            variant="outlined"
+            value={currentMessage}
+            onChange={(e) => setCurrentMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Type a message..."
+            className="bg-white rounded-l-lg"
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={sendChatMessage}
+            className="rounded-r-lg"
+          >
+            Send
+          </Button>
+        </div>
+      </div>
     </div>
-  )}
-</div>
- 
   );
+  
+  
+  
+  
+  
 };
 
 export default VideoCallComponent;

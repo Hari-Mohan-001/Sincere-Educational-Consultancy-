@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { CounsellorRootState } from "../../../Interface/Counsellor/CounsellorInterface";
 import { useSelector } from "react-redux";
-import { format } from "date-fns";
+import { format, parse } from "date-fns";
 import { toast } from "react-toastify";
 
 import { counsellorApi } from "../../../Api/counsellorApi";
@@ -21,6 +21,8 @@ interface OrderData {
   enrollType: string;
   enrollImage: string;
   meetingSchedule?: { date: string; time: string };
+  createdAt:string,
+  rescheduleRequest:boolean
 }
 
 const EnrolledStudents = () => {
@@ -57,7 +59,7 @@ const EnrolledStudents = () => {
           const enrolledOrders = await counsellorApi.getErrolledOrders(
             countryId
           );
-          setStudents(enrolledOrders);
+          setStudents(enrolledOrders.reverse());
         } else {
           navigate("/counsellor/signin");
         }
@@ -79,14 +81,14 @@ const EnrolledStudents = () => {
       setStudents((prevStudents) =>
         prevStudents.map((student) =>
           student.userId === selectedStudent.userId
-            ? { ...student, meetingSchedule: selectedStudent.meetingSchedule }
+            ? { ...student, meetingSchedule: selectedStudent.meetingSchedule ,rescheduleRequest:false}
             : student
         )
       );
     }
   }, [selectedStudent]);
 
-  const handleScheduleClick = (student: OrderData) => {
+  const handleScheduleClick = (student: OrderData) => { 
     setSelectedStudent(student);
     setOpen(true);
   };
@@ -127,7 +129,9 @@ const EnrolledStudents = () => {
         setSelectedStudent({
           ...selectedStudent,
           meetingSchedule: { date, time },
+          rescheduleRequest:false,
         });
+        
         toast.success("Meeting scheduled successfully");
       }
       // Optionally update the UI or notify the user
@@ -181,19 +185,48 @@ const EnrolledStudents = () => {
       id: "meeting",
       label: "Meeting",
       minWidth: 100,
-      render: (row: OrderData) =>
-        row.meetingSchedule?.date && row.meetingSchedule.time ? (
+      render: (row: OrderData) => {
+        // Combine date and time to create a full Date object for the meeting
+        const meetingDate = row.meetingSchedule?.date
+          ? parse(`${row.meetingSchedule.date} ${row.meetingSchedule.time}`, "dd-MM-yyyy HH:mm:ss", new Date())
+          : null;
+    
+        return row.meetingSchedule?.date && row.meetingSchedule.time ? (
           <div>
             <div>Date: {row.meetingSchedule.date}</div>
             <div>Time: {row.meetingSchedule.time}</div>
+            {/* Compare the parsed meeting date with the current date */}
+            {meetingDate && meetingDate > new Date() ? (
+              <Button variant="contained" color="secondary" onClick={() => handleScheduleClick(row)}>
+                Re-Schedule
+              </Button>
+            ) : (
+              <Button variant="outlined" color="success">
+                Completed
+              </Button>
+            )}
           </div>
+        ) : ( 
+          <Button variant="contained" color="success" onClick={() => handleScheduleClick(row)}>
+            Schedule
+          </Button>
+        );
+      },
+    },
+    {
+      id: "Reschudule request",
+      label: "Reschudule Request",
+      minWidth: 100,
+      render: (row: OrderData) =>
+        row.rescheduleRequest === true ? (
+          <Button variant="contained" color="warning">
+            Requested
+          </Button>
         ) : (
           <Button
             variant="contained"
-            color="success"
-            onClick={() => handleScheduleClick(row)}
           >
-            Schedule
+            Nil
           </Button>
         ),
     },
@@ -217,7 +250,7 @@ const EnrolledStudents = () => {
     },
   ];
 
-  return (
+  return ( 
     <>
       <TableComponent title="Students" columns={columns} data={students} />
       <Modal open={open} onClose={() => setOpen(false)}>

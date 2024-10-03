@@ -18,7 +18,8 @@ const adminSchema = new mongoose.Schema({
         required:true
     },
     country:{
-        type:String,
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Country",
         required:true
     },
     role:{
@@ -37,6 +38,10 @@ const adminSchema = new mongoose.Schema({
     lastSeen:{
         type:Date,
         default:null
+    },
+    isApproved:{
+        type:Boolean,
+        default:false
     },
 },{timestamps:true})
 
