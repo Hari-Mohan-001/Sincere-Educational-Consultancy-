@@ -8,6 +8,8 @@ import { chatApi } from "../../Api/chatApi";
 import { toast } from "react-toastify";
 import { useSocket } from "../../Context/SocketContext";
 import { blobToBase64 } from "../../Utils/Helpers/base64converter";
+import { useDispatch } from "react-redux";
+import { clearNotifications } from "../../Redux/Notification/NotificationSlice";
 
 interface Data {
   counsellorId: string;
@@ -60,18 +62,31 @@ const ChatComponent = ({
 
   const fileRef = useRef<HTMLInputElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+const dispatch = useDispatch()
+  useEffect(() => {
+    if (socket) {
+      console.log('Socket connected:', socket.connected);
+      socket.on('connect', () => {
+        console.log('Socket reconnected:', socket.connected);
+      });
+    }
+    dispatch(clearNotifications(isCounsellor ? userId :counsellorId))
+  }, [socket]);
+  
 
   useEffect(() => {
-    if (!socket) return;
+    // if (!socket) return;
+    if(socket){
     fetchMessages();
     fetchOtherUserStatus();
-
-    socket.on("newMessage", (message) => {
+    console.log('props chtcomp',counsellorId,userId);
+    
+    socket?.on("newMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
       scrollToBottom();
     });
 
-    socket.on("userStatusChanged", ({ userId, isOnline }) => {
+    socket?.on("userStatusChanged", ({ userId, isOnline }) => {
       if (userId === (isCounsellor ? userId : counsellorId)) {
         setOtherUser((prev) =>
           prev
@@ -81,18 +96,18 @@ const ChatComponent = ({
       }
     });
 
-    socket.on("typing", ({ senderId, isTyping }) => {
+    socket?.on("typing", ({ senderId, isTyping }) => {
       if (senderId !== (isCounsellor ? userId : counsellorId)) return;
       setIsTyping(isTyping);
       setTypingUser(isTyping ? senderId : null);
     });
-
+  }
     return () => {
-      socket.off("newMessage");
-      socket.off("userStatusChanged");
-      socket.off("typing");
+      socket?.off("newMessage");
+      socket?.off("userStatusChanged");
+      socket?.off("typing");
     };
-  }, [counsellorId, userId, isCounsellor]);
+  }, [socket]);
 
   const fetchOtherUserStatus = async () => {
     try {
@@ -117,6 +132,8 @@ const ChatComponent = ({
         userId,
         userModel,
       };
+      console.log('compchat',endPoint, params);
+      
       const messages = await chatApi.fetchAllMessages(endPoint, params);
       setMessages(messages);
       setTimeout(scrollToBottom, 100);
@@ -251,6 +268,7 @@ const ChatComponent = ({
       scrollToBottom();
       handleStopTyping();
     }
+    
   };
 
   const cancelImagePreview = () => {
@@ -261,6 +279,7 @@ const ChatComponent = ({
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    dispatch(clearNotifications(isCounsellor ? userId :counsellorId))
   };
 
   return (
@@ -366,7 +385,7 @@ const ChatComponent = ({
         {isModalOpen && (
           <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
             <div className="bg-white rounded-lg p-4">
-              <img src={image || ""} alt="Preview" className="max-w-full h-auto rounded-md" />
+              <img src={image || ""} alt="Preview" className="max-w-96 h-auto rounded-md" />
               <div className="mt-4 flex justify-between">
                 <button onClick={cancelImagePreview} className="bg-gray-500 text-white px-4 py-2 rounded-md">
                   Cancel

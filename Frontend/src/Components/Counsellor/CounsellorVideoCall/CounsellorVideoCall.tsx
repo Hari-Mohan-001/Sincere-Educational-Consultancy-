@@ -13,25 +13,7 @@ const CounsellorVideoCall = () => {
   if (!userId ) {
     return <div>Error: Missing required parameters</div>;
   }
-
-  // const roomId = `${counsellorId}-${userId}-${Date.now()}`;
-
-  // useEffect(() => {
-  //   const roomLink = `${window.location.origin}/join-call/${roomId}`;
-  //   console.log('roomlink',roomLink);
-    
-  //   const data = {
-  //     userId: userId,
-  //     roomLink: roomLink,
-  //   };
-  //   const sendMeetLink = async () => {
-  //     // const response = await counsellorApi.sendVideoCallLink(data);
-  //     // if (response) {
-  //     //   toast.success("Link send successfully");
-  //     // }
-  //   };
-  //   sendMeetLink();
-  // }, []);
+  
   return (
     <div>
       <VideoCallComponent

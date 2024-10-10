@@ -19,7 +19,10 @@ interface CourseData {
 
 const AllCourses = () => {
   const [courses, setCourses] = useState<CourseData[]>([]);
-
+  const [filteredCourses, setFilteredCourses] = useState<
+  CourseData[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const coursesPerPage = 6;
   const navigate = useNavigate();
@@ -59,13 +62,30 @@ const AllCourses = () => {
     getAllCourses();
   }, []);
 
+  useEffect(() => {
+    const filtered = courses.filter((course) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      
+    
+      return (
+        course.name.toLowerCase().includes(lowerCaseQuery)
+       
+      );
+    });
+    setFilteredCourses(filtered);
+  }, [searchQuery, courses]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   const handleClick = (courseId: string) => {
     navigate(`/courseDetails`, { state: { courseId } });
   };
 
   const indexOfLastCourse = currentPage * coursesPerPage;
   const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-  const currentCourses = courses.slice(indexOfFirstCourse, indexOfLastCourse);
+  const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
 
   const handlePageChange = (
     _: React.ChangeEvent<unknown>,
@@ -78,12 +98,22 @@ const AllCourses = () => {
     <section>
       {courses && courses.length > 0 ? (
         <div className="flex flex-col items-center w-full min-h-screen bg-cyan-800 shadow-slate-800">
+          
           <div className="mb-4">
             <h1 className="text-3xl font-semibold mt-5 underline">
               {domainId ? `Courses` : "All Courses"}
             </h1>
           </div>
 
+          <div className="float-right mt-2 w-96">
+          <input
+            type="text"
+            placeholder="Search For Courses"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-2xl p-2 border border-gray-400 rounded-lg mb-3"
+          />
+        </div>
           <div className="flex flex-wrap justify-center gap-10 ml-16 mr-16">
             {currentCourses.map((course) => (
               <div

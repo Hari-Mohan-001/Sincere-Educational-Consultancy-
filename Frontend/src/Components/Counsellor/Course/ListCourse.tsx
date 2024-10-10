@@ -20,6 +20,11 @@ interface CourseData {
 
 const ListCourse = () => {
   const navigate = useNavigate();
+  const [courses, setCourses] = useState<CourseData[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<
+  CourseData[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const { counsellor } = useSelector(
     (state: CounsellorRootState) => state.counsellor
   );
@@ -40,10 +45,26 @@ const ListCourse = () => {
     fetchCourses();
   }, []);
 
-  const [courses, setCourses] = useState<CourseData[]>([]);
+  useEffect(() => {
+    const filtered = courses.filter((course) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        course.name.toLowerCase().includes(lowerCaseQuery) ||
+         course.uninversityName?.toLowerCase().includes(lowerCaseQuery)
+       
+      );
+    });
+    setFilteredCourses(filtered);
+  }, [searchQuery, courses]);
+
+  
 
   const handleClick = () => {
     navigate("/counsellor/add-course");
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
   };
 
   const columns = [
@@ -68,14 +89,25 @@ const ListCourse = () => {
   ];
 
   return (
-    <>
-      <TableComponent title="Courses" columns={columns} data={courses} />
-      <div className="mt-4 mr-2">
+    <div>
+      <div className="flex float-end">
+      <div className="mt-2 mr-2">
         <Button onClick={handleClick} variant="contained">
-          Add
+          Add Course
         </Button>
       </div>
-    </>
+      <div className="float-end mt-2">
+          <input
+            type="text"
+            placeholder="Search courses"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
+          />
+        </div>
+        </div>
+      <TableComponent title="Courses" columns={columns} data={filteredCourses} />
+    </div>
   );
 };
 

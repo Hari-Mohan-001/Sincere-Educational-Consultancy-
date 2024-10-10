@@ -5,15 +5,22 @@ import DomainList from "../../../Components/Counsellor/Domain/ListDomain";
 
 const DomainListPage = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
+      
       <Header />
+
       <div className="flex">
-        <div>
+        
+        <div className="w-1/5 ">
           <SideNavBar />
         </div>
-        <DomainList />
+
+        
+        <div className="w-4/5 p-0">
+          <DomainList />
+        </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { clearNotifications } from "../../Redux/Notification/NotificationSlice";
 import { RootState } from "../../Interface/User/UserInterface";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -20,6 +20,7 @@ const NotificationComponent: React.FC<NotificationProps> = ({role}) => {
   );
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation()
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
   const { user } = useSelector((state: RootState) => state.user);
   const { counsellor } = useSelector(
@@ -30,6 +31,8 @@ const NotificationComponent: React.FC<NotificationProps> = ({role}) => {
   useEffect(() => {
     console.log('Current notifications:', notifications);
   }, [notifications]);
+
+  
 
   const handleNotificationClick = (senderId: string) => {
     // Assuming the user is always the recipient
@@ -61,12 +64,21 @@ const NotificationComponent: React.FC<NotificationProps> = ({role}) => {
   const open = Boolean(anchorEl);
   const id = open ? "notification-popover" : undefined;
 
+
+  // Check if the current location is the chat page
+  const isChatPage = location.pathname.includes("/chat");
+
   return (
     <div className="top-4 right-4 z-50">
       <IconButton onClick={handleClick} size="large">
-        <Badge badgeContent={notifications.length} color="error">
+         {/* Conditionally render the badge only when not on chat page */}
+         {isChatPage ? (
           <NotificationsIcon />
-        </Badge>
+        ) : (
+          <Badge badgeContent={notifications.length} color="error">
+            <NotificationsIcon />
+          </Badge>
+        )}
       </IconButton>
       <Popover
         id={id}

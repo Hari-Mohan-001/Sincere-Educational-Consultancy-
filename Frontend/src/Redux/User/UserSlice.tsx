@@ -34,13 +34,7 @@ const initialState: UserState = {
 export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
   createAsyncThunk("/user/signUp", async (userData, { rejectWithValue }) => {
     try {
-      // const response = await fetch(`${BASE_URL}/signUp`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(userData),
-      // });
+     
       const response = await axiosInstance.post(`${USER_ENDPOINT}/signUp`,userData)
       console.log('sigup',response);
       
@@ -59,14 +53,7 @@ export const signUpUser: AsyncThunk<ResponseData, UserData, AsyncThunkConfig> =
 export const verifyOtp: AsyncThunk<ResponseData, string, AsyncThunkConfig> =
   createAsyncThunk("/user/verifyOtp", async (otp, { rejectWithValue }) => {
     try {
-      // const response = await fetch(`${BASE_URL}/verifyOtp`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ otp }),
-      //   credentials: "include",
-      // });
+     
       const response = await axiosInstance.post(`${USER_ENDPOINT}/verifyOtp`,{otp})
       if (response.status!= 200 && response.status!= 201) {
         const data: ResponseData = await response.data;
@@ -144,7 +131,7 @@ export const googleAuth: AsyncThunk<ResponseData,googleAuthData, AsyncThunkConfi
 
 
 const userSlice = createSlice({
-  name: "user",
+  name:"user",
   initialState,
   reducers: {
     signOutUser: (state) => {
@@ -171,7 +158,7 @@ const userSlice = createSlice({
         (state.status = "failed"), (state.error = action.error.message || null);
       })
       .addCase(signInUser.fulfilled,(state,action)=>{
-        console.log(action.payload);
+        console.log('User signed in:', action.payload);
         
         console.log('signin....');
         state.status = "succeeded",

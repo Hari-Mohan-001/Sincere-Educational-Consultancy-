@@ -17,7 +17,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <BrowserRouter>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Container style={{ maxWidth: "1500px", padding: "0" }}>
+          <Container style={{ maxWidth: "1700px", padding: "0" }}>
             <SocketProvider>
               <IncomingCallModal/>
               <App />

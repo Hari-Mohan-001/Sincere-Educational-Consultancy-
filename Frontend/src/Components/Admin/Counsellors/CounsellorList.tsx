@@ -17,6 +17,10 @@ interface CounsellorData{
 const CounsellorList = () => {
   
   const [counsellors, setcounsellors] = useState<CounsellorData[]>([]);
+  const [filteredCounsellors, setFilteredCounsellors] = useState<
+  CounsellorData[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [count, setCount] = useState()
 const navigate = useNavigate()
 
@@ -47,49 +51,26 @@ const navigate = useNavigate()
    fetchUnApprovedCounsellorCount()
   },[count])
 
+  useEffect(() => {
+    const filtered = counsellors.filter((counsellor) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        counsellor.name.toLowerCase().includes(lowerCaseQuery) ||
+        counsellor.email.toLowerCase().includes(lowerCaseQuery) ||
+        counsellor.country.toLowerCase().includes(lowerCaseQuery)
+        
+      );
+    });
+    setFilteredCounsellors(filtered);
+  }, [searchQuery, counsellors]);
+
   const handleApprovalPage = async()=>{
     navigate("/admin/not-approved-counsellors")
   }
 
-  // const blockUser = async (id: string, isBlocked: Boolean) => {
-  //   try {
-  //     const response = await adminApi.blockUser(id);
-  //     if (response) {
-  //       toast.success("User blocked Successfully");
-  //       setUsers((prevUsers) =>
-  //         prevUsers.map((user) =>
-  //           user.id === id ? { ...user, isBlocked: !isBlocked } : user
-  //         )
-  //       );
-  //     } else {
-  //       toast.error("Error while blocking");
-  //     }
-  //   } catch (error: unknown) {
-  //     if (error instanceof Error) {
-  //       toast.error(error.message);
-  //     } else {
-  //       toast.error("An unknown error occurred");
-  //     }
-  //   }
-  // };
-
-  // const handleClick = async (id: string, isBlocked: Boolean) => {
-  //   mySwal
-  //     .fire({
-  //       title: `Are you sure you want to ${
-  //         isBlocked ? "unblock" : "block"
-  //       } this user?`,
-  //       icon: "warning",
-  //       showCancelButton: true,
-  //       confirmButtonText: "Yes",
-  //       cancelButtonText: "No",
-  //     })
-  //     .then((result) => {
-  //       if (result.isConfirmed) {
-  //         blockUser(id, isBlocked);
-  //       }
-  //     });
-  // };
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
 
   const columns = [
     // { id: "no", label: "No", minWidth: 50 },
@@ -113,6 +94,15 @@ const navigate = useNavigate()
   return (
     <div className="flex flex-col">
       <div className="flex justify-end mt-3 gap-2">
+      <div>
+          <input
+            type="text"
+            placeholder="Search Counsellor"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
+          />
+        </div>
         <div>
           <Badge badgeContent={count} color="primary">
             <Button
@@ -129,7 +119,7 @@ const navigate = useNavigate()
         <TableComponent
           title="Counsellors"
           columns={columns}
-          data={counsellors}
+          data={filteredCounsellors}
         />
       </div>
     </div>

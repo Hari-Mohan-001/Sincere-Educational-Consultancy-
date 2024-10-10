@@ -16,6 +16,12 @@ interface CourseData {
 }
 
 const AdminCourseList = () => {
+  const [courses, setCourses] = useState<CourseData[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<
+  CourseData[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -33,7 +39,24 @@ const AdminCourseList = () => {
     fetchCourses();
   }, []);
 
-  const [courses, setCourses] = useState<CourseData[]>([]);
+  useEffect(() => {
+    const filtered = courses.filter((course) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      
+    
+      return (
+        course.name.toLowerCase().includes(lowerCaseQuery)
+       
+      );
+    });
+    setFilteredCourses(filtered);
+  }, [searchQuery, courses]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  
 
   const columns = [
     { id: "name", label: "Name", minWidth: 100 },
@@ -62,8 +85,17 @@ const AdminCourseList = () => {
 
   return (
     <>
-      <TableComponent title="Courses" columns={columns} data={courses} />
-      <div className="mt-4 mr-2"></div>
+    <div className="float-end mt-2">
+          <input
+            type="text"
+            placeholder="Search courses"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
+          />
+        </div>
+      <TableComponent title="Courses" columns={columns} data={filteredCourses} />
+      
     </>
   );
 };

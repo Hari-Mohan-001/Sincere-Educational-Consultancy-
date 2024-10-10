@@ -11,7 +11,7 @@ const About = () => {
     <div className="flex flex-col mt-14 px-4 lg:px-20">
       <div className="flex justify-center mb-6">
         <h1 className="font-bold text-2xl text-blue-800 text-center">
-          What is <span className="font-bold text-cyan-500">ScS ??</span>
+          What is <span className="font-bold text-cyan-500">SeS ??</span>
         </h1>
       </div>
 

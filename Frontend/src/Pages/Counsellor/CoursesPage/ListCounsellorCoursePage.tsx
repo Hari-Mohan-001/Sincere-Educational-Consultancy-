@@ -5,16 +5,23 @@ import ListCourse from '../../../Components/Counsellor/Course/ListCourse'
 
 const ListCounsellorCoursePage = () => {
   return (
-    <div>
-        <Header/>
-        <div className="flex">
-          <div>
+    <div className="flex flex-col min-h-screen">
+      
+      <Header />
+
+      <div className="flex">
+        
+        <div className="w-1/5 ">
           <SideNavBar />
-          </div>
-        <ListCourse/>
+        </div>
+
+        
+        <div className="w-4/5 p-0">
+          <ListCourse />
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default ListCounsellorCoursePage

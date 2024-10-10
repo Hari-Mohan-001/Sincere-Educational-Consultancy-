@@ -65,6 +65,7 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
       socket?.emit("initCall", offer, userId, counsellor?.id);
       }
       initCall()
+      
     }
   }, []);
 

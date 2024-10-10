@@ -18,7 +18,10 @@ interface UniversityData {
 
 const AllUniversities = () => {
   const [universities, setUniversities] = useState<UniversityData[]>([]);
-  
+  const [filteredUniversities, setFilteredUniversities] = useState<
+    UniversityData[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const universitiesPerPage = 6; // Number of universities to display per page
   const navigate = useNavigate();
@@ -49,13 +52,25 @@ const AllUniversities = () => {
     getAllUniversities();
   }, []);
 
+  useEffect(() => {
+    const filtered = universities.filter((university) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        university.name.toLowerCase().includes(lowerCaseQuery) ||
+        university.address.toLowerCase().includes(lowerCaseQuery) ||
+        university.ranking.toLowerCase().includes(lowerCaseQuery) 
+      );
+    });
+    setFilteredUniversities(filtered);
+  }, [searchQuery, universities]);
+
   const handleClick = (universityId: string) => {
     navigate(`/universityDetails`, { state: { universityId } });
   };
 
   const indexOfLastUniversity = currentPage * universitiesPerPage;
   const indexOfFirstUniversity = indexOfLastUniversity - universitiesPerPage;
-  const currentUniversities = universities.slice(
+  const currentUniversities = filteredUniversities.slice(
     indexOfFirstUniversity,
     indexOfLastUniversity
   );
@@ -66,12 +81,26 @@ const AllUniversities = () => {
     setCurrentPage(value);
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+
   return (
     <div className="flex flex-col items-center  w-full">
-      <div className="mb-4">
-        <h1 className="text-2xl font-semibold">Universities</h1>
+      <div className="mb-4 mt-3">
+        <h1 className="text-3xl font-semibold underline">Universities</h1>
       </div>
-      <div className="flex flex-wrap justify-center gap-10 ml-16 mr-16">
+      <div className="float-right mt-2 w-96">
+          <input
+            type="text"
+            placeholder="Search For University"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-2xl p-2 border border-gray-400 rounded-md mb-3"
+          />
+        </div>
+      <div className="flex flex-wrap justify-center gap-10 ml-16 mr-16 shadow-xl border">
         {currentUniversities.map((university) => (
           <div
             key={university.id}
@@ -84,7 +113,7 @@ const AllUniversities = () => {
             }`}
           >
             <img
-              className="w-96 h-60  shadow-2xl border rounded-lg"
+              className="w-96 h-60  shadow-2xl border-4 rounded-lg mt-3"
               src={university.logo}
               alt={university.name}
             />

@@ -11,6 +11,10 @@ const mySwal = withReactContent(Swal);
 
 const StudentList = () => {
   const [users, setUsers] = useState<ResponseUserData[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<
+  ResponseUserData[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     const getAllUser = async () => {
@@ -23,6 +27,20 @@ const StudentList = () => {
     };
     getAllUser();
   }, []);
+
+  useEffect(() => {
+    const filtered = users.filter((user) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      // Convert isBlocked to "blocked" or "unblocked" for search purposes
+    const blockStatus = user.isBlocked ? "blocked" : "unblocked";
+      return (
+        user.name.toLowerCase().includes(lowerCaseQuery) ||
+        user.email.toLowerCase().includes(lowerCaseQuery) ||
+        blockStatus.includes(lowerCaseQuery)
+      );
+    });
+    setFilteredStudents(filtered);
+  }, [searchQuery, users]);
 
   const blockUser = async (id: string, isBlocked: Boolean) => {
     try {
@@ -64,6 +82,10 @@ const StudentList = () => {
       });
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   const column = [
     // { id: "no", label: "No", minWidth: 50 },
     { id: "name", label: "Name", minWidth: 100 },
@@ -102,7 +124,16 @@ const StudentList = () => {
   ];
   return (
     <>
-      <TableComponent title="Students List" columns={column} data={users} />
+    <div className="float-end">
+          <input
+            type="text"
+            placeholder="Search students"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3"
+          />
+        </div>
+      <TableComponent title="Students List" columns={column} data={filteredStudents} />
     </>
   );
 };

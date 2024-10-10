@@ -8,25 +8,72 @@ import notificationReducer from "./Notification/NotificationSlice"
 import callReducer from "./IncommingVideoCall/IncommingCallSlice";
 
 
+const userPersistConfig = {
+  key: 'user',
+  storage,
+  whitelist: ['user'], // Only persist the user data
+};
+
+const counsellorPersistConfig = {
+  key: 'counsellor',
+  storage,
+  whitelist: ['counsellor'], // Only persist the counsellor data
+};
+
+const adminPersistConfig = {
+  key: 'admin',
+  storage,
+  whitelist: ['admin'], // Only persist the admin data
+};
+
+const notificationPersistConfig = {
+  key: 'notifications',
+  storage,
+  whitelist: ['notifications'], // Only persist the admin data
+};
+const incommingCallPersistConfig = {
+  key: 'incommingCall',
+  storage,
+  whitelist: ['incommingCall'], // Only persist the admin data
+};
+
+
+// const rootReducer = combineReducers({
+//   counsellor: CounsellorReducer,
+//   user: userReducer,
+//   admin: adminReducer,
+//   notifications: notificationReducer, 
+//   incomingCall:callReducer
+// });
+
 const rootReducer = combineReducers({
-  user: userReducer,
-  counsellor: CounsellorReducer,
-  admin: adminReducer,
-  notifications: notificationReducer,
-  incomingCall:callReducer
+  user: persistReducer(userPersistConfig, userReducer),
+  counsellor: persistReducer(counsellorPersistConfig, CounsellorReducer),
+  admin: persistReducer(adminPersistConfig, adminReducer),
+  notifications: persistReducer(notificationPersistConfig, notificationReducer),
+  incomingCall: persistReducer(incommingCallPersistConfig, callReducer)
 });
 
-const persistConfig = {
-  key: "root",
-  version: 1,
+// const persistConfig = {
+//   key: "root",
+//   version: 1,
+//   storage,
+ 
+// };
+
+// Main persist configuration for the root reducer
+const rootPersistConfig = {
+  key: 'root',
   storage,
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+// const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-export const store = configureStore({
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
+
+export const store = configureStore({ 
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: (getDefaultMiddleware) => 
     getDefaultMiddleware({
       serializableCheck: false,
     }),

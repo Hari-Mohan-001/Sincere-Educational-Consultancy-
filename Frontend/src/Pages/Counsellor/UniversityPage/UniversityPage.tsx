@@ -5,17 +5,22 @@ import ListUniversity from "../../../Components/Counsellor/University/ListUniver
 
 const UniversityPage = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
+      {/* Full-width Header */}
       <Header />
+
       <div className="flex">
-        <div>
-        <SideNavBar />
+        {/* Sidebar */}
+        <div className="w-1/5 ">
+          <SideNavBar />
         </div>
-        
-        <ListUniversity />
-      
+
+        {/* Main Content: Student List */} 
+        <div className="w-4/5 p-0">
+          <ListUniversity />
+        </div>
+      </div>
     </div>
-    </>
   );
 };
 

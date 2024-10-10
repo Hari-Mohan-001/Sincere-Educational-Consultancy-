@@ -22,29 +22,33 @@ const Header = () => {
     await adminApi.signOut();
     dispatch(signOutAdmin());
     navigate("/admin/signin");
-    toast.success("Signout Successfully");
+    toast.success("Signed out successfully");
   };
+
   return (
-    <div className="bg-gray-600 shadow-xl border">
-      <div className="flex justify-between items-center max max-w-7xl mx-auto p-3">
-        <h1 className="font-bold">SeC</h1>
-        {admin ? (
-          <ul className="flex gap-4">
-            {/* <li className="cursor-pointer" onClick={handleSignout}>SignOut</li> */}
+    <div className="bg-gray-800 w-full px-4 py-3 shadow-xl border">
+      <div className="flex justify-between items-center">
+        {/* Left Side: Logo */}
+        <h1 className="text-white text-lg font-bold">SeC</h1>
 
-            <h1 className="rounded-full">{admin?.name}</h1>
-
+        {/* Right Side: Admin Info */}
+        {admin && (
+          <div className="flex items-center space-x-4">
+            <h1 className="text-white text-sm">{admin?.name}</h1>
             <img
-              className="w-7 h-7 rounded-full object-cover"
+              className="w-8 h-8 rounded-full object-cover"
               src={admin && admin.image ? admin.image : undefined}
-              alt="image"
+              alt="profile"
             />
-            <Button variant="contained" onClick={handleSignout}>
-              SignOut
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              onClick={handleSignout}
+            >
+              Sign Out
             </Button>
-          </ul>
-        ) : (
-          <p></p>
+          </div>
         )}
       </div>
     </div>

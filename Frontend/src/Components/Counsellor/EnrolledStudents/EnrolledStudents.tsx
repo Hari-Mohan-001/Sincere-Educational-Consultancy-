@@ -241,7 +241,7 @@ const EnrolledStudents = () => {
           </Button>
         ) : (
           <Button
-            variant="contained" color="success"
+            variant="contained" color="secondary"
             onClick={() => handleVideoCallClick(row.userId)}
           >
             Video Call

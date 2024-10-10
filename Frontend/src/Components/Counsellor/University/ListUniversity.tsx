@@ -23,6 +23,11 @@ interface UniversityData {
 }
 
 const ListUniversity = () => {
+  const [universities, setUniversities] = useState<UniversityData[]>([]);
+  const [filteredUniversities, setFilteredUniversities] = useState<
+  UniversityData[]
+>([]);
+const [searchQuery, setSearchQuery] = useState<string>("");
   const navigate = useNavigate();
   const { counsellor } = useSelector(
     (state: CounsellorRootState) => state.counsellor
@@ -46,7 +51,26 @@ const ListUniversity = () => {
     fetchUniversity();
   }, []);
 
-  const [universities, setUniversities] = useState<UniversityData[]>([]);
+  useEffect(() => {
+    const filtered = universities.filter((university) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        university.name.toLowerCase().includes(lowerCaseQuery) ||
+        university.address.toLowerCase().includes(lowerCaseQuery) ||
+        university.ranking.toLowerCase().includes(lowerCaseQuery) ||
+        university.country.name.toLowerCase().includes(lowerCaseQuery) ||
+        (university.isApproved ? "approved" : "not approved").includes(
+          lowerCaseQuery
+        )
+      );
+    });
+    setFilteredUniversities(filtered);
+  }, [searchQuery, universities]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+  
 
   const handleClick = () => {
     navigate("/counsellor/add-university");
@@ -80,16 +104,27 @@ const ListUniversity = () => {
 
   return (
     <>
+      <div className="flex float-end">
+      <div className="mt-4 mr-2 float-end">
+        <Button onClick={handleClick} variant="contained">
+          Add University
+        </Button>
+      </div>
+      <div>
+          <input
+            type="text"
+            placeholder="Search university"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3 mt-4"
+          />
+        </div>
+        </div>
       <TableComponent
         title="Universities"
         columns={columns}
-        data={universities}
+        data={filteredUniversities}
       />
-      <div className="mt-4 mr-2">
-        <Button onClick={handleClick} variant="contained">
-          Add
-        </Button>
-      </div>
     </>
   );
 };

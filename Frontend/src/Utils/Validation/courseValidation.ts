@@ -45,8 +45,15 @@ export const validateDescription = (description: string | undefined):string|null
         }
 
     export const validateCourseFees =(fees:string|undefined):string|null=>{
+      
         if(!fees){
             return "fees is required"
+        }else if(+fees <= 0){
+            return "Enter a proper fees greater than zero"
+        }
+        const isValidFees = /^\d*\.?\d*$/.test(fees)
+        if(!isValidFees){
+          return "Enter a valid Fees in number"
         }
         return null
         }

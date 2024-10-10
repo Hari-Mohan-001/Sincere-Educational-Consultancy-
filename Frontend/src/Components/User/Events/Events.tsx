@@ -67,6 +67,8 @@ const ListEvents = () => {
   const handleChangeSchedule = async(orderId?:string)=>{
      if(orderId){
       const response = await userApi.rescheduleRequest(orderId)
+      console.log("sample load");
+      
         if(response){
           toast.success("Schedule request send, check the time with in one hour")
         }
@@ -124,7 +126,7 @@ const ListEvents = () => {
       minWidth: 100,
       render: (row: EventData) => {
         // Parse event date and time into a single Date object
-        const eventDateTime = new Date(`${row.date} ${row.time}`);
+        const eventDateTime = new Date(`${row.date}T${row.time}`);
         const currentDateTime = new Date();
     
         // Log the parsed values for debugging
@@ -143,7 +145,7 @@ const ListEvents = () => {
             </Button>
           );
         } else {
-          return <Button variant="text" color="success">Completed</Button>;
+          return <Button variant="outlined" color="success">Completed</Button>;
         }
       },
     }
@@ -155,11 +157,6 @@ const ListEvents = () => {
   return (
     <>
       <TableComponent title="Enrolled Events" columns={columns} data={events} />
-      <div className="mt-4 mr-2">
-        {/* <Button onClick={handleClick} variant="contained">
-          Add
-        </Button> */}
-      </div>
     </>
   );
 };

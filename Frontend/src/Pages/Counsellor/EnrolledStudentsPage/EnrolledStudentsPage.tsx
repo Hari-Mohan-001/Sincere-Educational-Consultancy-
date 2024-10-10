@@ -4,14 +4,20 @@ import EnrolledStudents from "../../../Components/Counsellor/EnrolledStudents/En
 
 const EnrolledStudentsPage = () => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
+      {/* Full-width Header */}
       <Header />
+
       <div className="flex">
-        <div className="h-screen">
+        {/* Sidebar */}
+        <div className="w-1/5 ">
           <SideNavBar />
         </div>
 
-        <EnrolledStudents />
+        {/* Main Content: Student List */} 
+        <div className="w-4/5 p-0">
+          <EnrolledStudents />
+        </div>
       </div>
     </div>
   );

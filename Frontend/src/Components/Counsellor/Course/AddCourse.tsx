@@ -90,6 +90,7 @@ const AddCourseForm = () => {
 
   const [formData, setFormData] = useState<CourseData>({
     qualification: "",
+    duration: "",
     universities: [],
   });
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -100,6 +101,7 @@ const AddCourseForm = () => {
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLogoError("");
     const { id, value, files } = e.target;
     if (files) {
       const file = files[0];
@@ -134,6 +136,10 @@ const AddCourseForm = () => {
     setFormData({ ...formData, domain: e.target.value });
     setErrors({ ...errors, domain: "" });
   };
+  const handleDuartionSelectChange = (e: SelectChangeEvent<string>) => {
+    setFormData({ ...formData, duration: e.target.value });
+    setErrors({ ...errors, duration: "" });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -149,8 +155,23 @@ const AddCourseForm = () => {
     newErrors.university =
       validateCourseUniversity(formData?.universities) || "";
     newErrors.domain = validateCourseDomain(formData?.domain) || "";
+
+    Object.keys(newErrors).forEach((key) => {
+      if (newErrors[key] === "") delete newErrors[key];
+    });
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    if (!formData.logo || logoError) {
+      setLogoError("Select logo image file");
+      return;
+    }
+    const loadToast = toast.loading("Please wait while adding");
+    formData.fees = formData.fees + " Lakh/year";
     try {
-       await counsellorApi.addCourse(formData);
+      await counsellorApi.addCourse(formData);
+      toast.dismiss(loadToast);
       navigate("/counsellor/courses");
       toast.success("Course added successfully");
     } catch (error) {
@@ -212,7 +233,9 @@ const AddCourseForm = () => {
             </FormControl>
           </Box>
           <Box>
-            <Typography variant="inherit">Enter the fees</Typography>
+            <Typography variant="inherit">
+              Enter the fees in lakhs/year
+            </Typography>
             <TextField
               id="fees"
               label="fees"
@@ -238,17 +261,36 @@ const AddCourseForm = () => {
             />
           </Box>
           <Box>
-            <Typography variant="inherit">Enter the Duration</Typography>
-            <TextField
-              id="duration"
-              label="Duration"
+            <Typography variant="inherit">Select the Duration</Typography>
+
+            <FormControl
               fullWidth
-              variant="outlined"
               size="small"
               error={Boolean(errors.duration)}
-              helperText={errors.duration}
-              onChange={handleChange}
-            />
+            >
+              <InputLabel id="qualification-label">Duration</InputLabel>
+              <Select
+                labelId="qualification-label"
+                id="qualification"
+                label="Qualification"
+                value={formData?.duration}
+                onChange={handleDuartionSelectChange}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value="1 Year">1 year</MenuItem>
+                <MenuItem value="2 Year">2 year</MenuItem>
+                <MenuItem value="3 Year">3 year</MenuItem>
+                <MenuItem value="4 Year">4 year</MenuItem>
+                <MenuItem value="5 Year">5 year</MenuItem>
+              </Select>
+              {errors.duration && (
+                <Typography variant="caption" color="error">
+                  {errors.duration}
+                </Typography>
+              )}
+            </FormControl>
           </Box>
           <Box>
             <Typography variant="inherit">Select the University</Typography>
@@ -291,11 +333,7 @@ const AddCourseForm = () => {
           <Box>
             <Typography variant="inherit">Select the Domain</Typography>
 
-            <FormControl
-              fullWidth
-              size="small"
-              error={Boolean(errors.qualification)}
-            >
+            <FormControl fullWidth size="small" error={Boolean(errors.domain)}>
               <InputLabel id="domain-label">Domain</InputLabel>
               <Select
                 labelId="domain-label"
@@ -315,7 +353,7 @@ const AddCourseForm = () => {
                   );
                 })}
               </Select>
-              {errors.doamin && (
+              {errors.domain && (
                 <Typography variant="caption" color="error">
                   {errors.domain}
                 </Typography>
@@ -339,6 +377,7 @@ const AddCourseForm = () => {
               size="small"
               error={Boolean(errors.logo)}
               helperText={errors.logo}
+              inputProps={{ accept: "image/*" }}
               onChange={handleChange}
             />
           </Box>

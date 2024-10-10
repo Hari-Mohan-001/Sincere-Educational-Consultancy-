@@ -22,6 +22,8 @@ export const chatApi = {
   },
 
   fetchAllMessages: async (userEndPoint: string, params: chatParams) => {
+    console.log('chat',userEndPoint, params);
+    
     try {
       const response = await axiosInstance.get(`${userEndPoint}/messages`, {
         params,

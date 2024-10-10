@@ -3,15 +3,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { counsellorApi } from "../../../Api/counsellorApi";
+import { validateLogo } from "../../../Utils/Validation/universityValidation";
 
 const AddDomain = () => {
   const [errors, setErrors] = useState("");
+  const [imageErrors, setImageErrors] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState<string>("");
   const navigate = useNavigate();
 
   const previewFile = (file: File) => {
+    const imageError = validateLogo(file)
+    if(imageError){
+      setImageErrors(imageError)
+      return
+    }
     const reader = new FileReader();
     reader.readAsDataURL(file);
 
@@ -44,8 +51,8 @@ const AddDomain = () => {
       setErrors("Enter a name");
       return;
     }
-    if (!file) {
-      setErrors("Select a file");
+    if (!file || imageErrors) {
+      setErrors("Select an image file");
       return;
     }
 
@@ -95,7 +102,7 @@ const AddDomain = () => {
             <Typography variant="inherit">Enter the domain name</Typography>
             <TextField
               id="name"
-              label="Country name"
+              label="Domain name"
               fullWidth
               variant="outlined"
               size="small"
@@ -114,7 +121,10 @@ const AddDomain = () => {
               type="file"
               variant="outlined"
               size="small"
+              inputProps={{ accept: "image/*" }}  
               onChange={handleChange}
+              // error={imageErrors ? imageErrors: ""}
+              helperText={imageErrors}
             />
           </Box>
 

@@ -48,12 +48,13 @@ const DomainList = () => {
 
   return (
     <>
-      <TableComponent title="Domains" columns={column} data={domains} />
-      <div className="mt-4 mr-2">
+      
+      <div className="mt-4 mr-2 float-end">
         <Button onClick={handleClick} variant="contained">
           Add
         </Button>
       </div>
+      <TableComponent title="Domains" columns={column} data={domains} />
     </>
   );
 };

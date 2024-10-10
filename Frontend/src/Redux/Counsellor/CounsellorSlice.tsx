@@ -101,7 +101,7 @@ const CounsellorSlice = createSlice({
         (state.status = "failed"), (state.error = action.error.message || null);
       })
       .addCase(signInCounsellor.fulfilled, (state, action) => {
-        console.log(action.payload);
+        console.log('Counsellor signed in:', action.payload);
 
         (state.status = "succeeded"),
           (state.counsellor = action.payload.counsellor || null);

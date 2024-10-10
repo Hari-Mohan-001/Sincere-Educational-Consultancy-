@@ -4,7 +4,7 @@ const Banner = () => {
       {/* Text Section */}
       <div className="lg:w-1/2 w-full lg:ml-10 mt-8 lg:mt-24 text-center lg:text-left px-4 lg:px-0">
         <h1 className="font-bold text-2xl lg:text-3xl text-indigo-800 mb-4">
-          Confused???
+          Are You Confused???
         </h1>
         <h1 className="font-bold text-2xl lg:text-3xl text-white mb-4">
           We are here to help you

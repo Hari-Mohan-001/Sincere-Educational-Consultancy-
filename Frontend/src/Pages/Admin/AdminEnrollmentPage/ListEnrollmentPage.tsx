@@ -5,16 +5,23 @@ import SideNavBar from "../../../Components/Admin/SideNavBar/SideNavBar"
 
 const ListEnrollmentPage = () => {
   return (
-    <>
-    <Header />
-    <div className="flex">
-      <div>
-      <SideNavBar />
+    <div className="flex flex-col min-h-screen">
+      {/* Full-width Header */}
+      <Header />
+
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-1/5">
+          <SideNavBar />
+        </div>
+
+        {/* Main Content: Student List */}
+        <div className="w-4/5 p-0">
+          <ListEnrollment />
+        </div>
       </div>
-      <ListEnrollment />
     </div>
-  </>
-  )
+  );
 }
 
 export default ListEnrollmentPage

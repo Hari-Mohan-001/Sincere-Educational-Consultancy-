@@ -140,7 +140,7 @@ const OrderList = () => {
   };
 
   return (
-    <div className="w-screen">
+    <div className="">
       <Box sx={{ display: "flex", gap: 2, mb: 2, mt: 5, ml: 4 }}>
         <TextField
           label="Start Date"

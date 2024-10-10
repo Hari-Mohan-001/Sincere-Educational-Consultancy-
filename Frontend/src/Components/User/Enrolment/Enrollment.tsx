@@ -13,11 +13,13 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
 import { api } from "../../../Api/api";
 import { userApi } from "../../../Api/userApi";
 import { toast } from "react-toastify";
+import { signOutUser } from "../../../Redux/User/UserSlice";
+import { useNavigate } from "react-router-dom";
 
 interface CountryData {
   id: string;
@@ -38,6 +40,8 @@ const Enrollment = () => {
   const [selectedCountry, setSelectedCountry] = useState<string>(""); // State for selected country
   const [selectedEnrollment, setSelectedEnrollment] = useState<string>(""); // State for selected enrollment
   const { user } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -96,32 +100,49 @@ const Enrollment = () => {
     : 0; // Handle undefined amount
 
   const handlePayment = async () => {
-    let stripe = await loadStripe('pk_test_51PfgkcEAV82mMSI8Belvs1HZbtQMRdEst21OkbFOcgth5MRQVsQLjpvoIkKtKGrBlteQJbdrBmPH9gy6o28AwKj000T9mE7F4p');
-    console.log('strKey',import.meta.env.VITE_STRIPE_KEY);
-    
-    const body = {
-      enrolldetails: selectedEnrollmentDetails,
-      country: selectedCountry,
-      userId: user?.id,
-      totalAmount: totalAmount,
-    };
-    //creating checkout
-    console.log('stripe....',stripe);
-    
-    const sessionId = await userApi.checkOut(body);
-    if(sessionId){
-    const result = await stripe?.redirectToCheckout({
-        sessionId: sessionId,
-      });
-       console.log('striperes',result);
-       
-      if (result && result.error) {
-        console.log(result.error.message);
+    const fetchedUser = await userApi.getAUser(user?.id);
+    console.log(fetchedUser);
+
+    if (fetchedUser?.isBlocked) {
+      console.log("blocked");
+      const response = await userApi.signOut();
+      if (response) {
+        dispatch(signOutUser());
+        localStorage.removeItem("refreshToken");
+        navigate("/signIn");
+      }
+    } else {
+      console.log("not block");
+
+      let stripe = await loadStripe(
+        "pk_test_51PfgkcEAV82mMSI8Belvs1HZbtQMRdEst21OkbFOcgth5MRQVsQLjpvoIkKtKGrBlteQJbdrBmPH9gy6o28AwKj000T9mE7F4p"
+      );
+      console.log("strKey", import.meta.env.VITE_STRIPE_KEY);
+
+      const body = {
+        enrolldetails: selectedEnrollmentDetails,
+        country: selectedCountry,
+        userId: user?.id,
+        totalAmount: totalAmount,
+      };
+      //creating checkout
+      console.log("stripe....", stripe);
+
+      const sessionId = await userApi.checkOut(body);
+      if (sessionId) {
+        const result = await stripe?.redirectToCheckout({
+          sessionId: sessionId,
+        });
+        console.log("striperes", result);
+
+        if (result && result.error) {
+          console.log(result.error.message);
+        }
       }
     }
   };
   return (
-    <div className="flex">
+    <div className="flex mb-10">
       <div className="flex flex-col w-1/3 ml-14 mt-8 bg-slate-200 rounded-lg p-4 shadow-lg">
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>

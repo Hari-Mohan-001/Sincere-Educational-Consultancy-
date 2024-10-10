@@ -127,11 +127,6 @@ const AddUniversityForm = () => {
     newErrors.address = validateAddress(formData?.address) || "";
     newErrors.ranking = validateRanking(formData?.ranking) || "";
     newErrors.country = validateCountry(formData?.country) || "";
-    if (!formData.logo || !formData.images) {
-      setLogoerror("Select logo and image file");
-      return;
-    }
-
     Object.keys(newErrors).forEach((key) => {
       if (newErrors[key] === "") delete newErrors[key];
     });
@@ -139,6 +134,11 @@ const AddUniversityForm = () => {
       setErrors(newErrors);
       return;
     }
+    if (!formData.logo || !formData.images) {
+      setLogoerror("Select logo and image file");
+      return;
+    }
+
     toast.promise(counsellorApi.addUniversity(formData), {
       pending: "Please wait",
       success: {
@@ -168,7 +168,7 @@ const AddUniversityForm = () => {
         <Box display={"flex"} flexDirection={"column"} gap={1}>
           <Box>
             <Typography variant="inherit">
-              Enter the name of university
+              Enter the name of University
             </Typography>
             <TextField
               id="name"
@@ -181,7 +181,7 @@ const AddUniversityForm = () => {
             />
           </Box>
           <Box>
-            <Typography variant="inherit">Enter the address</Typography>
+            <Typography variant="inherit">Enter the Address</Typography>
             <TextField
               id="address"
               fullWidth
@@ -193,7 +193,7 @@ const AddUniversityForm = () => {
             />
           </Box>
           <Box>
-            <Typography variant="inherit">Enter the ranking</Typography>
+            <Typography variant="inherit">Enter the Ranking</Typography>
             <TextField
               id="ranking"
               fullWidth
@@ -205,7 +205,7 @@ const AddUniversityForm = () => {
             />
           </Box>
           <Box>
-            <Typography variant="inherit">Select the country</Typography>
+            <Typography variant="inherit">Select the Country</Typography>
 
             <FormControl fullWidth size="small" error={Boolean(errors.country)}>
               <InputLabel id="country-label">Country</InputLabel>
@@ -242,7 +242,7 @@ const AddUniversityForm = () => {
             />
           )}
           <Box>
-            <Typography variant="inherit">Select the logo</Typography>
+            <Typography variant="inherit">Select the Logo</Typography>
             <TextField
               fullWidth
               id="logo"
@@ -287,7 +287,7 @@ const AddUniversityForm = () => {
             })}
           </Box>
           <Box>
-            <Typography variant="inherit">Choose images</Typography>
+            <Typography variant="inherit">Choose Images</Typography>
             <TextField
               fullWidth
               id="images"

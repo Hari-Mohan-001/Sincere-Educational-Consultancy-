@@ -129,8 +129,8 @@ const AdminDashboard = () => {
   const orderOptions = ChartOptions("Total Order Chart");
 
   return (
-    <section className=" w-full">
-      <div className="flex p-5 w-full max-h-64 justify-around ">
+    <section className="w-full">
+      <div className="flex p-5  max-h-64 justify-around ">
         <div className="bg-green-500 min-w-40 h-40 shadow-xl rounded-lg">
           <h1 className="p-3 text-center text-2xl font-bold">Total Students</h1>
           {totalUsers && (

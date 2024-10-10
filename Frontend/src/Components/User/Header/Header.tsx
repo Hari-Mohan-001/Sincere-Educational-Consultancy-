@@ -20,7 +20,6 @@ import NotificationComponent from "../../Layout/NotificationComponent";
 import { userApi } from "../../../Api/userApi";
 import { useSocket } from "../../../Context/SocketContext";
 
-
 const pages = ["Home", "Courses", "Universities", "Events"];
 const pageRoutes: Record<string, string> = {
   Home: "/home",
@@ -49,36 +48,25 @@ function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.user);
-  const {socket} = useSocket()
+  const { socket } = useSocket();
 
   React.useEffect(() => {
-    console.log('usefirst');
-    
+    console.log("usefirst");
+
     const userId = user?.id;
     const getUser = async () => {
       const fetchedUser = await userApi.getAUser(userId);
-
       if (fetchedUser?.isBlocked) {
-        dispatch(signOutUser());
-        sessionStorage.clear();
-        localStorage.removeItem('refreshToken');
-        navigate("/signIn");
+        const response = await userApi.signOut();
+        if (response) {
+          dispatch(signOutUser());
+          localStorage.removeItem("refreshToken");
+          navigate("/signIn");
+        }
       }
     };
     getUser();
   }, [user, navigate]);
-
-  // React.useEffect(()=>{
-  //   console.log('socketconet');
-    
-  //   if(socket){
-  //     socket.on('receiveOffer', (offer, callerId, callId) => {
-  //       console.log('received offer head',offer);
-        
-  //       store.dispatch(setIncomingCall({ callerId, callId }));
-  //     });
-  //   }
-  // })
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -99,10 +87,10 @@ function Header() {
     try {
       const response = await userApi.signOut();
       if (response) {
-        socket?.emit('logoutChangeStatus', user?.id, 'user')
+        socket?.emit("logoutChangeStatus", user?.id, "user");
         dispatch(signOutUser());
         sessionStorage.clear();
-        localStorage.removeItem('refreshToken');
+        localStorage.removeItem("refreshToken");
         navigate("/signIn");
         handleCloseUserMenu();
       }
@@ -178,7 +166,7 @@ function Header() {
             </Menu>
           </Box>
           {/* <AdbIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} /> */}
-         
+
           <Typography
             variant="h5"
             noWrap
@@ -195,7 +183,7 @@ function Header() {
               textDecoration: "none",
             }}
           >
-           SeC
+            SeC
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             {pages.map((page) => (
@@ -269,7 +257,7 @@ function Header() {
                   </MenuItem>
                 ))}
               </Menu>
-              <NotificationComponent role='user' />
+              <NotificationComponent role="user" />
             </Box>
           )}
         </Toolbar>

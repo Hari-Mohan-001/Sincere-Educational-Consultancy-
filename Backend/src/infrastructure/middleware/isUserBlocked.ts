@@ -23,7 +23,7 @@ export const isUserBlocked = async (
       return res.status(404).json({ message: "User not found" });
     }
     if (user?.isBlocked) {
-      return res.redirect(`${process.env.FRONTEND_BASE_URL}/signIn`);
+      return res.status(403).json({message:'user blocked',redirectTo:`${process.env.FRONTEND_BASE_URL}/signIn`});
       // return res.status(403).json({ message: "You are blocked" });
     }
     next();

@@ -51,22 +51,28 @@ const TableComponent: React.FC<TableComponentProps> = ({
   };
 
   return (
-    <div className="container mx-3 my-0 mt-8">
-      <Typography variant="h4" align="center">
+    <div className="container mx-auto p-4 mt-5">
+      <Typography variant="h4" align="center" className="mb-4">
         {title}
       </Typography>
-
+  
       {columns?.length > 0 && data?.length > 0 ? (
-        <TableContainer component={Paper} className="shadow-lg" style={{}}>
-          <Table>
-            <TableHead className="bg-gray-800">
+        <TableContainer
+          component={Paper}
+          className="shadow-lg"
+          style={{
+            overflowX: "auto",
+          }}
+        >
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead>
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align}
-                    style={{ minWidth: column.minWidth }}
-                    className="!text-white"
+                    style={{ minWidth: column.minWidth, fontWeight: "bold" }}
+                    className="!text-white !bg-pink-600"
                   >
                     {column.label}
                   </TableCell>
@@ -105,6 +111,7 @@ const TableComponent: React.FC<TableComponentProps> = ({
       )}
     </div>
   );
+  
 };
 
 export default TableComponent;

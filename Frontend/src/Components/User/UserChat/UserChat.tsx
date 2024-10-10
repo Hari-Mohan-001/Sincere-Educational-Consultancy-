@@ -19,6 +19,7 @@ const UserChat = () => {
   if (!counsellorId || !userId) {
     return <div>Error: Missing required parameters</div>;
   }
+console.log('usr chat pag',userId,counsellorId);
 
   useEffect(() => {
     dispatch(clearNotifications(userId));
