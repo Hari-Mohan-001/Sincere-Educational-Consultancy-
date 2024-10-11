@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../Interface/User/UserInterface";
 import { userApi } from "../../../Api/userApi";
 import { toast } from "react-toastify";
+import { parse } from "date-fns";
 
 interface CounsellorData {
   _id: string;
@@ -37,7 +38,7 @@ const ListEvents = () => {
           if(events){
           
             
-            setEvents(events)
+            setEvents(events.reverse())
             console.log(events);
             
           }else{
@@ -126,15 +127,15 @@ const ListEvents = () => {
       minWidth: 100,
       render: (row: EventData) => {
         // Parse event date and time into a single Date object
-        const eventDateTime = new Date(`${row.date}T${row.time}`);
+        const eventDateTime = parse(`${row.date} ${row.time}`, "dd-MM-yyyy HH:mm:ss", new Date());
         const currentDateTime = new Date();
     
         // Log the parsed values for debugging
         console.log("Event DateTime:", eventDateTime);
         console.log("Current DateTime:", currentDateTime);
     
-        // Check if the event date and time are in the past
-        if (eventDateTime.getTime() < currentDateTime.getTime()) {
+        // Check if the event date and time are in the past 
+        if (eventDateTime.getTime() > currentDateTime.getTime()) {
           return (
             <Button
               onClick={() => handleChangeSchedule(row?.orderId)}

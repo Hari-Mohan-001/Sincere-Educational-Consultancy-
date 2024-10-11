@@ -39,6 +39,10 @@ const EnrolledStudents = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
   const {socket} = useSocket()
   const hasJoined = useRef(false) // Track if the user has joined already
+  const [filteredData, setFilteredData] = useState<
+  OrderData[] 
+>([]);
+const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(()=>{
      if(socket && counsellor && !hasJoined.current){
@@ -153,17 +157,24 @@ const EnrolledStudents = () => {
   };
 
   const handleVideoCallClick = (studentId: string) => {
-    // if (socket) {
-    //   socket.emit("startCall", { to: studentId });
-    //   // navigate(`/counsellor/video-call/${counsellor?.id}/${studentId}`);
-    //   navigate(`/counsellor/video-call`, {
-    //     state: { counsellorId: counsellor?.id, userId: studentId },
-    //   });
-    // }
+   
     navigate('/counsellor/video-call',{
       state:{userId: studentId }
     })
   };
+
+  useEffect(() => {
+    const filtered = students.filter((student) => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        student.userName.toLowerCase().includes(lowerCaseQuery) ||
+        student.userEmail.toLowerCase().includes(lowerCaseQuery) ||
+        student.enrollType.toLowerCase().includes(lowerCaseQuery)
+        
+      );
+    });
+    setFilteredData(filtered);
+  }, [searchQuery, students]);
 
   const columns = [
     { id: "userName", label: "Name", minWidth: 100 },
@@ -250,9 +261,22 @@ const EnrolledStudents = () => {
     },
   ];
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
   return ( 
     <>
-      <TableComponent title="Students" columns={columns} data={students} />
+    <div className="float-end">
+          <input
+            type="text"
+            placeholder="Search Students"
+            onChange={handleSearchChange}
+            value={searchQuery}
+            className="w-full max-w-xs p-2 border border-gray-400 rounded-md mb-3 mt-4"
+          />
+        </div>
+      <TableComponent title="Students" columns={columns} data={filteredData} />
       <Modal open={open} onClose={() => setOpen(false)}>
         <div
           style={{
