@@ -5,12 +5,19 @@ import Header from "../../../Components/User/Header/Header"
 
 const EnrollmentPage = () => {
   return (
-    <div>
-        <Header/>
-        <Enrollment/>
-        <Footer/>
+    <div className="flex flex-col min-h-screen">
+      {/* Header */}
+      <Header />
+      
+      {/* Main Content */}
+      <div className="flex-grow">
+        <Enrollment />
+      </div>
+      
+      {/* Footer */}
+      <Footer />
     </div>
-  )
+  );
 }
 
 export default EnrollmentPage

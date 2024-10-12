@@ -36,6 +36,7 @@ const AllCourses = () => {
         let response;
         if (domainId) {
           response = await api.getCoursesByDomain(domainId);
+          console.log('domainiD')
         } else {
           response = await api.getCourses();
         }

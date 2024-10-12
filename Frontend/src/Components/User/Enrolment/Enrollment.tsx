@@ -142,8 +142,9 @@ const Enrollment = () => {
     }
   };
   return (
-    <div className="flex mb-10">
-      <div className="flex flex-col w-1/3 ml-14 mt-8 bg-slate-200 rounded-lg p-4 shadow-lg">
+    <div className="flex flex-col lg:flex-row mb-10">
+      {/* Left side: Form section */}
+      <div className="flex flex-col lg:w-1/3 w-full ml-4 lg:ml-14 mt-8 bg-slate-200 rounded-lg p-4 shadow-lg">
         <Box sx={{ minWidth: 120 }}>
           <FormControl fullWidth>
             <InputLabel id="country-select-label">
@@ -167,6 +168,7 @@ const Enrollment = () => {
             </Select>
           </FormControl>
         </Box>
+
         <Box sx={{ mt: 8 }}>
           <FormControl>
             <FormLabel id="enrollment-radio-buttons-group">
@@ -178,21 +180,19 @@ const Enrollment = () => {
               value={selectedEnrollment}
               onChange={handleEnrollmentSelectChange}
             >
-              <h1 className="text-lg">
-                Selecting the option will provide a personalised interaction
+              <h1 className="text-sm lg:text-lg mb-2">
+                Selecting the option will provide a personalized interaction
                 with country counsellor
               </h1>
               <Box sx={{ mt: 3, flexDirection: "column" }}>
-                <Box sx={{ mt: 3, flexDirection: "column" }}>
-                  {enrollments?.map((enroll) => (
-                    <FormControlLabel
-                      key={enroll.id}
-                      value={enroll.id}
-                      control={<Radio />}
-                      label={enroll.name}
-                    />
-                  ))}
-                </Box>
+                {enrollments?.map((enroll) => (
+                  <FormControlLabel
+                    key={enroll.id}
+                    value={enroll.id}
+                    control={<Radio />}
+                    label={enroll.name}
+                  />
+                ))}
               </Box>
             </RadioGroup>
           </FormControl>
@@ -201,54 +201,58 @@ const Enrollment = () => {
 
       {/* Conditionally render the summary section */}
       {selectedCountry && selectedEnrollment && selectedEnrollmentDetails && (
-        <div className="w-2/3 mt-16">
-          <div className="flex justify-center mt-3 bg-slate-500 ml-40 mr-16 h-auto p-4 rounded-lg shadow-lg">
-            <div className="flex flex-col">
+        <div className="lg:w-2/3 w-full mt-16 mx-auto">
+          <div className="flex justify-center mt-3 bg-slate-500 mx-4 lg:mx-40 h-auto p-4 rounded-lg shadow-lg">
+            <div className="flex flex-col w-full lg:w-3/4">
               <div>
-                <h1 className="text-xl font-semibold mb-2">Order Summary</h1>
+                <h1 className="text-xl font-semibold mb-2 text-white">
+                  Order Summary
+                </h1>
               </div>
-              <div className="flex items-center mb-2">
-                <div className="mr-2">
-                  <h1 className="font-medium">Enrollment Name:</h1>
+              <div className="flex flex-col mb-2">
+                <div className="flex items-center mb-2">
+                  <div className="mr-2">
+                    <h1 className="font-medium text-white">Enrollment Name:</h1>
+                  </div>
+                  <div>
+                    <h1 className="text-white">{selectedEnrollmentDetails.name}</h1>
+                  </div>
                 </div>
-                <div>
-                  <h1>{selectedEnrollmentDetails.name}</h1>
+                <div className="flex items-center mb-2">
+                  <div className="mr-2">
+                    <h1 className="font-medium text-white">Image:</h1>
+                  </div>
+                  <div>
+                    <img
+                      src={selectedEnrollmentDetails.image}
+                      alt={selectedEnrollmentDetails.name}
+                      className="w-16 h-16 object-cover rounded-md"
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center mb-2">
-                <div className="mr-2">
-                  <h1 className="font-medium">Image:</h1>
+                <div className="flex items-center mb-2">
+                  <div className="mr-2">
+                    <h1 className="font-medium text-white">Amount: Rs</h1>
+                  </div>
+                  <div>
+                    <h1 className="text-white">{selectedEnrollmentDetails.amount}</h1>
+                  </div>
                 </div>
-                <div>
-                  <img
-                    src={selectedEnrollmentDetails.image}
-                    alt={selectedEnrollmentDetails.name}
-                    className="w-16 h-16 object-cover rounded-md"
-                  />
+                <div className="flex items-center mb-2">
+                  <div className="mr-2">
+                    <h1 className="font-medium text-white">Tax:</h1>
+                  </div>
+                  <div>
+                    <h1 className="text-white">{tax}</h1>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center mb-2">
-                <div className="mr-2">
-                  <h1 className="font-medium">Amount:Rs</h1>
-                </div>
-                <div>
-                  <h1>{selectedEnrollmentDetails.amount}</h1>
-                </div>
-              </div>
-              <div className="flex items-center mb-2">
-                <div className="mr-2">
-                  <h1 className="font-medium">Tax:</h1>
-                </div>
-                <div>
-                  <h1>{tax}</h1>
-                </div>
-              </div>
-              <div className="flex items-center mb-2">
-                <div className="mr-2">
-                  <h1 className="font-medium">Total Amount: Rs</h1>
-                </div>
-                <div>
-                  <h1>{totalAmount}</h1>
+                <div className="flex items-center mb-2">
+                  <div className="mr-2">
+                    <h1 className="font-medium text-white">Total Amount: Rs</h1>
+                  </div>
+                  <div>
+                    <h1 className="text-white">{totalAmount}</h1>
+                  </div>
                 </div>
               </div>
               <div className="mt-4">

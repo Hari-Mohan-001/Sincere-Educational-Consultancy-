@@ -401,11 +401,12 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
   }, [chatMessages]);
     
   return (
-    <div className="flex h-screen bg-gray-900">
+    <div className="flex flex-col lg:flex-row h-screen bg-gray-900">
       {/* Left side: Video streams */}
-      <div className="w-2/3 flex flex-col p-4 h-full">
-        <div className="flex-1 flex space-x-4">
-          <div className="w-1/2 flex flex-col">
+      <div className="lg:w-2/3 w-full flex flex-col p-4 h-full">
+        <div className="flex-1 flex flex-col lg:flex-row space-x-4">
+          {/* Local Video */}
+          <div className="w-full lg:w-1/2 flex flex-col mb-4 lg:mb-0">
             <h1 className="text-white mb-2">
               Local Video {localStream ? "(Active)" : "(Inactive)"}
             </h1>
@@ -419,7 +420,9 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
               />
             </div>
           </div>
-          <div className="w-1/2 flex flex-col">
+  
+          {/* Remote Video */}
+          <div className="w-full lg:w-1/2 flex flex-col">
             <h1 className="text-white mb-2">
               Remote Video {remoteStream ? "(Active)" : "(Inactive)"}
             </h1>
@@ -435,7 +438,8 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
             </div>
           </div>
         </div>
-
+  
+        {/* Call control buttons */}
         <div className="mt-4 flex justify-center space-x-4">
           {role === "counsellor" && !isCallStarted && (
             <Button variant="contained" color="primary" onClick={startCall}>
@@ -450,9 +454,9 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
               <Button variant="contained" color="warning" onClick={toggleMute}>
                 {isMuted ? "Unmute" : "Mute"}
               </Button>
-              <Button 
-                variant="contained" 
-                color="info" 
+              <Button
+                variant="contained"
+                color="info"
                 onClick={isScreenSharing ? stopScreenShare : startScreenShare}
               >
                 {isScreenSharing ? "Stop Sharing" : "Share Screen"}
@@ -461,9 +465,9 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
           )}
         </div>
       </div>
-
+  
       {/* Right side: Chat */}
-      <div className="w-1/3 flex flex-col bg-gray-800 p-4 h-full">
+      <div className="w-full lg:w-1/3 flex flex-col bg-gray-800 p-4 h-full">
         <h2 className="text-white text-xl mb-4">Chat</h2>
         <div ref={chatContainerRef} className="flex-1 overflow-y-auto mb-4">
           {chatMessages.map((msg, index) => (
@@ -483,6 +487,8 @@ const VideoCallComponent: React.FC<VideoCallComponentProps> = ({ userId, role, u
             </div>
           ))}
         </div>
+  
+        {/* Message input */}
         <div className="flex">
           <TextField
             fullWidth

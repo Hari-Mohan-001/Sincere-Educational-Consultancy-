@@ -159,7 +159,12 @@ function Header() {
               }}
             >
               {userPages.map((page, index) => (
-                <MenuItem key={page + index}>
+                <MenuItem key={page + index}
+                  onClick={() => {
+                    handleCloseNavMenu();
+                    navigate(pageRoutes[page]); // Navigate to the specific route
+                  }}
+                  >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
